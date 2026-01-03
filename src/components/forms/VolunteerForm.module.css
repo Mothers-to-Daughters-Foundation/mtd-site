@@ -1,0 +1,60 @@
+.form {
+  max-width: 700px;
+  margin: var(--spacing-6) auto;
+}
+
+.field {
+  margin-bottom: var(--spacing-5);
+}
+
+.field label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: var(--spacing-3);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: inherit;
+  background-color: var(--surface-1);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--brand-700);
+}
+
+.field select {
+  cursor: pointer;
+}
+
+.errorMessage {
+  padding: var(--spacing-3);
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+}
+
+.successMessage {
+  text-align: center;
+  padding: var(--spacing-8);
+  background-color: var(--accent-100);
+  border-radius: var(--radius-lg);
+}
+
+.successMessage h2 {
+  color: var(--brand-700);
+  margin-bottom: var(--spacing-4);
+}

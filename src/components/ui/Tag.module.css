@@ -1,0 +1,18 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+}
+
+.variant-default {
+  background-color: var(--accent-100);
+  color: var(--brand-700);
+}
+
+.variant-accent {
+  background-color: var(--brand-700);
+  color: var(--surface-1);
+}

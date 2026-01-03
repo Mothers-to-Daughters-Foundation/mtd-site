@@ -1,0 +1,21 @@
+.zeffyContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: var(--spacing-8) auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.zeffyIframe {
+  width: 100%;
+  min-height: 800px;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .zeffyIframe {
+    min-height: 600px;
+  }
+}
