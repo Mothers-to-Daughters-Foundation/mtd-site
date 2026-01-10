@@ -15,8 +15,14 @@ export default function SiteFooter() {
               <Link href="/about" className={styles.link}>
                 About
               </Link>
+              <Link href="/team" className={styles.link}>
+                Our Team
+              </Link>
               <Link href="/programs" className={styles.link}>
                 Programs
+              </Link>
+              <Link href="/news" className={styles.link}>
+                News
               </Link>
               <Link href="/events" className={styles.link}>
                 Events
@@ -40,7 +46,10 @@ export default function SiteFooter() {
                 Volunteer
               </Link>
               <Link href="/partner" className={styles.link}>
-                Partner
+                Become a Partner
+              </Link>
+              <Link href="/courses" className={styles.link}>
+                Courses
               </Link>
             </nav>
           </div>
@@ -48,25 +57,6 @@ export default function SiteFooter() {
           <div className={styles.section}>
             <h3 className={styles.heading}>Connect</h3>
             <div className={styles.social}>
-              {/* Add social media links as needed */}
-              <a
-                href="#"
-                className={styles.socialLink}
-                aria-label="Facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Facebook
-              </a>
-              <a
-                href="#"
-                className={styles.socialLink}
-                aria-label="Twitter"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Twitter
-              </a>
               <a
                 href="#"
                 className={styles.socialLink}
@@ -76,7 +66,48 @@ export default function SiteFooter() {
               >
                 Instagram
               </a>
+              <a
+                href="#"
+                className={styles.socialLink}
+                aria-label="LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="#"
+                className={styles.socialLink}
+                aria-label="TikTok"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                TikTok
+              </a>
+              <a
+                href="#"
+                className={styles.socialLink}
+                aria-label="YouTube"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                YouTube
+              </a>
             </div>
+          </div>
+          <div className={styles.section}>
+            <h3 className={styles.heading}>Legal</h3>
+            <nav className={styles.nav} aria-label="Legal links">
+              <Link href="/legal" className={styles.link}>
+                Legal
+              </Link>
+              <Link href="/legal/privacy-policy" className={styles.link}>
+                Privacy Policy
+              </Link>
+              <Link href="/legal/disclaimer" className={styles.link}>
+                Disclaimer
+              </Link>
+            </nav>
           </div>
         </div>
 

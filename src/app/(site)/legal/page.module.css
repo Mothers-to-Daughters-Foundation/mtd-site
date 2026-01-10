@@ -1,0 +1,38 @@
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.content h1 {
+  font-size: var(--text-5xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-8);
+}
+
+.legalNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.legalNav a {
+  color: var(--brand-700);
+  text-decoration: none;
+  font-size: var(--text-lg);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.legalNav a:hover,
+.legalNav a:focus {
+  background-color: var(--accent-100);
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  .legalNav {
+    flex-direction: row;
+    gap: var(--spacing-6);
+  }
+}

@@ -69,6 +69,9 @@ export default function SiteHeader() {
             <Link href="/partner" className={styles.navLink} onClick={closeMenu}>
               Become a Partner
             </Link>
+            <Link href="/courses" className={styles.navLink} onClick={closeMenu}>
+              Courses
+            </Link>
             <Button
               href="/donate"
               variant="primary"
