@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './SiteHeader.module.css';
 import Container from './Container';
 import Button from '../ui/Button';
@@ -22,7 +23,14 @@ export default function SiteHeader() {
       <Container>
         <div className={styles.content}>
           <Link href="/" className={styles.logo} onClick={closeMenu}>
-            MTD
+            <Image
+              src="/images/MDLOGO.png"
+              alt="Mothers to Daughters Logo"
+              width={200}
+              height={80}
+              priority
+              className={styles.logoImage}
+            />
           </Link>
 
           <button

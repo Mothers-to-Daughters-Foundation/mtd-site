@@ -17,9 +17,8 @@ npm install
 Create a `.env.local` file in the root directory with the following variables:
 
 ```bash
-# Analytics
-NEXT_PUBLIC_GA_ID=G-XXXX
-NEXT_PUBLIC_CLARITY_ID=xxxxx
+# Analytics - Google Tag Manager
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 
 # Forms (if using Formspree)
 NEXT_PUBLIC_FORMSPREE_ID=xxxxx
@@ -30,6 +29,8 @@ NEXT_PUBLIC_ZEFFY_URL=https://...
 # Site URL (for sitemap)
 NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 ```
+
+**Note:** See `docs/GTM_SETUP.md` for detailed instructions on setting up Google Tag Manager with GA4 and Microsoft Clarity.
 
 ## Development
 
