@@ -26,10 +26,11 @@ export default function SiteHeader() {
             <Image
               src="/images/MDLOGO.png"
               alt="Mothers to Daughters Logo"
-              width={200}
-              height={80}
+              width={500}
+              height={200}
               priority
               className={styles.logoImage}
+              unoptimized
             />
           </Link>
 
