@@ -26,6 +26,13 @@
   color: var(--surface-1);
 }
 
+.mission {
+  color: var(--accent-100);
+  line-height: 1.6;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
 .nav {
   display: flex;
   flex-direction: column;
@@ -41,6 +48,10 @@
 .link:hover,
 .link:focus {
   color: var(--surface-1);
+}
+
+.contactInfo {
+  margin-bottom: var(--spacing-4);
 }
 
 .social {
@@ -60,9 +71,49 @@
   color: var(--surface-1);
 }
 
-.copyright {
+.newsletterDescription {
+  color: var(--accent-100);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--spacing-4) 0;
+  line-height: 1.5;
+}
+
+.section :global(.emailField) {
+  justify-content: flex-start;
+}
+
+.section :global(.privacyNote) {
+  text-align: left;
+}
+
+.legal {
   padding-top: var(--spacing-6);
   border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: var(--spacing-4);
+}
+
+.legalNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  justify-content: center;
+}
+
+.legalLink {
+  color: var(--accent-100);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+
+.legalLink:hover,
+.legalLink:focus {
+  color: var(--surface-1);
+}
+
+.copyright {
+  padding-top: var(--spacing-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
 }
 
@@ -74,11 +125,17 @@
 
 @media (min-width: 768px) {
   .content {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .social {
     flex-direction: row;
     gap: var(--spacing-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

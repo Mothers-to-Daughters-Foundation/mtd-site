@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import LoginIcon from '@mui/icons-material/Login';
 import styles from './SiteHeader.module.css';
 import Container from './Container';
 import Button from '../ui/Button';
@@ -59,37 +60,31 @@ export default function SiteHeader() {
             >
               Programs
             </Link>
-            <Link href="/news" className={styles.navLink} onClick={closeMenu}>
-              News
-            </Link>
             <Link href="/events" className={styles.navLink} onClick={closeMenu}>
               Events
             </Link>
             <Link href="/blog" className={styles.navLink} onClick={closeMenu}>
               Blog
             </Link>
-            <Link
-              href="/mentors-mixer"
-              className={styles.navLink}
-              onClick={closeMenu}
-            >
-              Mentors Mixer
+            <Link href="/news" className={styles.navLink} onClick={closeMenu}>
+              Media
             </Link>
             <Link href="/partner" className={styles.navLink} onClick={closeMenu}>
-              Become a Partner
-            </Link>
-            <Link href="/courses" className={styles.navLink} onClick={closeMenu}>
-              Courses
+              Partner
             </Link>
             <Button
               href="/donate"
               variant="primary"
-              size="sm"
+              size="md"
               className={styles.donateButton}
               onClick={closeMenu}
             >
               Donate
             </Button>
+            <Link href="/login" className={styles.signInLink} onClick={closeMenu}>
+              <LoginIcon className={styles.signInIcon} />
+              <span>Sign In</span>
+            </Link>
           </nav>
         </div>
       </Container>

@@ -5,6 +5,7 @@ import './globals.css';
 import SiteHeader from '@/components/layout/SiteHeader';
 import SiteFooter from '@/components/layout/SiteFooter';
 import Analytics from '@/components/Analytics';
+import SessionProvider from '@/components/providers/SessionProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
     template: '%s | MTD',
   },
   description: 'Connecting mentors and mentees for positive impact.',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -27,12 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Suspense fallback={null}>
-          <Analytics />
-        </Suspense>
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        <SessionProvider>
+          <Suspense fallback={null}>
+            <Analytics />
+          </Suspense>
+          <SiteHeader />
+          <main>{children}</main>
+          <SiteFooter />
+        </SessionProvider>
       </body>
     </html>
   );

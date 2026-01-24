@@ -15,27 +15,18 @@ export default function NewsletterForm() {
     setErrorMessage('');
 
     try {
-      // TODO: Replace with actual newsletter subscription endpoint
-      // This could be Mailchimp, Formspree, or a custom API route
-      const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
-      
-      if (!formspreeId) {
-        throw new Error('Newsletter subscription not configured');
-      }
+      const formData = new FormData();
+      formData.append('email', email);
 
-      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      const response = await fetch('/api/newsletter', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          _subject: 'Newsletter Subscription',
-        }),
+        body: formData,
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to subscribe');
+        throw new Error(data.error || 'Failed to subscribe');
       }
 
       setStatus('success');

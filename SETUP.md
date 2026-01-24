@@ -28,6 +28,16 @@ NEXT_PUBLIC_ZEFFY_URL=https://...
 
 # Site URL (for sitemap)
 NEXT_PUBLIC_SITE_URL=https://yourdomain.com
+
+# Authentication - NextAuth.js
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key-here-generate-with-openssl-rand-base64-32
+
+# Database - MongoDB
+MONGODB_URI=mongodb://localhost:27017/mtd-site
+# Or for MongoDB Atlas:
+# MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/mtd-site
+MONGODB_DB_NAME=mtd-site
 ```
 
 **Note:** See `docs/GTM_SETUP.md` for detailed instructions on setting up Google Tag Manager with GA4 and Microsoft Clarity.

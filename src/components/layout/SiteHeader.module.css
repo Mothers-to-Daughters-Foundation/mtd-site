@@ -4,14 +4,21 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
+  overflow: visible;
+  max-width: 100vw;
 }
 
 .content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: var(--spacing-4);
-  padding-bottom: var(--spacing-4);
+  padding-top: var(--spacing-3);
+  padding-bottom: var(--spacing-3);
+  width: 100%;
+  position: relative;
+  gap: var(--spacing-2);
+  box-sizing: border-box;
 }
 
 .logo {
@@ -19,6 +26,16 @@
   align-items: center;
   text-decoration: none;
   transition: opacity var(--transition-fast);
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: calc(100% - 60px);
+}
+
+@media (min-width: 768px) {
+  .logo {
+    flex-shrink: 0;
+    max-width: none;
+  }
 }
 
 .logo:hover,
@@ -29,48 +46,67 @@
 .logoImage {
   height: auto;
   width: auto;
-  max-height: 50px;
-  max-width: 150px;
+  max-height: 40px;
+  max-width: 100px;
   object-fit: contain;
+  flex-shrink: 1;
 }
 
 @media (min-width: 768px) {
   .logoImage {
-    max-height: 150px;
+    max-height: 135px;
     max-width: 500px;
+    flex-shrink: 0;
+  }
+  
+  .content {
+    gap: var(--spacing-6);
   }
 }
 
 .menuToggle {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   padding: var(--spacing-2);
   background: none;
   border: none;
   cursor: pointer;
+  flex-shrink: 0;
+  z-index: 101;
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
 }
 
 .menuIcon {
   width: 24px;
-  height: 2px;
+  height: 3px;
   background-color: var(--brand-700);
   transition: transform var(--transition-base);
+  display: block;
+  border-radius: 2px;
 }
 
 .nav {
   display: none;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   align-items: flex-start;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
+  width: 100%;
   background-color: var(--surface-1);
   border-bottom: 1px solid var(--border-color);
   padding: var(--spacing-4) var(--container-padding);
   box-shadow: var(--shadow-md);
+  z-index: 99;
+  max-height: calc(100vh - 100%);
+  overflow-y: auto;
 }
 
 .navOpen {
@@ -80,8 +116,8 @@
 .navLink {
   color: var(--text-primary);
   text-decoration: none;
-  font-weight: var(--font-medium);
-  padding: var(--spacing-2) 0;
+  font-weight: 500;
+  padding: var(--spacing-1) 0;
   transition: color var(--transition-fast);
 }
 
@@ -90,8 +126,34 @@
   color: var(--brand-700);
 }
 
+.signInLink {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: var(--font-medium);
+  padding: var(--spacing-2) var(--spacing-3);
+  transition: color var(--transition-fast);
+  font-size: var(--text-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.signInLink:hover,
+.signInLink:focus {
+  color: var(--brand-700);
+}
+
+.signInIcon {
+  font-size: 1.2em;
+  width: 1em;
+  height: 1em;
+}
+
 .donateButton {
   margin-top: var(--spacing-2);
+  border-radius: var(--radius-lg) !important;
+  padding-left: var(--spacing-4) !important;
+  padding-right: var(--spacing-4) !important;
 }
 
 @media (min-width: 768px) {
@@ -108,14 +170,23 @@
     padding: 0;
     box-shadow: none;
     align-items: center;
+    gap: var(--spacing-2);
+    margin-left: var(--spacing-16);
   }
 
   .navLink {
     padding: var(--spacing-2) var(--spacing-3);
   }
 
+  .signInLink {
+    margin-left: var(--spacing-6);
+  }
+
   .donateButton {
     margin-top: 0;
     margin-left: var(--spacing-4);
+    border-radius: var(--radius-lg) !important;
+    padding-left: var(--spacing-4) !important;
+    padding-right: var(--spacing-4) !important;
   }
 }

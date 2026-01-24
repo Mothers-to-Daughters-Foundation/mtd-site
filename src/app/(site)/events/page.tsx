@@ -5,6 +5,7 @@ import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { getAllEvents } from '@/lib/mdx';
+import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'Events',
@@ -24,12 +25,12 @@ export default function EventsPage() {
   return (
     <Section spacing="lg">
       <Container>
-        <h1>Events</h1>
+        <h1 className={styles.pageTitle}>Events</h1>
 
         {upcoming.length > 0 && (
-          <section>
-            <h2>Upcoming Events</h2>
-            <div className="events-grid">
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Upcoming Events</h2>
+            <div className={styles.eventsGrid}>
               {upcoming.map((event) => (
                 <Card key={event.slug} href={`/events/${event.slug}`}>
                   <h3>{event.frontmatter.title}</h3>
@@ -55,10 +56,21 @@ export default function EventsPage() {
           </section>
         )}
 
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Mentors Mixer</h2>
+          <Card href="/mentors-mixer" className={styles.mentorsMixerCard}>
+            <h3>Mentors Mixer</h3>
+            <p>Connect with fellow mentors and mentees at our signature networking events.</p>
+            <Button href="/mentors-mixer" variant="primary" size="md">
+              Learn More
+            </Button>
+          </Card>
+        </section>
+
         {past.length > 0 && (
-          <section>
-            <h2>Past Events</h2>
-            <div className="events-grid">
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Past Events</h2>
+            <div className={styles.eventsGrid}>
               {past.map((event) => (
                 <Card key={event.slug} href={`/events/${event.slug}`}>
                   <h3>{event.frontmatter.title}</h3>
@@ -72,7 +84,9 @@ export default function EventsPage() {
           </section>
         )}
 
-        {events.length === 0 && <p>No events scheduled. Check back soon!</p>}
+        {events.length === 0 && upcoming.length === 0 && past.length === 0 && (
+          <p className={styles.noEvents}>No events scheduled. Check back soon!</p>
+        )}
       </Container>
     </Section>
   );

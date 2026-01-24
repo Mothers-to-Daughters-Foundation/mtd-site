@@ -7,6 +7,7 @@
   transition: box-shadow var(--transition-base);
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -14,6 +15,23 @@
 }
 
 .card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Static variant for impact and informational cards */
+.cardStatic {
+  display: block;
+  background-color: var(--surface-1);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  color: inherit;
+  cursor: default;
+}
+
+.cardStatic:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }

@@ -1,0 +1,57 @@
+.pageTitle {
+  font-size: var(--text-4xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-8);
+}
+
+.section {
+  margin-bottom: var(--spacing-12);
+}
+
+.sectionTitle {
+  font-size: var(--text-3xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-6);
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+.mentorsMixerCard {
+  max-width: 600px;
+}
+
+.mentorsMixerCard h3 {
+  font-size: var(--text-2xl);
+  color: var(--brand-700);
+  margin-bottom: var(--spacing-3);
+}
+
+.mentorsMixerCard p {
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--spacing-4);
+}
+
+.noEvents {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .eventsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .eventsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
