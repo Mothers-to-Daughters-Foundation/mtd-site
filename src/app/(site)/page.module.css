@@ -233,27 +233,32 @@
 .metricsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-6);
+  gap: var(--spacing-4);
 }
 
 .metricCard {
   background-color: var(--surface-1);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-6);
+  padding: var(--spacing-4);
   text-align: center;
   color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 120px;
 }
 
 .metricNumber {
-  font-size: var(--text-5xl);
+  font-size: var(--text-3xl);
   font-weight: var(--font-bold);
   color: var(--brand-700);
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-1);
 }
 
 .metricLabel {
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   color: var(--text-secondary);
+  line-height: var(--leading-tight);
 }
 
 /* Donate CTA Section */
@@ -594,6 +599,21 @@
 
   .metricsGrid {
     grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .metricCard {
+    padding: var(--spacing-6);
+    min-height: auto;
+  }
+
+  .metricNumber {
+    font-size: var(--text-5xl);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .metricLabel {
+    font-size: var(--text-base);
   }
 
   .donateCTATitle {

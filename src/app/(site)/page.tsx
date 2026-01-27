@@ -180,7 +180,7 @@ export default function HomePage() {
               <div className={styles.metricLabel}>Events Held</div>
             </div>
             <div className={styles.metricCard}>
-              <div className={styles.metricNumber}>$200,000</div>
+              <div className={styles.metricNumber}>$200k+</div>
               <div className={styles.metricLabel}>Donations</div>
             </div>
           </div>
