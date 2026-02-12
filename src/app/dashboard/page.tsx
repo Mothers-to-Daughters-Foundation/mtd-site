@@ -18,6 +18,8 @@ export default async function DashboardPage() {
   // Redirect to role-specific dashboard
   if (userRole === 'mentor') {
     redirect('/dashboard/mentor');
+  } else if (userRole === 'mentee') {
+    redirect('/dashboard/mentee');
   } else if (userRole === 'donor') {
     redirect('/dashboard/donor');
   } else if (userRole === 'admin') {

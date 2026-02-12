@@ -6,7 +6,9 @@ export interface User {
   email: string;
   password: string;
   name: string;
-  role: 'mentor' | 'donor' | 'admin';
+  role: 'mentor' | 'mentee' | 'donor' | 'admin';
+  emailVerified?: boolean;
+  subscriptionStatus?: 'active' | 'inactive' | 'pending';
   createdAt?: Date;
   updatedAt?: Date;
   profile?: {
@@ -14,6 +16,8 @@ export interface User {
     phone?: string;
     location?: string;
     image?: string;
+    goals?: string[];
+    interests?: string[];
   };
 }
 
@@ -21,7 +25,7 @@ export async function createUser(userData: {
   email: string;
   password: string;
   name: string;
-  role: 'mentor' | 'donor' | 'admin';
+  role: 'mentor' | 'mentee' | 'donor' | 'admin';
 }): Promise<User> {
   const db = await getDb();
   const users = db.collection<User>('users');
@@ -40,6 +44,8 @@ export async function createUser(userData: {
     password: hashedPassword,
     name: userData.name,
     role: userData.role,
+    emailVerified: false,
+    subscriptionStatus: userData.role === 'mentee' ? 'pending' : undefined,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -87,4 +93,29 @@ export async function updateUser(
   );
   
   return await getUserById(userId);
+}
+
+export async function getAllUsers(): Promise<User[]> {
+  const db = await getDb();
+  const users = db.collection<User>('users');
+  return await users.find({}).toArray();
+}
+
+export async function getUsersByRole(role: string): Promise<User[]> {
+  const db = await getDb();
+  const users = db.collection<User>('users');
+  return await users.find({ role }).toArray();
+}
+
+export async function getUserStats() {
+  const db = await getDb();
+  const users = db.collection<User>('users');
+  
+  const total = await users.countDocuments();
+  const mentors = await users.countDocuments({ role: 'mentor' });
+  const mentees = await users.countDocuments({ role: 'mentee' });
+  const donors = await users.countDocuments({ role: 'donor' });
+  const admins = await users.countDocuments({ role: 'admin' });
+  
+  return { total, mentors, mentees, donors, admins };
 }
