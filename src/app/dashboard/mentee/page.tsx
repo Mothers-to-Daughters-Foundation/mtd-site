@@ -77,6 +77,7 @@ export default function MenteeDashboardPage() {
       }
       fetchDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, session]);
 
   const fetchDashboardData = async () => {

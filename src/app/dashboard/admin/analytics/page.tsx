@@ -56,7 +56,8 @@ export default function AdminAnalyticsPage() {
         setConnected(false);
         eventSource.close();
         // Reconnect after 5 seconds
-        setTimeout(connectToStream, 5000);
+        const timeoutId = setTimeout(connectToStream, 5000);
+        return () => clearTimeout(timeoutId);
       };
     };
 
