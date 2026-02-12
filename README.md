@@ -1,420 +1,698 @@
-# Product Requirements Document
+# MTD-Site - Mothers to Daughters Foundation Platform
 
-## Nonprofit Mentor/Mentee Website Migration & Rebuild
-
-**Node.js / Next.js Project**
+**A comprehensive mentorship and learning platform built with Next.js 14**
 
 ---
 
-## Overview
+## 🌟 Overview
 
-We're migrating our existing nonprofit mentor/mentee website from Wix to a modern Next.js (React) + Node setup. The main goals are:
+The MTD-Site is a modern, full-stack platform designed to connect mentors with mentees, provide training materials, track progress, and facilitate meaningful relationships. Originally migrated from Wix, the platform now includes advanced role-based features, subscription management, and comprehensive admin tools.
 
-* Rebuild the frontend with React components and a unified design system
-* Set up a scalable backend (probably Next.js API routes, maybe a separate Node server if needed)
-* Reproduce everything that currently works on the Wix site
-* Improve performance, SEO, and accessibility
-* Build something flexible that can grow with us
-* Integrate analytics (Google Analytics + Microsoft Clarity)
-* Migrate all content, assets, URLs, and preserve SEO value
+### Key Features
 
-This doc outlines the project scope, what we need to figure out, architecture decisions, and the migration plan.
+✅ **Multi-Role System**
+- Mentee, Mentor, Donor, and Admin roles
+- Role-based dashboard access
+- Customized features per role
 
----
+✅ **Mentorship Platform**
+- Mentor-mentee relationship management
+- Session scheduling and tracking
+- Progress monitoring
+- Badge and achievement system
 
-## Project Structure
+✅ **Learning Management**
+- Training materials library
+- Progress tracking
+- Course completion tracking
+- Personalized recommendations (planned)
 
-```
-docs/
-  ia/
-  design-system/
-  requirements/
-  migration/
-src/
-  components/
-  app/ or pages/
-  lib/
-public/
-```
+✅ **Subscription & Payments**
+- Subscription lifecycle management
+- Payment tracking
+- Multiple payment provider support (planned)
+- Donation platform integration
 
----
+✅ **Admin Panel**
+- User management with role editing
+- Real-time analytics with Server-Sent Events
+- Subscription management
+- Platform statistics
 
-## Project Goals
-
-* Modernize the site using Next.js 14+
-* Build a design system we can actually use and maintain
-* Improve performance, accessibility, and SEO
-* Migrate all pages and content from Wix
-* Get donation flows and third-party integrations working
-* Move domains/hosting without breaking things
-* Document everything so future us doesn't hate current us
+✅ **Events & Resources**
+- Workshops, networking events, and digital business hours
+- Downloadable resources (PDFs, videos, documents)
+- Event registration and management
 
 ---
 
-## Project Management
+## 📚 Documentation
 
-We've already set up project tracking in GitHub:
-* **Roadmap** - High-level project roadmap is available in GitHub
-* **Kanban Board** - Active kanban board for tracking work in progress
-* **Backlog** - Backlog is set up and ready for prioritizing tasks
+### Core Documentation
+- **[SETUP.md](./SETUP.md)** - Local development setup instructions
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Production deployment guide
+- **[IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md)** - Original Wix migration status
 
-Check the GitHub project board for current status and task assignments.
-
----
-
-## Phase 0 — Foundations & Requirements
-
-### GitHub Setup
-
-* Initialize the repo
-* Add `.gitignore` for Node/Next.js
-* Create `/docs` folder structure (IA, design, requirements, migration)
-
-### Hosting & Deployment
-
-Planning to use **Vercel** for deployment, previews, and scaling. We'll need staging and production environments, plus figure out how to integrate analytics.
-
-### Requirements Documentation
-
-File: `docs/requirements/functional.md`
-
-We need to document:
-* What pages we have
-* Prioritization schema
-* Internal contributor structure / roles & responsibilities
-* Mentor/mentee content structure
-* How donations should work
-* What forms we need
-* Design system documentation
-* Social media gameplan
-* Any admin functionality
-* Accessibility requirements (aiming for WCAG AA)
-
-### Open Questions
-
-* Do we need user accounts or authentication?
-* Which donation provider? (Stripe, PayPal, Donorbox?)
-* Any CRM or email service integrations?
-* Styling approach? (Tailwind or custom CSS var?)
+### Feature Documentation
+- **[FEATURE_IMPLEMENTATION_GUIDE.md](./FEATURE_IMPLEMENTATION_GUIDE.md)** - Complete feature documentation
+- **[PAYMENT_INTEGRATION_GUIDE.md](./PAYMENT_INTEGRATION_GUIDE.md)** - Payment integration details
+- **[AI_INTEGRATION_PLAN.md](./AI_INTEGRATION_PLAN.md)** - AI features roadmap
+- **[AUTHENTICATION_FEATURES.md](./AUTHENTICATION_FEATURES.md)** - Authentication system docs
 
 ---
 
-## Phase 1 — Wix Extraction & Migration Planning
+## 🚀 Quick Start
 
-### What We Need From the Wix Developer
+### Prerequisites
+- Node.js 18+
+- MongoDB 6.0+
+- npm or yarn
 
-* All text content from every page
-* Images, logos, icons, SVGs
-* PDFs and other documents
-* Complete URL list
-* SEO metadata (titles, descriptions, etc.)
-* Any embedded scripts
-* Brand colors and font settings
-* List of hidden or unused pages
+### Installation
 
-### Content Inventory
+```bash
+# Clone the repository
+git clone https://github.com/Mothers-to-Daughters-Foundation/mtd-site.git
+cd mtd-site
 
-Location: `docs/ia/content-inventory.md`
+# Install dependencies
+npm install
 
-Track everything with a simple table:
+# Create environment file
+cp .env.example .env.local
 
-```
-Page | URL | Content Status | Assets Status | Notes
+# Configure your environment variables
+nano .env.local
+
+# Run development server
+npm run dev
 ```
 
-### URL Inventory & Redirect Plan
+Visit `http://localhost:3000` to see the application.
 
-* List all old URLs
-* Map them to new Next.js routes
-* Document which ones need 301 redirects
-* Flag any pages that might hurt SEO if we mess this up
+### Environment Variables
 
-### Information Architecture
+```bash
+# Database
+MONGODB_URI=mongodb://localhost:27017/mtd-site
+MONGODB_DB_NAME=mtd-site
 
-Location: `docs/ia/sitemap.md`
+# Authentication
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=<generate-with-openssl>
 
-Figure out:
-* Top-level navigation structure
-* Footer links
-* Maybe secondary nav for programs
-
----
-
-## Phase 2 — Design System Development
-
-### Design System Folder Structure
-
-```
-docs/design-system/
-  colors.md
-  typography.md
-  spacing.md
-  grid.md
-  components.md
-  buttons.md
-  forms.md
-  brand.md
+# Integrations
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+NEXT_PUBLIC_FORMSPREE_ID=xxxxx
+NEXT_PUBLIC_ZEFFY_URL=https://...
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### Brand Tokens
+---
 
-Define:
-* Colors (primary, secondary, neutrals, semantic colors)
-* Typography scale (H1–H6, paragraph, caption styles)
-* Spacing system (4, 8, 12, 16, 24, 32, etc.)
-* Breakpoints for responsive design
+## 🏗️ Architecture
 
-### Component Library
+### Tech Stack
 
-Following atomic design principles:
+**Frontend:**
+- Next.js 14.2.5 (App Router)
+- React 18.3
+- TypeScript 5.5
+- CSS Modules
+- Material-UI 7.3
 
-**Atoms:**
-* Buttons
-* Inputs
-* Icons
-* Links
+**Backend:**
+- Next.js API Routes
+- MongoDB with native driver
+- NextAuth.js for authentication
 
-**Molecules:**
-* Cards
-* CTAs
-* Nav items
-* Sections
+**Integrations:**
+- Zeffy (donations)
+- Formspree (forms)
+- Google Analytics 4
+- Microsoft Clarity
 
-**Organisms:**
-* Hero sections
-* Navbar
-* Footer
-* Program blocks
-* Donation block
+### Project Structure
 
-### Technology Decisions
-
-Planning to use **Tailwind CSS + shadcn/ui**. Could also use CSS Modules or Styled Components if needed.
-
-### Design System Open Questions
-
-* Do we need dark mode support?
-* Are there existing brand guidelines we need to follow?
-* Should we build a Figma component library?
+```
+mtd-site/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (auth)/            # Auth pages (login, register)
+│   │   ├── (site)/            # Public pages
+│   │   ├── dashboard/         # Protected dashboards
+│   │   │   ├── mentee/       # Mentee dashboard
+│   │   │   ├── mentor/       # Mentor dashboard
+│   │   │   ├── donor/        # Donor dashboard
+│   │   │   └── admin/        # Admin panel
+│   │   └── api/              # API routes
+│   ├── components/            # React components
+│   │   ├── layout/           # Layout components
+│   │   ├── ui/               # UI primitives
+│   │   └── forms/            # Form components
+│   └── lib/                  # Utilities & models
+│       ├── models/           # Database models
+│       ├── auth.ts           # Auth configuration
+│       └── db.ts             # Database connection
+├── content/                   # MDX content files
+├── docs/                      # Documentation
+└── public/                    # Static assets
+```
 
 ---
 
-## Phase 3 — Technical Architecture & Development Setup
+## 🎯 Features by Role
 
-### Next.js Project Setup
+### Mentee Dashboard
+- **Stats Overview**: Courses enrolled, sessions attended, progress %, badges earned
+- **Featured Courses**: Grid with progress bars, instructor info, enrollment counts
+- **Upcoming Events**: Workshops, networking events, digital business hours
+- **Booked Sessions**: List with join/reschedule actions
+- **Featured Resources**: Downloadable PDFs, videos, documents with ratings
+- **My Progress**: Track learning journey and completion rates
+- **Training Materials**: Access courses and resources
+- **My Mentors**: Connect with assigned mentors
+- **My Badges**: View earned achievements
+- **Profile**: Manage personal information
 
-* Initialize with TypeScript
-* Add Tailwind (assuming we go that route)
-* Set up Prettier + ESLint
-* Create global layout
-* Configure metadata system
-* Set up fonts using next/font
-* Environment variables
+### Mentor Dashboard
+- **My Profile**: Manage mentor profile
+- **My Mentees**: View and manage relationships
+- **Resources**: Access mentoring guides
+- **Activity**: View mentoring history
 
-### Backend Architecture
+### Donor Dashboard
+- **Donation History**: View past contributions
+- **Impact**: See results of donations
+- **Profile**: Manage account preferences
 
-Options:
-* **Next.js API routes** (probably this)
-* Separate Node server (only if we really need it)
-
-### Data Model Planning
-
-If we need a backend, we might need:
-* Mentor data
-* Mentee data
-* Events
-* Programs
-* Donations
-* Admin users
-
-### Backend Open Questions
-
-* Do we actually need persistent data storage?
-* If yes, which database? (Postgres, MongoDB, or maybe we don't need one?)
-* Do we need an admin dashboard?
-
----
-
-## Phase 4 — Frontend Development
-
-### Global Layout
-
-* Header component
-* Footer component
-* Global styles
-* SEO helpers
-* Analytics scripts (GA + Clarity)
-
-### Building Components
-
-Using the design system, we'll build:
-* Buttons
-* Inputs
-* Cards
-* Hero sections
-* Testimonials
-* Program blocks
-* Footer
-* Navigation
-
-### Page Development
-
-Based on the IA, we'll need:
-* Home
-* About
-* Programs (Mentor / Mentee)
-* Get Involved
-* Donate
-* Resources
-* Contact
-
-### SEO Setup
-
-* Generate sitemap.xml
-* Set up robots.txt
-* Add OpenGraph tags
-* Use semantic HTML
-* Handle canonical URLs
-
-### Performance & Accessibility
-
-* Run Lighthouse audits
-* Optimize for mobile
-* Use `next/image` for images
-* Make sure we hit WCAG AA standards
+### Admin Panel
+- **User Management**: Manage all users and roles
+- **Real-Time Analytics**: Live metrics with Server-Sent Events
+- **Subscriptions**: Monitor subscription status
+- **Payments**: Track all transactions
+- **Relationships**: Manage mentor-mentee pairings
+- **Training Materials**: Create and manage content
+- **Badges**: Create achievement badges
+- **Events**: Manage workshops and networking events
+- **Resources**: Upload and manage downloadable resources
 
 ---
 
-## Phase 5 — Content & Asset Migration
+## 💾 Database Schema
 
-### Content Insertion
+### Collections
 
-* Move all text into React components
-* Check formatting, links, and metadata
-* Fill in any missing copy
+- **users**: User accounts with roles and profiles
+- **subscriptions**: Subscription lifecycle tracking
+- **payments**: Payment transaction logs
+- **mentor_mentee_relationships**: Mentor-mentee pairings
+- **sessions**: Mentorship session records
+- **training_materials**: Courses and learning content
+- **badges**: Achievement definitions
+- **user_badges**: User badge awards
+- **progress**: Learning progress tracking
+- **events**: Workshops, networking events, business hours
+- **event_registrations**: Event registration tracking
+- **resources**: Downloadable resources with ratings
 
-### Asset Upload
-
-Organize assets:
-* `/public/images`
-* `/public/icons`
-* `/public/pdf`
-
-### URL Redirects
-
-* Add redirects to `next.config.js`
-* Verify with Google Search Console
-
-### Verification
-
-* Double-check every imported asset
-* Test all internal links
-* Make sure SEO is at least as good as the Wix site
+See [FEATURE_IMPLEMENTATION_GUIDE.md](./FEATURE_IMPLEMENTATION_GUIDE.md) for detailed schema documentation.
 
 ---
 
-## Phase 6 — Testing
+## 🔐 Authentication & Authorization
 
-### Manual Testing
+### Supported Roles
+- **Mentee**: Students receiving mentorship
+- **Mentor**: Experienced professionals providing guidance
+- **Donor**: Financial supporters
+- **Admin**: Platform administrators
 
-* Test on desktop browsers
-* Test on mobile browsers
-* Check all interactive components
-
-### Functional Testing
-
-* Forms work correctly
-* Donation flows function properly
-* Navigation works everywhere
-* 404 pages look good
-
-### Accessibility Testing
-
-* Keyboard navigation works
-* Color contrast is sufficient
-* Screen reader compatibility
+### Authentication Features
+- Email/password authentication via NextAuth.js
+- JWT-based sessions
+- Role-based access control
+- Protected API routes
+- Server-side session validation
 
 ---
 
-## Phase 7 — Deployment & Domain Migration
+## 🔌 API Routes
 
-### Staging Deployment
+### User Management
+- `GET /api/admin/users` - List all users
+- `GET /api/admin/users?action=stats` - User statistics
+- `PATCH /api/admin/users` - Update user roles
 
-* Set up auto-deploy on Vercel
-* Test the final build
+### Real-Time Metrics
+- `GET /api/admin/metrics/realtime` - Server-Sent Events stream for live metrics
 
-### Domain Setup
+### Subscriptions
+- `GET /api/admin/subscriptions` - List subscriptions
+- `GET /api/admin/subscriptions?action=stats` - Subscription stats
+- `POST /api/admin/subscriptions` - Create subscription
+- `PATCH /api/admin/subscriptions` - Update subscription
 
-* Add custom domain to Vercel
-* Update DNS records
-* Verify SSL and routing
-* Run through launch checklist
+### Training Materials
+- `GET /api/materials` - List published materials
+- `POST /api/materials` - Create material (admin)
+- `PATCH /api/materials` - Update material (admin)
 
-### Production Launch
+### Sessions
+- `GET /api/sessions` - List user's sessions
+- `GET /api/sessions?filter=upcoming` - Upcoming sessions
+- `POST /api/sessions` - Create session
+- `PATCH /api/sessions` - Update session
 
-* Cutover from Wix
-* Deploy production build
-* Monitor analytics
-* Run post-launch SEO crawl
+### Events
+- `GET /api/events?upcoming=true` - Fetch upcoming events
+- `POST /api/events` - Create event (admin) or register for event
+- `PATCH /api/events` - Update event (admin)
 
----
-
-## Open Questions Summary
-
-### Platform
-
-* Hosting: Vercel or custom VPS?
-* Do we need a separate backend?
-* Do we need a database?
-
-### Content & Migration
-
-* What can't we export from Wix?
-* Are there hidden pages or forms we don't know about?
-* Which donation provider should we use?
-
-### Design
-
-* Do we have existing brand guidelines?
-* Should we support dark mode?
-* Do we need a Figma component library?
-
-### Integrations
-
-* Any CRM or email service we need to connect?
-* Other analytics or tracking tools?
+### Resources
+- `GET /api/resources?featured=true` - Fetch featured resources
+- `POST /api/resources` - Create resource (admin)
+- `PATCH /api/resources` - Update resource (admin)
 
 ---
 
-## Dependencies
+## 🧪 Development
 
-* Wix developer needs to provide full export
-* Access to domain (either through Wix or external registrar)
-* Decision on donation/payment provider
-* Branding assets or style guide
+### Running Tests
+```bash
+# Lint code
+npm run lint
 
----
+# Type check
+npx tsc --noEmit
 
-## Risks
+# Build for production
+npm run build
+```
 
-* Missing content or assets from Wix export
-* SEO issues if URLs change without proper redirects
-* DNS propagation delays during cutover
-* Inconsistent branding if we don't build a proper design system
-* Scope creep if backend requirements expand
-
----
-
-## Success Criteria
-
-* All Wix content successfully migrated
-* Modern UI built with a documented design system
-* Fully responsive and accessible
-* Lighthouse scores 90+ across the board
-* Stable production deployment with domain and SSL
-* Analytics tracking engagement accurately
-* Architecture that can scale for future programs
+### Code Quality
+- ESLint for code linting
+- Prettier for code formatting
+- TypeScript for type safety
+- Next.js built-in optimizations
 
 ---
 
-We can also generate the `/docs` folder with placeholder files, a design system starter, component list, sitemap template, or Next.js boilerplate code if needed.
+## 🚢 Deployment
+
+### Vercel (Recommended)
+1. Connect GitHub repository
+2. Configure environment variables
+3. Deploy automatically on push
+
+### Self-Hosted
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed instructions.
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Completed Features
+- [x] Wix to Next.js migration
+- [x] Multi-role authentication system (Mentee, Mentor, Donor, Admin)
+- [x] Database architecture with 11 MongoDB collections
+- [x] Role-based dashboards for all user types
+- [x] Enhanced mentee dashboard with courses, events, sessions, resources
+- [x] Admin user management with role editing
+- [x] Real-time analytics dashboard with Server-Sent Events
+- [x] API routes for core features
+- [x] Event management system (workshops, networking, business hours)
+- [x] Resource management system (PDFs, videos, documents)
+- [x] Session scheduling and tracking
+- [x] Progress tracking system
+- [x] Badge and achievement system
+- [x] Subscription lifecycle management
+- [x] Comprehensive documentation
+
+### 🚧 In Progress
+- [ ] Enhanced admin interface implementations
+- [ ] Detailed dashboard feature views (course details, session history)
+- [ ] Email verification system
+
+---
+
+## 📋 Future Features & Roadmap
+
+### Payment Integration (Priority: High)
+**Status:** Planned | **Documentation:** [PAYMENT_INTEGRATION_GUIDE.md](./PAYMENT_INTEGRATION_GUIDE.md)
+
+#### Features to Implement:
+- [ ] **Stripe Integration**
+  - Checkout session creation
+  - Subscription management
+  - Webhook handling for payment events
+  - Payment history tracking
+  - Support for monthly, yearly, and lifetime subscriptions
+- [ ] **PayPal Integration**
+  - PayPal order creation and capture
+  - Subscription billing
+  - Webhook handling
+- [ ] **Apple Pay Support**
+  - Integration via Stripe
+  - Domain verification
+  - Payment button implementation
+- [ ] **Payment Dashboard**
+  - Transaction history for users
+  - Payment receipt generation
+  - Failed payment retry logic
+  - Subscription upgrade/downgrade flows
+- [ ] **Revenue Analytics**
+  - Monthly recurring revenue (MRR) tracking
+  - Churn rate calculations
+  - Revenue by subscription type
+  - Payment success/failure metrics
+
+**Technical Requirements:**
+- Stripe SDK integration
+- PayPal SDK integration
+- Secure webhook endpoints with signature verification
+- PCI compliance considerations
+- Automated invoice generation
+
+---
+
+### Email System (Priority: High)
+**Status:** Planned
+
+#### Features to Implement:
+- [ ] **Email Verification**
+  - Verification email on registration
+  - Verification link with token
+  - Resend verification email
+  - Mentor-specific email domain validation (M2D email requirement)
+- [ ] **Password Reset**
+  - Password reset request flow
+  - Secure reset tokens
+  - Email notifications
+- [ ] **Transactional Emails**
+  - Welcome emails for new users
+  - Session confirmation emails
+  - Event registration confirmations
+  - Badge achievement notifications
+  - Payment receipts
+  - Subscription renewal reminders
+- [ ] **Notification System**
+  - Email preferences management
+  - Digest emails (daily/weekly summaries)
+  - Mentor-mentee connection notifications
+  - Session reminders (24hr, 1hr before)
+
+**Technical Requirements:**
+- SMTP service integration (SendGrid, AWS SES, or Postmark)
+- Email template system
+- Queue system for bulk emails
+- Unsubscribe management
+- Email analytics and tracking
+
+---
+
+### AI Integration (Priority: Medium)
+**Status:** Planned | **Documentation:** [AI_INTEGRATION_PLAN.md](./AI_INTEGRATION_PLAN.md)
+
+#### Features to Implement:
+- [ ] **AI-Powered Onboarding**
+  - Interactive chatbot for new users
+  - Smart form filling suggestions
+  - Goal articulation assistance
+  - Personalized resource recommendations
+  - Automated profile enhancement
+- [ ] **Mentor-Mentee Matching Algorithm**
+  - Skills and interests matching (40% weight)
+  - Availability compatibility (15% weight)
+  - Learning style matching (15% weight)
+  - Historical success rate analysis (10% weight)
+  - Interest alignment (20% weight)
+  - Automated pairing suggestions
+  - Manual override capability
+- [ ] **Training Material Recommendations**
+  - Goal-based recommendations
+  - Progress-based suggestions
+  - Collaborative filtering
+  - Content vectorization and semantic search
+  - Adaptive learning paths
+  - Personalized course sequences
+- [ ] **Predictive Analytics**
+  - Success prediction for mentor-mentee pairs
+  - Course completion likelihood
+  - Dropout risk identification
+  - Engagement score calculation
+
+**Technical Requirements:**
+- OpenAI GPT-4 API integration
+- Vector database (Pinecone or Weaviate)
+- LangChain for conversation management
+- Training data collection and storage
+- Privacy-compliant data handling
+- Cost optimization strategies
+
+**Estimated Costs:**
+- OpenAI API: ~$550/month (1000 users)
+- Vector database: ~$70/month
+- Total: ~$620/month
+
+---
+
+### Enhanced Mentor Dashboard (Priority: Medium)
+**Status:** Partially Complete
+
+#### Features to Implement:
+- [ ] **Advanced Mentee Management**
+  - Detailed mentee profiles with progress history
+  - Notes and feedback system
+  - Goal tracking for each mentee
+  - Communication history
+- [ ] **Business Hours Management**
+  - Set available time slots
+  - Recurring availability patterns
+  - Automatic session booking
+  - Calendar integration (Google, Outlook)
+- [ ] **Analytics for Mentors**
+  - Total sessions conducted
+  - Mentee progress metrics
+  - Time investment tracking
+  - Success stories and testimonials
+- [ ] **Resource Sharing**
+  - Upload private resources for mentees
+  - Shared document workspace
+  - Reading lists and recommendations
+- [ ] **Communication Tools**
+  - In-platform messaging
+  - Video call integration (Zoom/Google Meet)
+  - Screen sharing capabilities
+  - Session recording (optional)
+
+---
+
+### Enhanced Mentee Dashboard (Priority: Low)
+**Status:** Core Complete, Enhancements Needed
+
+#### Features to Implement:
+- [ ] **Detailed Course Views**
+  - Individual course pages
+  - Module breakdown
+  - Quiz integration
+  - Certificate generation on completion
+- [ ] **Learning Path Visualization**
+  - Progress timeline
+  - Skill tree visualization
+  - Next steps recommendations
+- [ ] **Peer Interaction**
+  - Study groups
+  - Discussion forums
+  - Peer mentorship opportunities
+- [ ] **Career Tools**
+  - Resume builder
+  - Interview preparation resources
+  - Job board integration
+  - Networking opportunities
+
+---
+
+### Enhanced Admin Tools (Priority: Medium)
+**Status:** Core Complete, Enhancements Needed
+
+#### Features to Implement:
+- [ ] **Advanced Analytics Dashboard**
+  - Custom date range selection
+  - Exportable reports (PDF, CSV)
+  - Funnel analysis (signup to paid conversion)
+  - Cohort analysis
+  - Retention metrics
+  - Engagement heatmaps
+- [ ] **Content Management System**
+  - Rich text editor for training materials
+  - Media library management
+  - Version control for content
+  - Content scheduling and publishing
+- [ ] **Bulk Operations**
+  - Bulk user import/export
+  - Mass email campaigns
+  - Batch role assignments
+- [ ] **Audit Logs**
+  - User action tracking
+  - Admin activity logs
+  - Security event monitoring
+- [ ] **Advanced Permissions**
+  - Granular permission system
+  - Custom role creation
+  - Department-based access control
+
+---
+
+### Donor Platform Enhancements (Priority: Low)
+**Status:** Zeffy Integrated, Enhancements Planned
+
+#### Features to Implement:
+- [ ] **GiveLively Integration**
+  - Secondary donation platform
+  - Campaign management
+  - Donor CRM features
+  - Email marketing integration
+- [ ] **Donation Impact Tracking**
+  - Real-time impact metrics
+  - Donation allocation visualization
+  - Success stories linked to donations
+  - Tax receipt automation
+- [ ] **Donor Recognition**
+  - Donor wall/leaderboard
+  - Recognition tiers
+  - Thank you video messages
+  - Impact reports for major donors
+- [ ] **Recurring Donation Management**
+  - Subscription management for donors
+  - Donation history and analytics
+  - Pledge tracking
+  - Memorial and tribute giving
+
+---
+
+### Real-Time Features (Priority: Medium)
+**Status:** SSE Implemented for Admin, Expand to Other Areas
+
+#### Features to Implement:
+- [ ] **Real-Time Messaging**
+  - Mentor-mentee chat
+  - Group chat for cohorts
+  - File sharing in chat
+  - Typing indicators
+  - Read receipts
+- [ ] **Live Notifications**
+  - Browser push notifications
+  - In-app notification center
+  - Notification preferences
+  - Real-time activity feed
+- [ ] **Collaborative Features**
+  - Shared whiteboard
+  - Co-editing documents
+  - Live session participation
+  - Screen sharing
+
+**Technical Requirements:**
+- WebSocket server or Socket.io
+- Redis for real-time data
+- Notification service (Firebase Cloud Messaging)
+- Scalable infrastructure
+
+---
+
+### Mobile Application (Priority: Low)
+**Status:** Not Started
+
+#### Features to Implement:
+- [ ] **React Native App**
+  - Cross-platform (iOS & Android)
+  - Native performance
+  - Offline capability
+- [ ] **Core Features**
+  - Dashboard access
+  - Session booking
+  - Notifications
+  - Resource downloads
+  - Messaging
+- [ ] **Push Notifications**
+  - Session reminders
+  - New messages
+  - Badge achievements
+- [ ] **Mobile-Specific Features**
+  - Camera integration for profile photos
+  - QR code scanning for events
+  - Location-based features
+
+---
+
+### Additional Features (Priority: Low)
+**Status:** Future Considerations
+
+#### Features to Implement:
+- [ ] **Multi-Language Support**
+  - Internationalization (i18n)
+  - Multiple language translations
+  - RTL support
+- [ ] **Accessibility Enhancements**
+  - WCAG AAA compliance
+  - Screen reader optimization
+  - Keyboard navigation improvements
+  - Voice command support
+- [ ] **Gamification**
+  - Points system
+  - Leaderboards
+  - Challenges and quests
+  - Seasonal events
+- [ ] **Integration Marketplace**
+  - Calendar integrations
+  - CRM integrations
+  - Learning management systems
+  - Social media integrations
+- [ ] **White-Label Capability**
+  - Custom branding options
+  - Multi-tenant architecture
+  - Subdomain support
+
+---
+
+## 🤝 Contributing
+
+This is a private repository for the Mothers to Daughters Foundation. If you're part of the team:
+
+1. Create a feature branch
+2. Make your changes
+3. Test thoroughly
+4. Submit a pull request
+5. Request review from maintainers
+
+---
+
+## 📄 License
+
+Proprietary - © 2026 Mothers to Daughters Foundation
+
+---
+
+## 🆘 Support
+
+**For Technical Issues:**
+- GitHub Issues: [Create an issue](https://github.com/Mothers-to-Daughters-Foundation/mtd-site/issues)
+- Technical Documentation: See `/docs` folder
+
+**For Platform Support:**
+- Email: admin@motherstodaughters.org
+- Website: [motherstodaughters.org](https://motherstodaughters.org)
+
+---
+
+## 🙏 Acknowledgments
+
+Built with ❤️ by the Mothers to Daughters Foundation team.
+
+Special thanks to all contributors, mentors, and mentees who make this platform possible.
+
+---
+
+**Version:** 1.0.0  
+**Last Updated:** February 2026  
+**Status:** Active Development
