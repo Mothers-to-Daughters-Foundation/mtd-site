@@ -1,0 +1,94 @@
+.formContainer {
+  max-width: 500px;
+  margin: var(--spacing-8) auto;
+  padding: var(--spacing-8);
+  background-color: var(--surface-1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.formContainer h1 {
+  text-align: center;
+  font-size: var(--text-4xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-6);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.field label {
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.field input,
+.field select {
+  padding: var(--spacing-3);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-family: inherit;
+  background-color: var(--surface-1);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--brand-700);
+}
+
+.field select {
+  cursor: pointer;
+}
+
+.field small {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.error {
+  padding: var(--spacing-3);
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.submitButton {
+  width: 100%;
+  margin-top: var(--spacing-2);
+}
+
+.loginLink {
+  text-align: center;
+  margin-top: var(--spacing-6);
+  color: var(--text-secondary);
+}
+
+.loginLink a {
+  color: var(--brand-700);
+  text-decoration: none;
+  font-weight: var(--font-medium);
+}
+
+.loginLink a:hover {
+  text-decoration: underline;
+}
