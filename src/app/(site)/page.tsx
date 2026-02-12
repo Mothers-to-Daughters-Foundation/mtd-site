@@ -8,6 +8,7 @@ import Card from '@/components/ui/Card';
 import NewsletterFormInline from '@/components/forms/NewsletterFormInline';
 import { getAllPosts } from '@/lib/mdx';
 import { getAllEvents } from '@/lib/mdx';
+import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -70,7 +71,7 @@ export default function HomePage() {
             </div>
             <div className={styles.heroImage}>
               <Image
-                src="/images/Heroimage.jpg"
+                src={getImagePath("/images/Heroimage.jpg")}
                 alt="Diverse group of women representing intergenerational mentorship and empowerment"
                 width={800}
                 height={600}
@@ -88,7 +89,7 @@ export default function HomePage() {
           <div className={styles.empowerContent}>
             <div className={styles.empowerImage}>
               <Image
-                src="/images/empowering.jpg"
+                src={getImagePath("/images/empowering.jpg")}
                 alt="Two women engaged in mentorship, looking at a book together"
                 width={600}
                 height={450}
@@ -118,7 +119,7 @@ export default function HomePage() {
             <div className={styles.programCard}>
               <div className={styles.programImage}>
                 <Image
-                  src="/images/intergenerational.jpg"
+                  src={getImagePath("/images/intergenerational.jpg")}
                   alt="Diverse group of women representing intergenerational mentorship"
                   width={600}
                   height={450}
@@ -138,7 +139,7 @@ export default function HomePage() {
             <div className={`${styles.programCard} ${styles.programCardReversed}`}>
               <div className={styles.programImage}>
                 <Image
-                  src="/images/slackcommunity.avif"
+                  src={getImagePath("/images/slackcommunity.avif")}
                   alt="Slack community workspace showing collaboration and connection"
                   width={600}
                   height={450}
@@ -236,7 +237,7 @@ export default function HomePage() {
           <div className={styles.partnersGrid}>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_6ix.avif"
+                src={getImagePath("/images/partner_6ix.avif")}
                 alt="6ix"
                 width={200}
                 height={100}
@@ -245,7 +246,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_arianamarquis.avif"
+                src={getImagePath("/images/partner_arianamarquis.avif")}
                 alt="Ariana Marquis"
                 width={200}
                 height={100}
@@ -254,7 +255,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_brandedcities.avif"
+                src={getImagePath("/images/partner_brandedcities.avif")}
                 alt="Branded Cities"
                 width={200}
                 height={100}
@@ -263,7 +264,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_elevateher.avif"
+                src={getImagePath("/images/partner_elevateher.avif")}
                 alt="Elevate Her"
                 width={200}
                 height={100}
@@ -272,7 +273,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_flounleashed.avif"
+                src={getImagePath("/images/partner_flounleashed.avif")}
                 alt="FLO Unleashed"
                 width={200}
                 height={100}
@@ -281,7 +282,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_fredas.avif"
+                src={getImagePath("/images/partner_fredas.avif")}
                 alt="Freda's"
                 width={200}
                 height={100}
@@ -290,7 +291,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_immigrantwomen.avif"
+                src={getImagePath("/images/partner_immigrantwomen.avif")}
                 alt="Immigrant Women"
                 width={200}
                 height={100}
@@ -299,7 +300,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_indeed.avif"
+                src={getImagePath("/images/partner_indeed.avif")}
                 alt="Indeed"
                 width={200}
                 height={100}
@@ -308,7 +309,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_jute.avif"
+                src={getImagePath("/images/partner_jute.avif")}
                 alt="Jute"
                 width={200}
                 height={100}
@@ -317,7 +318,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_lux.avif"
+                src={getImagePath("/images/partner_lux.avif")}
                 alt="Lux"
                 width={200}
                 height={100}
@@ -326,7 +327,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_mave.avif"
+                src={getImagePath("/images/partner_mave.avif")}
                 alt="Mave"
                 width={200}
                 height={100}
@@ -335,7 +336,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_microsoft.avif"
+                src={getImagePath("/images/partner_microsoft.avif")}
                 alt="Microsoft"
                 width={200}
                 height={100}
@@ -344,7 +345,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_mintroom.avif"
+                src={getImagePath("/images/partner_mintroom.avif")}
                 alt="Mint Room"
                 width={200}
                 height={100}
@@ -353,7 +354,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_pressthebest.avif"
+                src={getImagePath("/images/partner_pressthebest.avif")}
                 alt="Press The Best"
                 width={200}
                 height={100}
@@ -362,7 +363,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_rondyce.avif"
+                src={getImagePath("/images/partner_rondyce.avif")}
                 alt="Rondyce"
                 width={200}
                 height={100}
@@ -371,7 +372,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_spartancafe.avif"
+                src={getImagePath("/images/partner_spartancafe.avif")}
                 alt="Spartan Cafe"
                 width={200}
                 height={100}
@@ -380,7 +381,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_timeschange.avif"
+                src={getImagePath("/images/partner_timeschange.avif")}
                 alt="Times Change"
                 width={200}
                 height={100}
@@ -389,7 +390,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_uef.avif"
+                src={getImagePath("/images/partner_uef.avif")}
                 alt="UEF"
                 width={200}
                 height={100}
@@ -398,7 +399,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_vision2reality.avif"
+                src={getImagePath("/images/partner_vision2reality.avif")}
                 alt="Vision 2 Reality"
                 width={200}
                 height={100}
@@ -407,7 +408,7 @@ export default function HomePage() {
             </div>
             <div className={styles.partnerLogo}>
               <Image
-                src="/images/partner_zestylifestyle.avif"
+                src={getImagePath("/images/partner_zestylifestyle.avif")}
                 alt="Zesty Lifestyle"
                 width={200}
                 height={100}
@@ -424,7 +425,7 @@ export default function HomePage() {
           <div className={styles.founderContent}>
             <div className={styles.founderImage}>
               <Image
-                src="/images/francine.jpg"
+                src={getImagePath("/images/francine.jpg")}
                 alt="Founder of Mothers to Daughters"
                 width={500}
                 height={600}
