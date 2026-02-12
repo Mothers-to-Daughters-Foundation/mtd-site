@@ -39,6 +39,12 @@ const programs: Record<string, any> = {
   },
 };
 
+export async function generateStaticParams() {
+  return Object.keys(programs).map((slug) => ({
+    slug,
+  }));
+}
+
 export async function generateMetadata({
   params,
 }: ProgramDetailPageProps): Promise<Metadata> {
