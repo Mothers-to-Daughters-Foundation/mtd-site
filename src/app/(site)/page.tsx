@@ -476,7 +476,7 @@ export default function HomePage() {
                   <div className={styles.contentImage}>
                     {item.image ? (
                       <Image
-                        src={item.image}
+                        src={getImagePath(item.image)}
                         alt={item.title}
                         width={400}
                         height={250}
