@@ -15,7 +15,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'mentor' as 'mentor' | 'donor',
+    role: 'mentee' as 'mentor' | 'mentee' | 'donor',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -79,7 +79,7 @@ export default function RegisterPage() {
         <div className={styles.formContainer}>
           <h1>Create Account</h1>
           <p className={styles.subtitle}>
-            Join Mothers to Daughters as a mentor or donor
+            Join Mothers to Daughters as a mentee, mentor, or donor
           </p>
 
           {error && <div className={styles.error}>{error}</div>}
@@ -120,6 +120,7 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 required
               >
+                <option value="mentee">Mentee (Student)</option>
                 <option value="mentor">Mentor</option>
                 <option value="donor">Donor</option>
               </select>
