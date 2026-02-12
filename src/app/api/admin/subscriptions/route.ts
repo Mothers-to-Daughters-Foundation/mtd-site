@@ -52,10 +52,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const endDate = new Date();
+    const startDate = new Date();
+    let endDate: Date | undefined;
+    
     if (type === 'monthly') {
+      endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + 1);
     } else if (type === 'yearly') {
+      endDate = new Date(startDate);
       endDate.setFullYear(endDate.getFullYear() + 1);
     }
 
@@ -63,8 +67,8 @@ export async function POST(request: NextRequest) {
       userId,
       status: 'active',
       type,
-      startDate: new Date(),
-      endDate: type !== 'lifetime' ? endDate : undefined,
+      startDate,
+      endDate,
       amount,
       currency,
       paymentMethod,
