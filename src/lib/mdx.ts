@@ -50,7 +50,8 @@ export interface ContentItem<T> {
 // Helper to get all files from a directory
 function getFiles(dir: string): string[] {
   try {
-    return fs.readdirSync(dir).filter((file) => file.endsWith('.mdx'));
+    const fullPath = path.join(contentDirectory, dir);
+    return fs.readdirSync(fullPath).filter((file) => file.endsWith('.mdx'));
   } catch {
     return [];
   }

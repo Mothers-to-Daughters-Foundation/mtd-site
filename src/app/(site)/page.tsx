@@ -230,7 +230,7 @@ export default function HomePage() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Our Amazing Partners</h2>
             <p className={styles.sectionDescription}>
-              We're so grateful for the support of these organizations and individuals
+              We&apos;re so grateful for the support of these organizations and individuals
             </p>
           </div>
           <div className={styles.partnersGrid}>
@@ -434,7 +434,7 @@ export default function HomePage() {
             <div className={styles.founderText}>
               <h2 className={styles.founderTitle}>A Message from Our Founder</h2>
               <p className={styles.founderStatement}>
-                At Mothers to Daughters, we cultivate powerful relationships where Mothers (Mentors) equip Daughters (Mentees) with the tools to thrive socially and economically. In turn, Daughters honor this wisdom by applying it in their lives and to future generations, ensuring its impact extends beyond today. Intergenerational mentoring is more than guidance; it's a mindset that sparks real change. Having a support system has guided me through challenges, and I am committed to sharing its benefits.
+                At Mothers to Daughters, we cultivate powerful relationships where Mothers (Mentors) equip Daughters (Mentees) with the tools to thrive socially and economically. In turn, Daughters honor this wisdom by applying it in their lives and to future generations, ensuring its impact extends beyond today. Intergenerational mentoring is more than guidance; it&apos;s a mindset that sparks real change. Having a support system has guided me through challenges, and I am committed to sharing its benefits.
               </p>
               <div className={styles.founderSignature}>
                 <div className={styles.founderName}>Francine Mbvoumbo</div>
@@ -462,7 +462,7 @@ export default function HomePage() {
       <Section spacing="lg" className={styles.contentFeedSection}>
         <Container>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>We're Making Waves</h2>
+            <h2 className={styles.sectionTitle}>We&apos;re Making Waves</h2>
           </div>
           {allContent.length > 0 ? (
             <div className={styles.contentGrid}>
