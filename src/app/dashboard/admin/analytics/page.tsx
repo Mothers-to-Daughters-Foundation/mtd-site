@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
@@ -26,39 +26,55 @@ export default function AdminAnalyticsPage() {
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [subscriptionStats, setSubscriptionStats] = useState<SubscriptionStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [connected, setConnected] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<string>('');
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    fetchStats();
+    // Connect to real-time metrics stream
+    const connectToStream = () => {
+      const eventSource = new EventSource('/api/admin/metrics/realtime');
+      eventSourceRef.current = eventSource;
+
+      eventSource.onopen = () => {
+        setConnected(true);
+        setLoading(false);
+      };
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setUserStats(data.userStats);
+          setSubscriptionStats(data.subscriptionStats);
+          setLastUpdate(new Date(data.timestamp).toLocaleTimeString());
+        } catch (error) {
+          console.error('Error parsing metrics data:', error);
+        }
+      };
+
+      eventSource.onerror = () => {
+        setConnected(false);
+        eventSource.close();
+        // Reconnect after 5 seconds
+        setTimeout(connectToStream, 5000);
+      };
+    };
+
+    connectToStream();
+
+    // Cleanup on unmount
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
   }, []);
-
-  const fetchStats = async () => {
-    try {
-      const [usersResponse, subsResponse] = await Promise.all([
-        fetch('/api/admin/users?action=stats'),
-        fetch('/api/admin/subscriptions?action=stats'),
-      ]);
-
-      if (usersResponse.ok) {
-        const usersData = await usersResponse.json();
-        setUserStats(usersData);
-      }
-
-      if (subsResponse.ok) {
-        const subsData = await subsResponse.json();
-        setSubscriptionStats(subsData);
-      }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
       <Section spacing="lg">
         <Container>
-          <p>Loading analytics...</p>
+          <p>Loading real-time analytics...</p>
         </Container>
       </Section>
     );
@@ -69,7 +85,15 @@ export default function AdminAnalyticsPage() {
       <Section spacing="lg" className={styles.header}>
         <Container>
           <div className={styles.headerContent}>
-            <h1>Platform Analytics</h1>
+            <div>
+              <h1>Platform Analytics</h1>
+              <div className={styles.statusBar}>
+                <span className={connected ? styles.statusConnected : styles.statusDisconnected}>
+                  {connected ? '● Live' : '○ Disconnected'}
+                </span>
+                {lastUpdate && <span className={styles.lastUpdate}>Last updated: {lastUpdate}</span>}
+              </div>
+            </div>
             <Button href="/dashboard/admin" variant="secondary" size="md">
               Back to Dashboard
             </Button>
@@ -86,13 +110,14 @@ export default function AdminAnalyticsPage() {
                 <div className={styles.statIcon}>👥</div>
                 <h3>Total Users</h3>
                 <p className={styles.statNumber}>{userStats.total}</p>
+                <div className={styles.pulseIndicator} />
               </Card>
               <Card className={styles.statCard}>
                 <div className={styles.statIcon}>🎓</div>
                 <h3>Mentees</h3>
                 <p className={styles.statNumber}>{userStats.mentees}</p>
                 <p className={styles.statPercentage}>
-                  {((userStats.mentees / userStats.total) * 100).toFixed(1)}% of total
+                  {userStats.total > 0 ? ((userStats.mentees / userStats.total) * 100).toFixed(1) : 0}% of total
                 </p>
               </Card>
               <Card className={styles.statCard}>
@@ -100,7 +125,7 @@ export default function AdminAnalyticsPage() {
                 <h3>Mentors</h3>
                 <p className={styles.statNumber}>{userStats.mentors}</p>
                 <p className={styles.statPercentage}>
-                  {((userStats.mentors / userStats.total) * 100).toFixed(1)}% of total
+                  {userStats.total > 0 ? ((userStats.mentors / userStats.total) * 100).toFixed(1) : 0}% of total
                 </p>
               </Card>
               <Card className={styles.statCard}>
@@ -108,7 +133,7 @@ export default function AdminAnalyticsPage() {
                 <h3>Donors</h3>
                 <p className={styles.statNumber}>{userStats.donors}</p>
                 <p className={styles.statPercentage}>
-                  {((userStats.donors / userStats.total) * 100).toFixed(1)}% of total
+                  {userStats.total > 0 ? ((userStats.donors / userStats.total) * 100).toFixed(1) : 0}% of total
                 </p>
               </Card>
             </div>
@@ -125,6 +150,7 @@ export default function AdminAnalyticsPage() {
                 <div className={styles.statIcon}>📊</div>
                 <h3>Total Subscriptions</h3>
                 <p className={styles.statNumber}>{subscriptionStats.total}</p>
+                <div className={styles.pulseIndicator} />
               </Card>
               <Card className={styles.statCard}>
                 <div className={styles.statIcon}>✅</div>
@@ -187,7 +213,7 @@ export default function AdminAnalyticsPage() {
                   <div className={styles.metric}>
                     <h4>Active User Ratio</h4>
                     <p className={styles.metricValue}>
-                      {((userStats.mentees + userStats.mentors) / userStats.total * 100).toFixed(1)}%
+                      {userStats.total > 0 ? ((userStats.mentees + userStats.mentors) / userStats.total * 100).toFixed(1) : 0}%
                     </p>
                   </div>
                 </>
