@@ -48,15 +48,15 @@ export async function updatePayment(
   };
   
   await payments.updateOne(
-    { _id: new ObjectId(paymentId) },
+    { _id: new ObjectId(paymentId) } as any,
     { $set: updateData }
   );
   
-  return await payments.findOne({ _id: new ObjectId(paymentId) });
+  return await payments.findOne({ _id: new ObjectId(paymentId) } as any);
 }
 
 export async function getPaymentById(paymentId: string): Promise<Payment | null> {
   const db = await getDb();
   const payments = db.collection<Payment>('payments');
-  return await payments.findOne({ _id: new ObjectId(paymentId) });
+  return await payments.findOne({ _id: new ObjectId(paymentId) } as any);
 }

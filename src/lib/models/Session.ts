@@ -56,23 +56,23 @@ export async function updateSession(
   };
   
   await sessions.updateOne(
-    { _id: new ObjectId(sessionId) },
+    { _id: new ObjectId(sessionId) } as any,
     { $set: updateData }
   );
   
-  return await sessions.findOne({ _id: new ObjectId(sessionId) });
+  return await sessions.findOne({ _id: new ObjectId(sessionId) } as any);
 }
 
 export async function getSessionById(sessionId: string): Promise<Session | null> {
   const db = await getDb();
   const sessions = db.collection<Session>('sessions');
-  return await sessions.findOne({ _id: new ObjectId(sessionId) });
+  return await sessions.findOne({ _id: new ObjectId(sessionId) } as any);
 }
 
 export async function getUpcomingSessions(userId: string, role: 'mentor' | 'mentee'): Promise<Session[]> {
   const db = await getDb();
   const sessions = db.collection<Session>('sessions');
-  const query = role === 'mentor' 
+  const query: any = role === 'mentor' 
     ? { mentorId: userId, scheduledDate: { $gte: new Date() }, status: 'scheduled' }
     : { menteeId: userId, scheduledDate: { $gte: new Date() }, status: 'scheduled' };
   

@@ -59,11 +59,11 @@ export async function updateProgress(
   };
   
   await progress.updateOne(
-    { _id: new ObjectId(progressId) },
+    { _id: new ObjectId(progressId) } as any,
     { $set: updateData }
   );
   
-  return await progress.findOne({ _id: new ObjectId(progressId) });
+  return await progress.findOne({ _id: new ObjectId(progressId) } as any);
 }
 
 export async function getProgressStats(userId: string) {

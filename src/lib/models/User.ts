@@ -104,7 +104,7 @@ export async function getAllUsers(): Promise<User[]> {
 export async function getUsersByRole(role: string): Promise<User[]> {
   const db = await getDb();
   const users = db.collection<User>('users');
-  return await users.find({ role }).toArray();
+  return await users.find({ role } as any).toArray();
 }
 
 export async function getUserStats() {

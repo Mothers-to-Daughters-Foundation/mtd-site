@@ -54,15 +54,15 @@ export async function updateRelationship(
   };
   
   await relationships.updateOne(
-    { _id: new ObjectId(relationshipId) },
+    { _id: new ObjectId(relationshipId) } as any,
     { $set: updateData }
   );
   
-  return await relationships.findOne({ _id: new ObjectId(relationshipId) });
+  return await relationships.findOne({ _id: new ObjectId(relationshipId) } as any);
 }
 
 export async function getRelationshipById(relationshipId: string): Promise<MentorMenteeRelationship | null> {
   const db = await getDb();
   const relationships = db.collection<MentorMenteeRelationship>('mentor_mentee_relationships');
-  return await relationships.findOne({ _id: new ObjectId(relationshipId) });
+  return await relationships.findOne({ _id: new ObjectId(relationshipId) } as any);
 }

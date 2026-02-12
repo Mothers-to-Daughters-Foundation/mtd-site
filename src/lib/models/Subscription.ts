@@ -48,11 +48,11 @@ export async function updateSubscription(
   };
   
   await subscriptions.updateOne(
-    { _id: new ObjectId(subscriptionId) },
+    { _id: new ObjectId(subscriptionId) } as any,
     { $set: updateData }
   );
   
-  return await subscriptions.findOne({ _id: new ObjectId(subscriptionId) });
+  return await subscriptions.findOne({ _id: new ObjectId(subscriptionId) } as any);
 }
 
 export async function getAllSubscriptions(): Promise<Subscription[]> {

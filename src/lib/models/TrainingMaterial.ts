@@ -43,7 +43,7 @@ export async function getAllTrainingMaterials(published = true): Promise<Trainin
 export async function getTrainingMaterialById(materialId: string): Promise<TrainingMaterial | null> {
   const db = await getDb();
   const materials = db.collection<TrainingMaterial>('training_materials');
-  return await materials.findOne({ _id: new ObjectId(materialId) });
+  return await materials.findOne({ _id: new ObjectId(materialId) } as any);
 }
 
 export async function updateTrainingMaterial(
@@ -59,16 +59,16 @@ export async function updateTrainingMaterial(
   };
   
   await materials.updateOne(
-    { _id: new ObjectId(materialId) },
+    { _id: new ObjectId(materialId) } as any,
     { $set: updateData }
   );
   
-  return await materials.findOne({ _id: new ObjectId(materialId) });
+  return await materials.findOne({ _id: new ObjectId(materialId) } as any);
 }
 
 export async function deleteTrainingMaterial(materialId: string): Promise<boolean> {
   const db = await getDb();
   const materials = db.collection<TrainingMaterial>('training_materials');
-  const result = await materials.deleteOne({ _id: new ObjectId(materialId) });
+  const result = await materials.deleteOne({ _id: new ObjectId(materialId) } as any);
   return result.deletedCount === 1;
 }

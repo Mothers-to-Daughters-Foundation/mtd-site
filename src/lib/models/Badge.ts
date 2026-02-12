@@ -43,7 +43,7 @@ export async function getAllBadges(): Promise<Badge[]> {
 export async function getBadgeById(badgeId: string): Promise<Badge | null> {
   const db = await getDb();
   const badges = db.collection<Badge>('badges');
-  return await badges.findOne({ _id: new ObjectId(badgeId) });
+  return await badges.findOne({ _id: new ObjectId(badgeId) } as any);
 }
 
 export async function awardBadge(userId: string, badgeId: string): Promise<UserBadge> {
