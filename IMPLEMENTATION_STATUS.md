@@ -120,6 +120,10 @@ The Wix to Next.js migration has been fully implemented according to the plan. A
    - Set environment variables
    - Deploy and test
 
+6. **Roadmap**
+   - See `docs/ROADMAP.md` for planned features and integrations
+   - Doltam Creative Solutions course integration planned for dashboard and `/courses`
+
 ## File Structure
 
 ```
