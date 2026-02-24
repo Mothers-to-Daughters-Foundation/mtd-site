@@ -25,6 +25,12 @@
   font-style: italic;
 }
 
+.sectionTitle {
+  font-size: var(--text-3xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-8);
+}
+
 .coursesGrid {
   display: grid;
   grid-template-columns: 1fr;
