@@ -1,3 +1,24 @@
+# mtd-site
+
+Main website for the Mothers to Daughters Foundation — a nonprofit connecting women across generations through mentorship and support.
+
+**Test site:** [https://mothers-to-daughters-foundation.github.io/mtd-site/](https://mothers-to-daughters-foundation.github.io/mtd-site/)
+
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Deployment
+
+The site is automatically deployed to GitHub Pages on every push to `main`. See [GITHUB_PAGES.md](./GITHUB_PAGES.md) for details.
+
+---
+
 # Product Requirements Document
 
 ## Nonprofit Mentor/Mentee Website Migration & Rebuild
