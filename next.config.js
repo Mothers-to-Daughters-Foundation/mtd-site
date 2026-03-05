@@ -4,10 +4,13 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  output: 'export',
+  basePath: '/mtd-site',
+  assetPrefix: '/mtd-site',
   images: {
-    domains: [],
+    unoptimized: true,
   },
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   async redirects() {
     const redirectsPath = path.join(process.cwd(), 'docs', 'migration', 'urls.csv');
     

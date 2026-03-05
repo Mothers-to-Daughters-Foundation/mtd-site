@@ -7,6 +7,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import styles from './SiteHeader.module.css';
 import Container from './Container';
 import Button from '../ui/Button';
+import { getImagePath } from '@/lib/utils';
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function SiteHeader() {
         <div className={styles.content}>
           <Link href="/" className={styles.logo} onClick={closeMenu}>
             <Image
-              src="/images/MDLOGO.png"
+              src={getImagePath("/images/MDLOGO.png")}
               alt="Mothers to Daughters Logo"
               width={500}
               height={200}
