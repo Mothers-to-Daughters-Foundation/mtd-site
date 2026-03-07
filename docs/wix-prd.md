@@ -447,7 +447,25 @@ The following Wix/server-side features are **not included** in the GitHub Pages 
 
 ---
 
-## 16. Open Questions (Pre-Migration)
+## 16. Member Platform Architecture
+
+The following diagrams document the architecture and user flow for the Wix-based member platform, which serves as the reference design for the planned full Next.js deployment.
+
+### 16.1 System Architecture
+
+Shows how Wix Members, Authentication, and Pricing Plans feed into Role Assignment. Velo Logic drives role-based access, and CMS Collections (MembersProfile, Mentorships, Sessions, Transactions, Resources, Notifications) populate the Mentee and Mentor Dashboards.
+
+![Member Platform System Architecture](https://github.com/user-attachments/assets/19fcc422-65cc-494f-be96-5ab8807a787e)
+
+### 16.2 User Flow
+
+Shows the end-to-end user journey from Visitor through Signup/Login → Wix Members Authentication → Pricing Plan/Role decision (Mentee Plan or Mentor Plan) → Role assignment → Profile creation → Role-Based Routing → Mentor or Mentee Dashboard. Admin manages all Wix CMS Collections that back dashboard features (Sessions, Resources, Events, Profile, Payments, My Mentees).
+
+![Member Platform User Flow](https://github.com/user-attachments/assets/434a6c72-25ab-48dd-b108-0701b8fd3497)
+
+---
+
+## 17. Open Questions (Pre-Migration)
 
 - [ ] What is the full list of Wix pages (including any hidden/draft pages)?
 - [ ] Which donation tiers or amounts are configured in Zeffy?
@@ -464,7 +482,7 @@ The following Wix/server-side features are **not included** in the GitHub Pages 
 
 ---
 
-## 17. Migration Checklist
+## 18. Migration Checklist
 
 ### Phase 0 — Gather
 
