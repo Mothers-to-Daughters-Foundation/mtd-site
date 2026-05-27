@@ -25,7 +25,7 @@ export default function TierCard({
       {isDefault && <div className={styles.featuredBadge}>Most Popular</div>}
       <div className={styles.name}>{name}</div>
       <div className={styles.price}>
-        ${pricePerMonth}
+        ${(pricePerMonth / 100).toFixed(2)}
         <span className={styles.period}>/mo</span>
       </div>
       {description && <p className={styles.description}>{description}</p>}

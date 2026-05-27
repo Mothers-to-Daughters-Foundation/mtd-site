@@ -107,7 +107,7 @@ export default function MenteeSubscriptionPage() {
         <div className={styles.currentPlan}>
           <div className={styles.currentLabel}>Current Plan</div>
           <div className={styles.currentName}>{currentTier.name}</div>
-          <div className={styles.currentPrice}>${currentTier.pricePerMonth}/mo</div>
+          <div className={styles.currentPrice}>${(currentTier.pricePerMonth / 100).toFixed(2)}/mo</div>
           <span className={`${styles.badge} ${styles[`badge-${sub.status}`]}`}>
             {sub.status}
           </span>
@@ -130,7 +130,7 @@ export default function MenteeSubscriptionPage() {
             <div key={tier._id} className={`${styles.tierCard} ${isCurrent ? styles.tierCardActive : ''}`}>
               {isCurrent && <div className={styles.currentBadge}>Current</div>}
               <div className={styles.tierName}>{tier.name}</div>
-              <div className={styles.tierPrice}>${tier.pricePerMonth}<span>/mo</span></div>
+              <div className={styles.tierPrice}>${(tier.pricePerMonth / 100).toFixed(2)}<span>/mo</span></div>
               {tier.description && (
                 <p className={styles.tierDesc}>{tier.description}</p>
               )}

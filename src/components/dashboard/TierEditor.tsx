@@ -55,7 +55,7 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
       name: tier.name,
       slug: tier.slug,
       description: tier.description,
-      pricePerMonth: tier.pricePerMonth,
+      pricePerMonth: tier.pricePerMonth / 100,
       features: tier.features,
       isActive: tier.isActive,
       isDefault: tier.isDefault ?? false,
@@ -83,7 +83,7 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
       .map((s) => s.trim())
       .filter(Boolean);
 
-    const payload = { ...form, features };
+    const payload = { ...form, features, pricePerMonth: Math.round(form.pricePerMonth * 100) };
 
     let res: Response;
     if (editTier) {
@@ -176,7 +176,7 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
               <tr key={tier._id}>
                 <td className={styles.nameCell}>{tier.name}</td>
                 <td className={styles.slugCell}>{tier.slug}</td>
-                <td>${tier.pricePerMonth}/mo</td>
+                <td>${(tier.pricePerMonth / 100).toFixed(2)}/mo</td>
                 <td>{tier.features.length} feature(s)</td>
                 <td>
                   <span
