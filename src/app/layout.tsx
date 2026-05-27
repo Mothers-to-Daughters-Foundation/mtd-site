@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { Suspense } from 'react';
 import './globals.css';
-import SiteHeader from '@/components/layout/SiteHeader';
-import SiteFooter from '@/components/layout/SiteFooter';
 import Analytics from '@/components/Analytics';
 import SessionProvider from '@/components/providers/SessionProvider';
 
@@ -37,9 +34,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <Analytics />
           </Suspense>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
+          {children}
         </SessionProvider>
       </body>
     </html>

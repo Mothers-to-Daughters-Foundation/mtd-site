@@ -1,0 +1,23 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-0);
+  padding: var(--spacing-4);
+}
+
+.card {
+  background: var(--surface-1);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-12) var(--spacing-10);
+  width: 100%;
+  max-width: 480px;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-8) var(--spacing-6);
+  }
+}

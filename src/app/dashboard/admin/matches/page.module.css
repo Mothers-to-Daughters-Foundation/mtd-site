@@ -1,0 +1,15 @@
+.header {
+  margin-bottom: var(--spacing-6);
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  max-width: 560px;
+}

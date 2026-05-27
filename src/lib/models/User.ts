@@ -1,12 +1,13 @@
 import { getDb } from '../db';
 import bcrypt from 'bcryptjs';
+import { ObjectId } from 'mongodb';
 
 export interface User {
   _id?: string;
   email: string;
   password: string;
   name: string;
-  role: 'mentor' | 'donor' | 'admin';
+  role: 'admin' | 'mentor' | 'mentee';
   createdAt?: Date;
   updatedAt?: Date;
   profile?: {
@@ -14,14 +15,23 @@ export interface User {
     phone?: string;
     location?: string;
     image?: string;
+    expertise?: string;
+    availability?: string;
   };
+  // Subscription fields
+  subscriptionTierId?: string;
+  subscriptionStatus?: 'active' | 'paused' | 'cancelled';
+  subscriptionStartDate?: Date;
+  subscriptionRenewDate?: Date;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
 }
 
 export async function createUser(userData: {
   email: string;
   password: string;
   name: string;
-  role: 'mentor' | 'donor' | 'admin';
+  role: 'admin' | 'mentor' | 'mentee';
 }): Promise<User> {
   const db = await getDb();
   const users = db.collection<User>('users');
@@ -42,6 +52,7 @@ export async function createUser(userData: {
     role: userData.role,
     createdAt: new Date(),
     updatedAt: new Date(),
+    subscriptionStatus: 'cancelled',
   };
 
   const result = await users.insertOne(newUser);
@@ -57,8 +68,12 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export async function getUserById(id: string): Promise<User | null> {
   const db = await getDb();
   const users = db.collection<User>('users');
-  const user = await users.findOne({ _id: id as any });
-  return user;
+  try {
+    const user = await users.findOne({ _id: new ObjectId(id) as any });
+    return user;
+  } catch {
+    return null;
+  }
 }
 
 export async function verifyPassword(
@@ -82,9 +97,40 @@ export async function updateUser(
   delete (updateData as any).password; // Don't allow password updates here
   
   await users.updateOne(
-    { _id: userId as any },
+    { _id: new ObjectId(userId) as any },
     { $set: updateData }
   );
   
+  return await getUserById(userId);
+}
+
+export async function getAllUsers(
+  filter: { role?: string; subscriptionStatus?: string } = {}
+): Promise<User[]> {
+  const db = await getDb();
+  const users = db.collection<User>('users');
+  const query: Record<string, string> = {};
+  if (filter.role) query.role = filter.role;
+  if (filter.subscriptionStatus) query.subscriptionStatus = filter.subscriptionStatus;
+  return await users
+    .find(query, { projection: { password: 0 } })
+    .toArray() as User[];
+}
+
+export async function updateUserById(
+  userId: string,
+  updates: Partial<User>
+): Promise<User | null> {
+  const db = await getDb();
+  const users = db.collection<User>('users');
+
+  const updateData = { ...updates, updatedAt: new Date() };
+  delete (updateData as any).password;
+
+  await users.updateOne(
+    { _id: new ObjectId(userId) as any },
+    { $set: updateData }
+  );
+
   return await getUserById(userId);
 }
