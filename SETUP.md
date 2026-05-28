@@ -70,7 +70,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 
 # MongoDB (optional – only needed for legacy API routes / Vercel deployment)
-MONGODB_URI=******cluster.mongodb.net/mtd-site
+MONGODB_URI=mongodb+srv://username:password@yourcluster.mongodb.net/mtd-site
 MONGODB_DB_NAME=mtd-site
 
 # NextAuth (optional – only needed for Vercel/full-stack deployment)

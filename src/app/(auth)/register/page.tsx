@@ -51,7 +51,16 @@ export default function RegisterPage() {
 
     if (error) {
       setStatus('error');
-      setErrorMessage(error.message ?? 'Registration failed. Please try again.');
+      // Map known Supabase error codes to friendly messages
+      if (error.message.toLowerCase().includes('already registered')) {
+        setErrorMessage('An account with this email already exists.');
+      } else if (error.message.toLowerCase().includes('invalid email')) {
+        setErrorMessage('Please enter a valid email address.');
+      } else if (error.message.toLowerCase().includes('password')) {
+        setErrorMessage('Password must be at least 8 characters.');
+      } else {
+        setErrorMessage('Registration failed. Please try again.');
+      }
       return;
     }
 

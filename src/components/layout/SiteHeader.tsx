@@ -18,7 +18,7 @@ export default function SiteHeader() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    supabase.auth.getUser().then(({ data }) => setUser(data.user)).catch(() => {});
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
@@ -28,7 +28,12 @@ export default function SiteHeader() {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Sign-out failure is non-critical; clear local state regardless
+    }
+    setUser(null);
     setIsMenuOpen(false);
   };
 

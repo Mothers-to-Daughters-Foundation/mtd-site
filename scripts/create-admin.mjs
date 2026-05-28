@@ -37,6 +37,19 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
+// Basic URL validation
+try {
+  new URL(SUPABASE_URL);
+} catch {
+  console.error(`SUPABASE_URL is not a valid URL: "${SUPABASE_URL}"`);
+  process.exit(1);
+}
+
+if (SUPABASE_SERVICE_ROLE_KEY.length < 20) {
+  console.error('SUPABASE_SERVICE_ROLE_KEY appears to be invalid (too short).');
+  process.exit(1);
+}
+
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
