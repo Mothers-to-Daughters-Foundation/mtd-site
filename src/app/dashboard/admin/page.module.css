@@ -1,0 +1,67 @@
+.header {
+  margin-bottom: var(--spacing-8);
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-10);
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  text-decoration: none;
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+  cursor: pointer;
+}
+
+.actionCard:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand-700);
+}
+
+.actionTitle {
+  font-weight: 700;
+  color: var(--brand-700);
+  font-size: 1rem;
+}
+
+.actionDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.quickActions {
+  /* Section for quick actions */
+}

@@ -1,0 +1,88 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--spacing-10) var(--spacing-6) var(--spacing-16);
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: var(--spacing-12);
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.heroSubtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.tiersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-16);
+  align-items: start;
+}
+
+.empty {
+  text-align: center;
+  padding: var(--spacing-12);
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: 1rem;
+  margin-bottom: var(--spacing-16);
+}
+
+.contactLink {
+  color: var(--brand-700);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.faq {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-12);
+}
+
+.faqTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-8);
+  text-align: center;
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.faqItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.faqQ {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.faqA {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}

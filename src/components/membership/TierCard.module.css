@@ -1,0 +1,120 @@
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-8) var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  position: relative;
+  transition: box-shadow var(--transition-fast);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.cardFeatured {
+  border-color: var(--brand-700);
+  border-width: 2px;
+  box-shadow: 0 0 0 4px rgba(120, 28, 69, 0.08);
+}
+
+.featuredBadge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--brand-700);
+  color: #fff;
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 3px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.price {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--brand-700);
+  line-height: 1;
+}
+
+.period {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-2) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  flex: 1;
+}
+
+.features li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.check {
+  color: var(--brand-700);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.cta {
+  margin-top: var(--spacing-4);
+}
+
+.btn {
+  display: block;
+  text-align: center;
+  padding: var(--spacing-3) var(--spacing-5);
+  border: 2px solid var(--brand-700);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--brand-700);
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.btn:hover {
+  background: var(--brand-700);
+  color: #fff;
+}
+
+.btnFeatured {
+  background: var(--brand-700);
+  color: #fff;
+}
+
+.btnFeatured:hover {
+  background: var(--brand-800);
+  border-color: var(--brand-800);
+}

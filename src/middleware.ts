@@ -6,6 +6,13 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
+    // Admin routes - only admins
+    if (path.startsWith('/dashboard/admin')) {
+      if (token?.role !== 'admin') {
+        return NextResponse.redirect(new URL('/dashboard', req.url));
+      }
+    }
+
     // Mentor routes - only mentors and admins
     if (path.startsWith('/dashboard/mentor')) {
       if (token?.role !== 'mentor' && token?.role !== 'admin') {
@@ -13,9 +20,9 @@ export default withAuth(
       }
     }
 
-    // Donor routes - only donors and admins
-    if (path.startsWith('/dashboard/donor')) {
-      if (token?.role !== 'donor' && token?.role !== 'admin') {
+    // Mentee routes - only mentees and admins
+    if (path.startsWith('/dashboard/mentee')) {
+      if (token?.role !== 'mentee' && token?.role !== 'admin') {
         return NextResponse.redirect(new URL('/dashboard', req.url));
       }
     }
