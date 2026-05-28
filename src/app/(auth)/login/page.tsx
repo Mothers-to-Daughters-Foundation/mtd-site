@@ -2,8 +2,8 @@
 
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
 export default function LoginPage() {
@@ -21,13 +21,12 @@ export default function LoginPage() {
     setStatus('submitting');
     setErrorMessage('');
 
-    const result = await signIn('credentials', {
+    const { error } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
-      redirect: false,
     });
 
-    if (result?.error) {
+    if (error) {
       setStatus('error');
       setErrorMessage('Invalid email or password. Please try again.');
     } else {
@@ -92,7 +91,7 @@ export default function LoginPage() {
       <p className={styles.footer}>
         Don&apos;t have an account?{' '}
         <Link href="/register" className={styles.link}>
-          Create one
+          Sign up
         </Link>
       </p>
     </>

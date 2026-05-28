@@ -1,16 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import LoginIcon from '@mui/icons-material/Login';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
 import styles from './SiteHeader.module.css';
 import Container from './Container';
 import Button from '../ui/Button';
 import { getImagePath } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setIsMenuOpen(false);
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -82,10 +102,23 @@ export default function SiteHeader() {
             >
               Donate
             </Button>
-            <Link href="/login" className={styles.signInLink} onClick={closeMenu}>
-              <LoginIcon className={styles.signInIcon} />
-              <span>Sign In</span>
-            </Link>
+            {user ? (
+              <>
+                <Link href="/dashboard" className={styles.signInLink} onClick={closeMenu}>
+                  <DashboardIcon className={styles.signInIcon} />
+                  <span>Dashboard</span>
+                </Link>
+                <button className={styles.signInLink} onClick={handleSignOut}>
+                  <LogoutIcon className={styles.signInIcon} />
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <Link href="/login" className={styles.signInLink} onClick={closeMenu}>
+                <LoginIcon className={styles.signInIcon} />
+                <span>Sign In</span>
+              </Link>
+            )}
           </nav>
         </div>
       </Container>

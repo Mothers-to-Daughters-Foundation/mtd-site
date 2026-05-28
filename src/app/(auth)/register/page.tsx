@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
 export default function RegisterPage() {
@@ -37,39 +38,32 @@ export default function RegisterPage() {
 
     setStatus('submitting');
 
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    const { error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
           name: formData.name,
-          email: formData.email,
-          password: formData.password,
           role: formData.role,
-        }),
-      });
+        },
+      },
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setStatus('error');
-        setErrorMessage(data.error ?? 'Registration failed. Please try again.');
-        return;
-      }
-
-      setStatus('success');
-      setTimeout(() => router.push('/login'), 1500);
-    } catch {
+    if (error) {
       setStatus('error');
-      setErrorMessage('An unexpected error occurred. Please try again.');
+      setErrorMessage(error.message ?? 'Registration failed. Please try again.');
+      return;
     }
+
+    setStatus('success');
+    setTimeout(() => router.push('/login'), 2000);
   };
 
   if (status === 'success') {
     return (
       <div className={styles.successMessage}>
         <h2>Account created!</h2>
-        <p>Redirecting you to sign in…</p>
+        <p>Check your email to confirm your address, then sign in.</p>
       </div>
     );
   }

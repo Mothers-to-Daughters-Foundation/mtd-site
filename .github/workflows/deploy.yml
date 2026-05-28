@@ -44,13 +44,12 @@ jobs:
             rm -rf src/app/dashboard
             echo "Dashboard removed for static export (requires authentication)"
           fi
-          if [ -d "src/app/(auth)" ]; then
-            rm -rf "src/app/(auth)"
-            echo "Auth pages removed for static export"
-          fi
 
       - name: Build with Next.js
         run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
