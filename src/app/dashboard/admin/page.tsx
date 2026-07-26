@@ -1,79 +1,134 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { getAllUsers } from '@/lib/models/User';
-import { getAllTiers } from '@/lib/models/SubscriptionTier';
-import { getAllSubscriptions } from '@/lib/models/Subscription';
-import { getAllMatches } from '@/lib/models/Match';
-import StatCard from '@/components/dashboard/StatCard';
-import styles from './page.module.css';
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import styles from "./page.module.css";
 
-export const metadata = { title: 'Admin Dashboard' };
+export const metadata = {
+  title: "Admin Dashboard",
+};
 
-export default async function AdminOverviewPage() {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') redirect('/dashboard');
+export default async function AdminDashboardPage() {
+  const supabase = await createClient();
 
-  const [users, tiers, subscriptions, matches] = await Promise.all([
-    getAllUsers(),
-    getAllTiers(),
-    getAllSubscriptions(),
-    getAllMatches(),
+  const [
+    usersResult,
+    mentorsResult,
+    menteesResult,
+    resourcesResult,
+    recentResources,
+  ] = await Promise.all([
+    supabase.from("user_profiles").select("*", { count: "exact", head: true }),
+
+    supabase
+      .from("user_profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("role", "mentor"),
+
+    supabase
+      .from("user_profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("role", "mentee"),
+
+    supabase.from("resources").select("*", {
+      count: "exact",
+      head: true,
+    }),
+
+    supabase
+      .from("resources")
+      .select("id,title,created_at")
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
 
-  const mentors = users.filter((u) => u.role === 'mentor');
-  const mentees = users.filter((u) => u.role === 'mentee');
-  const activeSubs = subscriptions.filter((s) => s.status === 'active');
-  const activeMatches = matches.filter((m) => m.status === 'active');
-
-  // Monthly Recurring Revenue
-  const mrr = activeSubs.reduce((sum, sub) => {
-    const tier = tiers.find((t) => t._id === sub.tierId);
-    return sum + (tier?.pricePerMonth ?? 0);
-  }, 0);
-
   return (
-    <div>
+    <div className={styles.page}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Admin Dashboard</h1>
-        <p className={styles.subtitle}>Overview of platform activity</p>
+        <div>
+          <h1>Admin Dashboard</h1>
+
+          <p>
+            Welcome back. Here&apos;s what&apos;s happening inside MTD today.
+          </p>
+        </div>
       </div>
 
       <div className={styles.statsGrid}>
-        <StatCard label="Total Users" value={users.length} />
-        <StatCard label="Mentors" value={mentors.length} />
-        <StatCard label="Mentees" value={mentees.length} />
         <StatCard
-          label="Monthly Revenue"
-          value={`$${(mrr / 100).toFixed(2)}`}
-          accent
+          title="Users"
+          value={usersResult.count ?? 0}
         />
-        <StatCard label="Active Subscriptions" value={activeSubs.length} />
-        <StatCard label="Active Matches" value={activeMatches.length} />
-        <StatCard label="Subscription Tiers" value={tiers.filter((t) => t.isActive).length} />
+
+        <StatCard
+          title="Mentors"
+          value={mentorsResult.count ?? 0}
+        />
+
+        <StatCard
+          title="Mentees"
+          value={menteesResult.count ?? 0}
+        />
+
+        <StatCard
+          title="Resources"
+          value={resourcesResult.count ?? 0}
+        />
       </div>
 
-      <div className={styles.quickActions}>
-        <h2 className={styles.sectionTitle}>Quick Actions</h2>
-        <div className={styles.actions}>
-          <a href="/dashboard/admin/users" className={styles.actionCard}>
-            <span className={styles.actionTitle}>Manage Users</span>
-            <span className={styles.actionDesc}>View, edit roles and subscriptions</span>
-          </a>
-          <a href="/dashboard/admin/tiers" className={styles.actionCard}>
-            <span className={styles.actionTitle}>Subscription Tiers</span>
-            <span className={styles.actionDesc}>Create and edit pricing tiers</span>
-          </a>
-          <a href="/dashboard/admin/matches" className={styles.actionCard}>
-            <span className={styles.actionTitle}>Matches</span>
-            <span className={styles.actionDesc}>Assign mentors to mentees</span>
-          </a>
-          <a href="/dashboard/admin/subscriptions" className={styles.actionCard}>
-            <span className={styles.actionTitle}>Subscriptions</span>
-            <span className={styles.actionDesc}>Review all subscription records</span>
-          </a>
+      <div className={styles.sectionGrid}>
+        <div className={styles.panel}>
+          <h2>Recent Resources</h2>
+
+          {recentResources.data?.length ? (
+            <ul className={styles.resourceList}>
+              {recentResources.data.map((resource) => (
+                <li key={resource.id}>
+                  {resource.title}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No resources uploaded yet.</p>
+          )}
+        </div>
+
+        <div className={styles.panel}>
+          <h2>Quick Actions</h2>
+
+          <div className={styles.actions}>
+            <Link href="/dashboard/admin/users">
+              Manage Users
+            </Link>
+
+            <Link href="/dashboard/admin/resources">
+              Upload Resources
+            </Link>
+
+            <Link href="/dashboard/admin/subscriptions">
+              Manage Subscriptions
+            </Link>
+
+            <Link href="/dashboard/admin/matches">
+              Manage Matches
+            </Link>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+}: {
+  title: string;
+  value: number;
+}) {
+  return (
+    <div className={styles.card}>
+      <h3>{title}</h3>
+
+      <span>{value}</span>
     </div>
   );
 }

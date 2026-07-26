@@ -1,441 +1,274 @@
-# mtd-site
+# Mothers to Daughters (M2D) Mentorship Platform
 
-Main website for the Mothers to Daughters Foundation — a nonprofit connecting women across generations through mentorship and support.
+A modern mentorship platform that connects women seeking guidance with experienced mentors through a secure, subscription-based web application.
 
-**Test site:** [https://mothers-to-daughters-foundation.github.io/mtd-site/](https://mothers-to-daughters-foundation.github.io/mtd-site/)
-
-## Local Development
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Deployment
-
-The site is automatically deployed to GitHub Pages on every push to `main`. See [GITHUB_PAGES.md](./GITHUB_PAGES.md) for details.
-
----
-
-# Product Requirements Document
-
-## Nonprofit Mentor/Mentee Website Migration & Rebuild
-
-**Node.js / Next.js Project**
+The Mothers to Daughters (M2D) platform provides a centralized environment for mentorship, communication, session management, learning resources, and subscription management while giving administrators complete control over the platform.
 
 ---
 
 ## Overview
 
-We're migrating our existing nonprofit mentor/mentee website from Wix to a modern Next.js (React) + Node setup. The main goals are:
+M2D is designed to help women grow personally and professionally by connecting them with qualified mentors.
 
-* Rebuild the frontend with React components and a unified design system
-* Set up a scalable backend (probably Next.js API routes, maybe a separate Node server if needed)
-* Reproduce everything that currently works on the Wix site
-* Improve performance, SEO, and accessibility
-* Build something flexible that can grow with us
-* Integrate analytics (Google Analytics + Microsoft Clarity)
-* Migrate all content, assets, URLs, and preserve SEO value
+The platform allows administrators to manage users, mentorship assignments, subscriptions, resources, and mentoring sessions while providing mentors and mentees with dedicated dashboards tailored to their responsibilities.
 
-This doc outlines the project scope, what we need to figure out, architecture decisions, and the migration plan.
+---
+
+## Features
+
+### Authentication
+
+- Supabase Authentication
+- Secure user authentication
+- Role-based access control
+- Protected dashboard routes
+- Session management
+
+### User Roles
+
+- Administrator
+- Mentor
+- Mentee
+
+### Admin Dashboard
+
+- User Management
+- Subscription Management
+- Mentorship Assignment
+- Resource Management
+- Platform Administration
+
+### Mentor Dashboard
+
+- Manage assigned mentees
+- View mentorship information
+- Update mentor profile
+- Access shared resources
+
+### Mentee Dashboard
+
+- View assigned mentor
+- Manage subscription
+- Update profile
+- Access learning resources
+
+### Subscription System
+
+- Multiple subscription plans
+- Monthly pricing
+- Stripe integration
+- Zeffy integration
+- Subscription tracking
+
+### Database Features
+
+- Row Level Security (RLS)
+- Secure API access
+- Automatic timestamps
+- Optimized indexes
+- Foreign key relationships
+
+---
+
+## Technology Stack
+
+### Frontend
+
+- Next.js
+- React
+- TypeScript
+- CSS Modules
+
+### Backend
+
+- Supabase
+- PostgreSQL
+
+### Payments
+
+- Stripe
+- Zeffy
+
+### Deployment
+
+- Vercel
+- Supabase Cloud
 
 ---
 
 ## Project Structure
 
-```
-docs/
-  ia/
-  design-system/
-  requirements/
-  migration/
+```text
 src/
-  components/
-  app/ or pages/
-  lib/
-public/
+│
+├── app/
+│   ├── api/
+│   ├── dashboard/
+│   ├── login/
+│   ├── register/
+│   └── subscription/
+│
+├── components/
+│
+├── lib/
+│   ├── supabase/
+│   ├── services/
+│   └── utils/
+│
+├── hooks/
+│
+├── styles/
+│
+└── types/
+
+docs/
 ```
 
 ---
 
-## Project Goals
+## Database
 
-* Modernize the site using Next.js 14+
-* Build a design system we can actually use and maintain
-* Improve performance, accessibility, and SEO
-* Migrate all pages and content from Wix
-* Get donation flows and third-party integrations working
-* Move domains/hosting without breaking things
-* Document everything so future us doesn't hate current us
+Primary database tables include:
 
----
+- user_profiles
+- plans
+- subscriptions
+- mentorships
+- mentor_requests
+- sessions
+- resources
+- notifications
+- conversations
+- messages
 
-## Project Management
+Complete documentation is available in:
 
-We've already set up project tracking in GitHub:
-* **Roadmap** - High-level project roadmap is available in GitHub
-* **Kanban Board** - Active kanban board for tracking work in progress
-* **Backlog** - Backlog is set up and ready for prioritizing tasks
-
-Check the GitHub project board for current status and task assignments.
+- docs/DATABASE.md
 
 ---
 
-## Phase 0 — Foundations & Requirements
+## Documentation
 
-### GitHub Setup
+Project documentation is located inside the **docs/** directory.
 
-* Initialize the repo
-* Add `.gitignore` for Node/Next.js
-* Create `/docs` folder structure (IA, design, requirements, migration)
+| Document | Description |
+|----------|-------------|
 
-### Hosting & Deployment
-
-Planning to use **Vercel** for deployment, previews, and scaling. We'll need staging and production environments, plus figure out how to integrate analytics.
-
-### Requirements Documentation
-
-File: `docs/requirements/functional.md`
-
-We need to document:
-* What pages we have
-* Prioritization schema
-* Internal contributor structure / roles & responsibilities
-* Mentor/mentee content structure
-* How donations should work
-* What forms we need
-* Design system documentation
-* Social media gameplan
-* Any admin functionality
-* Accessibility requirements (aiming for WCAG AA)
-
-### Open Questions
-
-* Do we need user accounts or authentication?
-* Which donation provider? (Stripe, PayPal, Donorbox?)
-* Any CRM or email service integrations?
-* Styling approach? (Tailwind or custom CSS var?)
+| PROJECT_OVERVIEW.md | Project goals and vision |
+| ARCHITECTURE.md | System architecture |
+| DATABASE.md | Database schema |
+| API.md | API documentation |
+| AUTHENTICATION.md | Authentication flow |
+| PAYMENTS.md | Payment integration |
+| DEPLOYMENT.md | Deployment guide |
+| SECURITY.md | Security practices |
+| TESTING.md | Testing procedures |
+| TROUBLESHOOTING.md | Common issues |
 
 ---
 
-## Phase 1 — Wix Extraction & Migration Planning
+## Local Development
 
-### What We Need From the Wix Developer
+### Clone the repository
 
-* All text content from every page
-* Images, logos, icons, SVGs
-* PDFs and other documents
-* Complete URL list
-* SEO metadata (titles, descriptions, etc.)
-* Any embedded scripts
-* Brand colors and font settings
-* List of hidden or unused pages
-
-### Content Inventory
-
-Location: `docs/ia/content-inventory.md`
-
-Track everything with a simple table:
-
-```
-Page | URL | Content Status | Assets Status | Notes
+```bash
+git clone <repository-url>
 ```
 
-### URL Inventory & Redirect Plan
+### Install dependencies
 
-* List all old URLs
-* Map them to new Next.js routes
-* Document which ones need 301 redirects
-* Flag any pages that might hurt SEO if we mess this up
-
-### Information Architecture
-
-Location: `docs/ia/sitemap.md`
-
-Figure out:
-* Top-level navigation structure
-* Footer links
-* Maybe secondary nav for programs
-
----
-
-## Phase 2 — Design System Development
-
-### Design System Folder Structure
-
-```
-docs/design-system/
-  colors.md
-  typography.md
-  spacing.md
-  grid.md
-  components.md
-  buttons.md
-  forms.md
-  brand.md
+```bash
+npm install
 ```
 
-### Brand Tokens
+### Configure environment variables
 
-Define:
-* Colors (primary, secondary, neutrals, semantic colors)
-* Typography scale (H1–H6, paragraph, caption styles)
-* Spacing system (4, 8, 12, 16, 24, 32, etc.)
-* Breakpoints for responsive design
+Create a `.env.local` file.
 
-### Component Library
+Example:
 
-Following atomic design principles:
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 
-**Atoms:**
-* Buttons
-* Inputs
-* Icons
-* Links
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
 
-**Molecules:**
-* Cards
-* CTAs
-* Nav items
-* Sections
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+```
 
-**Organisms:**
-* Hero sections
-* Navbar
-* Footer
-* Program blocks
-* Donation block
+### Run the application
 
-### Technology Decisions
+```bash
+npm run dev
+```
 
-Planning to use **Tailwind CSS + shadcn/ui**. Could also use CSS Modules or Styled Components if needed.
+Application runs on:
 
-### Design System Open Questions
-
-* Do we need dark mode support?
-* Are there existing brand guidelines we need to follow?
-* Should we build a Figma component library?
+``` test url
+http://localhost:3000
+```
 
 ---
 
-## Phase 3 — Technical Architecture & Development Setup
+## Security
 
-### Next.js Project Setup
+The application implements:
 
-* Initialize with TypeScript
-* Add Tailwind (assuming we go that route)
-* Set up Prettier + ESLint
-* Create global layout
-* Configure metadata system
-* Set up fonts using next/font
-* Environment variables
-
-### Backend Architecture
-
-Options:
-* **Next.js API routes** (probably this)
-* Separate Node server (only if we really need it)
-
-### Data Model Planning
-
-If we need a backend, we might need:
-* Mentor data
-* Mentee data
-* Events
-* Programs
-* Donations
-* Admin users
-
-### Backend Open Questions
-
-* Do we actually need persistent data storage?
-* If yes, which database? (Postgres, MongoDB, or maybe we don't need one?)
-* Do we need an admin dashboard?
+- Row Level Security (RLS)
+- Protected API Routes
+- Role-Based Authorization
+- Secure Authentication
+- Environment Variable Protection
 
 ---
 
-## Phase 4 — Frontend Development
+## Roadmap
 
-### Global Layout
+Current project status includes:
 
-* Header component
-* Footer component
-* Global styles
-* SEO helpers
-* Analytics scripts (GA + Clarity)
+- Authentication
+- User Profiles
+- Admin Dashboard
+- Mentor Dashboard
+- Mentee Dashboard
+- Subscription Management
+- Database Architecture
 
-### Building Components
+Future enhancements include:
 
-Using the design system, we'll build:
-* Buttons
-* Inputs
-* Cards
-* Hero sections
-* Testimonials
-* Program blocks
-* Footer
-* Navigation
-
-### Page Development
-
-Based on the IA, we'll need:
-* Home
-* About
-* Programs (Mentor / Mentee)
-* Get Involved
-* Donate
-* Resources
-* Contact
-
-### SEO Setup
-
-* Generate sitemap.xml
-* Set up robots.txt
-* Add OpenGraph tags
-* Use semantic HTML
-* Handle canonical URLs
-
-### Performance & Accessibility
-
-* Run Lighthouse audits
-* Optimize for mobile
-* Use `next/image` for images
-* Make sure we hit WCAG AA standards
+- Messaging
+- Video Sessions
+- Email Notifications
+- Analytics Dashboard
+- Mobile Optimization
 
 ---
 
-## Phase 5 — Content & Asset Migration
+## Contributing
 
-### Content Insertion
+This project is currently maintained by the M2D development team.
 
-* Move all text into React components
-* Check formatting, links, and metadata
-* Fill in any missing copy
+Future contribution guidelines will be documented in:
 
-### Asset Upload
-
-Organize assets:
-* `/public/images`
-* `/public/icons`
-* `/public/pdf`
-
-### URL Redirects
-
-* Add redirects to `next.config.js`
-* Verify with Google Search Console
-
-### Verification
-
-* Double-check every imported asset
-* Test all internal links
-* Make sure SEO is at least as good as the Wix site
+``` markdown
+docs/CONTRIBUTING.md
+```
 
 ---
 
-## Phase 6 — Testing
+## License
 
-### Manual Testing
+This project is proprietary and intended for the Mothers to Daughters (M2D) organization.
 
-* Test on desktop browsers
-* Test on mobile browsers
-* Check all interactive components
-
-### Functional Testing
-
-* Forms work correctly
-* Donation flows function properly
-* Navigation works everywhere
-* 404 pages look good
-
-### Accessibility Testing
-
-* Keyboard navigation works
-* Color contrast is sufficient
-* Screen reader compatibility
+All rights reserved.
 
 ---
 
-## Phase 7 — Deployment & Domain Migration
+## Acknowledgements
 
-### Staging Deployment
+Developed for the Mothers to Daughters (M2D) mentorship initiative.
 
-* Set up auto-deploy on Vercel
-* Test the final build
-
-### Domain Setup
-
-* Add custom domain to Vercel
-* Update DNS records
-* Verify SSL and routing
-* Run through launch checklist
-
-### Production Launch
-
-* Cutover from Wix
-* Deploy production build
-* Monitor analytics
-* Run post-launch SEO crawl
-
----
-
-## Open Questions Summary
-
-### Platform
-
-* Hosting: Vercel or custom VPS?
-* Do we need a separate backend?
-* Do we need a database?
-
-### Content & Migration
-
-* What can't we export from Wix?
-* Are there hidden pages or forms we don't know about?
-* Which donation provider should we use?
-
-### Design
-
-* Do we have existing brand guidelines?
-* Should we support dark mode?
-* Do we need a Figma component library?
-
-### Integrations
-
-* Any CRM or email service we need to connect?
-* Other analytics or tracking tools?
-
----
-
-## Dependencies
-
-* Wix developer needs to provide full export
-* Access to domain (either through Wix or external registrar)
-* Decision on donation/payment provider
-* Branding assets or style guide
-
----
-
-## Risks
-
-* Missing content or assets from Wix export
-* SEO issues if URLs change without proper redirects
-* DNS propagation delays during cutover
-* Inconsistent branding if we don't build a proper design system
-* Scope creep if backend requirements expand
-
----
-
-## Success Criteria
-
-* All Wix content successfully migrated
-* Modern UI built with a documented design system
-* Fully responsive and accessible
-* Lighthouse scores 90+ across the board
-* Stable production deployment with domain and SSL
-* Analytics tracking engagement accurately
-* Architecture that can scale for future programs
-
----
-
-We can also generate the `/docs` folder with placeholder files, a design system starter, component list, sitemap template, or Next.js boilerplate code if needed.
+Built with Next.js, Supabase, PostgreSQL, Stripe, and Zeffy.

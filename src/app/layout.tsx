@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
 import Analytics from '@/components/Analytics';
-import SessionProvider from '@/components/providers/SessionProvider';
+import AppProvider from '@/components/providers/AppProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -30,12 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
-          <Suspense fallback={null}>
-            <Analytics />
-          </Suspense>
-          {children}
-        </SessionProvider>
+        <AppProvider>
+    <Suspense fallback={null}>
+        <Analytics />
+    </Suspense>
+    {children}
+</AppProvider>
       </body>
     </html>
   );

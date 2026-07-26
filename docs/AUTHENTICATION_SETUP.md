@@ -1,8 +1,10 @@
+
 # Authentication & User Management Setup
 
 ## Overview
 
 The site now includes:
+
 - **User Authentication** - Login and registration
 - **Mentor Dashboard** - For mentors to manage their profile and mentees
 - **Donor Portal** - For donors to view donation history and impact
@@ -55,10 +57,12 @@ MONGODB_DB_NAME=mtd-site
 ## Routes
 
 ### Public Routes
+
 - `/login` - Sign in page
 - `/register` - Registration page
 
 ### Protected Routes (Require Authentication)
+
 - `/dashboard` - Main dashboard (redirects based on role)
 - `/dashboard/mentor` - Mentor dashboard
 - `/dashboard/mentor/profile` - Mentor profile management

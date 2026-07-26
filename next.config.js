@@ -4,9 +4,6 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  basePath: '/mtd-site',
-  assetPrefix: '/mtd-site',
   images: {
     unoptimized: true,
   },

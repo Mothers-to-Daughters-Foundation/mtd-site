@@ -1,23 +1,48 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { getMatchesByMentorId } from '@/lib/models/Match';
-import { getUserById } from '@/lib/models/User';
-import styles from './page.module.css';
+export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'My Mentees | Mentor' };
+import { redirect } from "next/navigation";
+
+import { createClient } from "@/lib/supabase/server";
+
+import { getMentorshipsByMentor } from "@/lib/supabase/mentorships";
+import { getUserById } from "@/lib/supabase/users";
+
+import styles from "./page.module.css";
+
+export const metadata = {
+  title: "My Mentees | Mentor",
+};
 
 export default async function MentorMenteesPage() {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user.role !== 'mentor' && session.user.role !== 'admin')) {
-    redirect('/dashboard');
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
   }
 
-  const matches = await getMatchesByMentorId(session.user.id);
-  const withDetails = await Promise.all(
-    matches.map(async (m) => ({
-      match: m,
-      mentee: await getUserById(m.menteeId),
+  const profile = await getUserById(user.id);
+
+  if (!profile) {
+    redirect("/login");
+  }
+
+  if (
+    profile.role !== "mentor" &&
+    profile.role !== "admin"
+  ) {
+    redirect("/dashboard");
+  }
+
+  const mentorships = await getMentorshipsByMentor(user.id);
+
+  const mentees = await Promise.all(
+    mentorships.map(async (mentorship) => ({
+      mentorship,
+      mentee: await getUserById(mentorship.mentee_id),
     }))
   );
 
@@ -25,40 +50,80 @@ export default async function MentorMenteesPage() {
     <div>
       <div className={styles.header}>
         <h1 className={styles.title}>My Mentees</h1>
-        <p className={styles.subtitle}>{matches.length} total match(es)</p>
+
+        <p className={styles.subtitle}>
+          {mentees.length} total mentee(s)
+        </p>
       </div>
 
-      {withDetails.length === 0 ? (
+      {mentees.length === 0 ? (
         <div className={styles.empty}>
-          No mentees assigned yet. An admin will pair you with mentees.
+          No mentees assigned yet.
         </div>
       ) : (
         <div className={styles.list}>
-          {withDetails.map(({ match, mentee }) => {
+          {mentees.map(({ mentorship, mentee }) => {
             if (!mentee) return null;
+
             return (
-              <div key={match._id?.toString()} className={styles.card}>
-                <div className={styles.avatar}>{mentee.name.charAt(0).toUpperCase()}</div>
+              <div
+                key={mentorship.id}
+                className={styles.card}
+              >
+                <div className={styles.avatar}>
+                  {mentee.full_name
+                    ?.charAt(0)
+                    .toUpperCase()}
+                </div>
+
                 <div className={styles.info}>
-                  <div className={styles.name}>{mentee.name}</div>
-                  <div className={styles.email}>{mentee.email}</div>
-                  {mentee.profile?.bio && (
-                    <div className={styles.bio}>{mentee.profile.bio}</div>
+                  <div className={styles.name}>
+                    {mentee.full_name}
+                  </div>
+
+                  <div className={styles.email}>
+                    {mentee.email}
+                  </div>
+
+                  {mentee.bio && (
+                    <div className={styles.bio}>
+                      {mentee.bio}
+                    </div>
                   )}
-                  {mentee.profile?.phone && (
-                    <div className={styles.detail}>📞 {mentee.profile.phone}</div>
+
+                  {mentee.phone && (
+                    <div className={styles.detail}>
+                      📞 {mentee.phone}
+                    </div>
                   )}
-                  {mentee.profile?.location && (
-                    <div className={styles.detail}>📍 {mentee.profile.location}</div>
+
+                  {(mentee.city || mentee.country) && (
+                    <div className={styles.detail}>
+                      📍{" "}
+                      {[mentee.city, mentee.country]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </div>
                   )}
                 </div>
+
                 <div className={styles.meta}>
-                  <span className={`${styles.badge} ${styles[`badge-${match.status}`]}`}>
-                    {match.status}
+                  <span
+                    className={`${styles.badge} ${
+                      styles[
+                        `badge-${mentorship.status}`
+                      ]
+                    }`}
+                  >
+                    {mentorship.status}
                   </span>
-                  {match.startDate && (
+
+                  {mentorship.created_at && (
                     <div className={styles.date}>
-                      Since {new Date(match.startDate).toLocaleDateString()}
+                      Since{" "}
+                      {new Date(
+                        mentorship.created_at
+                      ).toLocaleDateString()}
                     </div>
                   )}
                 </div>

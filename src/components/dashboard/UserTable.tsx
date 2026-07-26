@@ -10,12 +10,26 @@ interface Tier {
 
 interface User {
   _id: string;
+
   name: string;
+
   email: string;
-  role: string;
+
+  role: "admin" | "mentor" | "mentee";
+
   subscriptionStatus?: string;
+
   subscriptionTierId?: string;
+
   createdAt?: string;
+
+  phone?: string;
+
+  city?: string;
+
+  country?: string;
+
+  expertise?: string;
 }
 
 interface UserTableProps {
@@ -42,7 +56,8 @@ export default function UserTable({ users: initialUsers, tiers }: UserTableProps
     return matchesSearch && matchesRole && matchesStatus;
   });
 
-  const handleRoleChange = async (userId: string, newRole: string) => {
+  const handleRoleChange = async (userId: string, 
+    newRole: "admin" | "mentor" | "mentee") => {
     const res = await fetch(`/api/admin/users/${userId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -134,7 +149,7 @@ export default function UserTable({ users: initialUsers, tiers }: UserTableProps
                   <td>
                     <select
                       value={u.role}
-                      onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                      onChange={(e) => handleRoleChange(u._id, e.target.value as "admin" | "mentor" | "mentee")}
                       className={styles.roleSelect}
                     >
                       <option value="admin">admin</option>

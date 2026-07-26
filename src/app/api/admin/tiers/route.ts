@@ -1,54 +1,114 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { getAllTiers, createTier } from '@/lib/models/SubscriptionTier';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { z } from "zod";
 
-const createTierSchema = z.object({
+const createPlanSchema = z.object({
   name: z.string().min(1),
-  slug: z.string().min(1).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
-  description: z.string().min(1),
-  pricePerMonth: z.number().int().min(0),
-  features: z.array(z.string()),
-  isActive: z.boolean().default(true),
-  isDefault: z.boolean().default(false),
-  stripePriceId: z.string().optional(),
-  zeffyUrl: z.string().url().optional().or(z.literal('')),
-  maxMentees: z.number().int().min(1).optional(),
+  slug: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens"),
+  description: z.string().optional(),
+  monthly_price: z.number().min(0),
+  mentor_limit: z.number().int().min(1),
+  is_active: z.boolean().default(true),
 });
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+async function requireAdmin() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Unauthorized", status: 401 };
   }
 
-  try {
-    const tiers = await getAllTiers();
-    return NextResponse.json({ tiers });
-  } catch (error) {
-    console.error('[admin/tiers GET]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile || profile.role !== "admin") {
+    return { error: "Forbidden", status: 403 };
   }
+
+  return { supabase };
+}
+
+export async function GET() {
+  const auth = await requireAdmin();
+
+  if ("error" in auth) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: auth.status }
+    );
+  }
+
+  const { supabase } = auth;
+
+  const { data, error } = await supabase
+    .from("plans")
+    .select("*")
+    .order("monthly_price");
+
+  if (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ plans: data });
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const auth = await requireAdmin();
+
+  if ("error" in auth) {
+    return NextResponse.json(
+      { error: auth.error },
+      { status: auth.status }
+    );
   }
 
-  try {
-    const body = await req.json();
-    const parsed = createTierSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
-    }
+  const { supabase } = auth;
 
-    const tier = await createTier(parsed.data);
-    return NextResponse.json({ tier }, { status: 201 });
-  } catch (error) {
-    console.error('[admin/tiers POST]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  const body = await req.json();
+
+  const parsed = createPlanSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: parsed.error.issues[0].message,
+      },
+      { status: 400 }
+    );
   }
+
+  const { data, error } = await supabase
+    .from("plans")
+    .insert(parsed.data)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json(
+    { plan: data },
+    { status: 201 }
+  );
 }

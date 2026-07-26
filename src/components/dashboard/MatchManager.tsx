@@ -1,19 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import styles from './MatchManager.module.css';
+import { useState } from "react";
+import styles from "./MatchManager.module.css";
+
 
 interface Match {
-  _id: string;
-  mentorId: string;
-  menteeId: string;
-  status: string;
-  startDate?: string;
-  notes?: string;
+  id: string;
+  mentor_id: string;
+  mentee_id: string;
+  status: "active" | "paused" | "completed" | "cancelled";
+  start_date: string;
+  end_date: string | null;
+  notes: string | null;
 }
 
 interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
 }
@@ -32,118 +34,151 @@ export default function MatchManager({
   userMap,
 }: MatchManagerProps) {
   const [matches, setMatches] = useState(initialMatches);
-  const [mentorId, setMentorId] = useState('');
-  const [menteeId, setMenteeId] = useState('');
-  const [notes, setNotes] = useState('');
+
+  const [mentorId, setMentorId] = useState("");
+  const [menteeId, setMenteeId] = useState("");
+
   const [creating, setCreating] = useState(false);
-  const [msg, setMsg] = useState('');
-  const [msgType, setMsgType] = useState<'success' | 'error'>('success');
 
-  const showMsg = (text: string, type: 'success' | 'error') => {
-    setMsg(text);
-    setMsgType(type);
-    setTimeout(() => setMsg(''), 3500);
-  };
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "error">(
+    "success"
+  );
 
-  const handleCreate = async () => {
+  function showMessage(
+    text: string,
+    type: "success" | "error"
+  ) {
+    setMessage(text);
+    setMessageType(type);
+
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  }
+
+  async function createMatch() {
     if (!mentorId || !menteeId) {
-      showMsg('Please select both a mentor and a mentee.', 'error');
+      showMessage("Select both mentor and mentee.", "error");
       return;
     }
+
     setCreating(true);
-    const res = await fetch('/api/admin/matches', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mentorId, menteeId, notes, status: 'pending' }),
+
+    const res = await fetch("/api/admin/matches", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mentor_id: mentorId,
+        mentee_id: menteeId,
+      }),
     });
+
     const data = await res.json();
+
     setCreating(false);
+
     if (!res.ok) {
-      showMsg(data.error ?? 'Failed to create match', 'error');
-    } else {
-      setMatches((prev) => [data, ...prev]);
-      setMentorId('');
-      setMenteeId('');
-      setNotes('');
-      showMsg('Match created.', 'success');
+      showMessage(data.error ?? "Failed to create mentorship.", "error");
+      return;
     }
-  };
 
-  const handleStatusChange = async (matchId: string, newStatus: string) => {
-    const res = await fetch('/api/admin/matches', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ matchId, status: newStatus }),
+    setMatches((prev) => [data.match, ...prev]);
+
+    setMentorId("");
+    setMenteeId("");
+
+    showMessage("Mentorship created successfully.", "success");
+  }
+
+  async function updateStatus(
+    id: string,
+    status: Match["status"]
+  ) {
+    const res = await fetch("/api/admin/matches", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        status,
+      }),
     });
-    if (res.ok) {
-      setMatches((prev) =>
-        prev.map((m) => (m._id === matchId ? { ...m, status: newStatus } : m))
-      );
-      showMsg('Status updated.', 'success');
-    } else {
-      showMsg('Failed to update status.', 'error');
-    }
-  };
 
-  const userName = (id: string) => userMap[id]?.name ?? id;
-  const userEmail = (id: string) => userMap[id]?.email ?? '';
+    if (!res.ok) {
+      showMessage("Unable to update mentorship.", "error");
+      return;
+    }
+
+    setMatches((prev) =>
+      prev.map((m) =>
+        m.id === id ? { ...m, status } : m
+      )
+    );
+
+    showMessage("Status updated.", "success");
+  }
+
+  const getUser = (id: string) => userMap[id];
 
   return (
     <div>
-      {msg && (
-        <div className={`${styles.alert} ${styles[`alert-${msgType}`]}`}>{msg}</div>
+      {message && (
+        <div className={`${styles.alert} ${styles[`alert-${messageType}`]}`}>
+          {message}
+        </div>
       )}
 
       <div className={styles.createBox}>
-        <h2 className={styles.createTitle}>Assign New Match</h2>
+        <h2 className={styles.createTitle}>Assign Mentor</h2>
+
         <div className={styles.createRow}>
           <div className={styles.field}>
             <label>Mentor</label>
+
             <select
               value={mentorId}
               onChange={(e) => setMentorId(e.target.value)}
               className={styles.select}
             >
-              <option value="">— Select Mentor —</option>
-              {mentors.map((m) => (
-                <option key={m._id} value={m._id}>
-                  {m.name} ({m.email})
+              <option value="">Select Mentor</option>
+
+              {mentors.map((mentor) => (
+                <option key={mentor.id} value={mentor.id}>
+                  {mentor.name}
                 </option>
               ))}
             </select>
           </div>
+
           <div className={styles.field}>
             <label>Mentee</label>
+
             <select
               value={menteeId}
               onChange={(e) => setMenteeId(e.target.value)}
               className={styles.select}
             >
-              <option value="">— Select Mentee —</option>
-              {mentees.map((m) => (
-                <option key={m._id} value={m._id}>
-                  {m.name} ({m.email})
+              <option value="">Select Mentee</option>
+
+              {mentees.map((mentee) => (
+                <option key={mentee.id} value={mentee.id}>
+                  {mentee.name}
                 </option>
               ))}
             </select>
           </div>
-          <div className={styles.field}>
-            <label>Notes (optional)</label>
-            <input
-              type="text"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Any notes about this pairing…"
-              className={styles.input}
-            />
-          </div>
         </div>
+
         <button
-          onClick={handleCreate}
+          onClick={createMatch}
           disabled={creating}
           className={styles.createBtn}
         >
-          {creating ? 'Creating…' : 'Create Match'}
+          {creating ? "Creating..." : "Create Match"}
         </button>
       </div>
 
@@ -154,48 +189,52 @@ export default function MatchManager({
               <th>Mentor</th>
               <th>Mentee</th>
               <th>Status</th>
-              <th>Start Date</th>
-              <th>Notes</th>
+              <th>Started</th>
               <th>Update</th>
             </tr>
           </thead>
+
           <tbody>
             {matches.length === 0 ? (
               <tr>
-                <td colSpan={6} className={styles.emptyCell}>
-                  No matches yet.
+                <td colSpan={5} className={styles.emptyCell}>
+                  No mentorships found.
                 </td>
               </tr>
             ) : (
-              matches.map((m) => (
-                <tr key={m._id}>
+              matches.map((match) => (
+                <tr key={match.id}>
+                  <td>{getUser(match.mentor_id)?.name ?? "Unknown"}</td>
+
+                  <td>{getUser(match.mentee_id)?.name ?? "Unknown"}</td>
+
                   <td>
-                    <div className={styles.personName}>{userName(m.mentorId)}</div>
-                    <div className={styles.personEmail}>{userEmail(m.mentorId)}</div>
-                  </td>
-                  <td>
-                    <div className={styles.personName}>{userName(m.menteeId)}</div>
-                    <div className={styles.personEmail}>{userEmail(m.menteeId)}</div>
-                  </td>
-                  <td>
-                    <span className={`${styles.badge} ${styles[`badge-${m.status}`]}`}>
-                      {m.status}
+                    <span
+                      className={`${styles.badge} ${styles[`badge-${match.status}`]}`}
+                    >
+                      {match.status}
                     </span>
                   </td>
-                  <td className={styles.dateCell}>
-                    {m.startDate
-                      ? new Date(m.startDate).toLocaleDateString()
-                      : '—'}
+
+                  <td>
+                    {match.start_date
+                      ? new Date(match.start_date).toLocaleDateString()
+                      : "—"}
                   </td>
-                  <td className={styles.notesCell}>{m.notes ?? '—'}</td>
+
                   <td>
                     <select
-                      value={m.status}
-                      onChange={(e) => handleStatusChange(m._id, e.target.value)}
+                      value={match.status}
+                      onChange={(e) =>
+                        updateStatus(
+                          match.id,
+                          e.target.value as Match["status"]
+                        )
+                      }
                       className={styles.statusSelect}
                     >
-                      <option value="pending">pending</option>
                       <option value="active">active</option>
+                      <option value="paused">paused</option>
                       <option value="completed">completed</option>
                       <option value="cancelled">cancelled</option>
                     </select>
