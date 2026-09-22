@@ -114,3 +114,67 @@
 .actions a:hover {
   background: var(--brand-800);
 }
+
+
+/* ==========================================
+   Recent Activity
+========================================== */
+
+.activitySection {
+  margin-top: var(--spacing-10);
+}
+
+.activityCard {
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.activityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-5);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.activityContent {
+  flex: 1;
+}
+
+.activityDescription {
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.activityDescription strong {
+  color: var(--brand-700);
+  font-weight: 700;
+}
+
+.activityTime {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.emptyActivity {
+  padding: var(--spacing-6);
+  color: var(--text-secondary);
+}

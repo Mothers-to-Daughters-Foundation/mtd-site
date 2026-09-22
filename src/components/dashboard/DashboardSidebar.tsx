@@ -1,43 +1,56 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import styles from './DashboardSidebar.module.css';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
+import { createClient } from "@/lib/supabase/client";
+import { useNotifications } from "@/providers/NotificationProvider";
+
+import styles from "./DashboardSidebar.module.css";
 
 const supabase = createClient();
 
 const adminNav = [
-  { href: '/dashboard/admin', label: 'Overview', exact: true },
-  { href: '/dashboard/admin/users', label: 'Users' },
-  { href: '/dashboard/admin/tiers', label: 'Subscription Tiers' },
-  { href: '/dashboard/admin/matches', label: 'Matches' },
-  { href: '/dashboard/admin/subscriptions', label: 'Subscriptions' },
-  { href: '/dashboard/admin/resources', label: 'Resources' },
+  { href: "/dashboard/admin", label: "Overview", exact: true },
+  { href: "/dashboard/admin/users", label: "Users" },
+  { href: "/dashboard/admin/tiers", label: "Subscription Tiers" },
+  { href: "/dashboard/admin/matches", label: "Matches" },
+  { href: "/dashboard/admin/subscriptions", label: "Subscriptions" },
+  { href: "/dashboard/admin/resources", label: "Resources" },
+  { href: "/dashboard/notifications", label: "Notifications" },
 ];
 
 const mentorNav = [
   { href: '/dashboard/mentor', label: 'Overview', exact: true },
   { href: '/dashboard/mentor/mentees', label: 'My Mentees' },
-  { href: '/dashboard/mentor/profile', label: 'Profile' },
+  { href: '/dashboard/mentor/sessions', label: 'Sessions' },
   { href: '/dashboard/mentor/resources', label: 'Resources' },
+  { href: "/dashboard/messages", label: "Messages" },
+  { href: '/dashboard/mentor/profile', label: 'Profile' },
+  { href: '/dashboard/notifications', label: 'Notifications' },
 ];
 
 const menteeNav = [
   { href: '/dashboard/mentee', label: 'Overview', exact: true },
   { href: '/dashboard/mentee/subscription', label: 'Subscription' },
+  { href: '/dashboard/mentee/sessions', label: 'Sessions' },
+  { href: '/dashboard/mentee/resources', label: 'Resources' },
   { href: '/dashboard/mentee/profile', label: 'Profile' },
+  { href: "/dashboard/messages", label: "Messages" },
+  { href: '/dashboard/notifications', label: 'Notifications' },
 ];
 
 function NavItem({
   href,
   label,
   exact,
+  unreadCount,
 }: {
   href: string;
   label: string;
   exact?: boolean;
+  unreadCount: number;
 }) {
   const pathname = usePathname();
 
@@ -49,10 +62,16 @@ function NavItem({
     <Link
       href={href}
       className={`${styles.navItem} ${
-        isActive ? styles.navItemActive : ''
+        isActive ? styles.navItemActive : ""
       }`}
     >
-      {label}
+      <span>{label}</span>
+
+      {label === "Notifications" && unreadCount > 0 && (
+        <span className={styles.badge}>
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
+      )}
     </Link>
   );
 }
@@ -60,8 +79,13 @@ function NavItem({
 export default function DashboardSidebar() {
   const router = useRouter();
 
+  const { unreadCount } = useNotifications();
+
   const [user, setUser] = useState<any>(null);
-  const [role, setRole] = useState<'admin' | 'mentor' | 'mentee'>('mentee');
+
+  const [role, setRole] = useState<
+    "admin" | "mentor" | "mentee"
+  >("mentee");
 
   useEffect(() => {
     async function loadUser() {
@@ -70,16 +94,16 @@ export default function DashboardSidebar() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace('/login');
+        router.replace("/login");
         return;
       }
 
       setUser(user);
 
       const { data: profile, error } = await supabase
-        .from('user_profiles')
-        .select('role')
-        .eq('id', user.id)
+        .from("user_profiles")
+        .select("role")
+        .eq("id", user.id)
         .single();
 
       if (!error && profile?.role) {
@@ -91,22 +115,22 @@ export default function DashboardSidebar() {
   }, [router]);
 
   const navItems =
-    role === 'admin'
+    role === "admin"
       ? adminNav
-      : role === 'mentor'
+      : role === "mentor"
       ? mentorNav
       : menteeNav;
 
   const roleLabel =
-    role === 'admin'
-      ? 'Admin'
-      : role === 'mentor'
-      ? 'Mentor'
-      : 'Mentee';
+    role === "admin"
+      ? "Admin"
+      : role === "mentor"
+      ? "Mentor"
+      : "Mentee";
 
   async function handleLogout() {
     await supabase.auth.signOut();
-    router.replace('/');
+    router.replace("/");
   }
 
   return (
@@ -126,7 +150,7 @@ export default function DashboardSidebar() {
           <div className={styles.userName}>
             {user.user_metadata?.full_name ??
               user.user_metadata?.name ??
-              'User'}
+              "User"}
           </div>
 
           <div className={styles.userEmail}>
@@ -135,9 +159,16 @@ export default function DashboardSidebar() {
         </div>
       )}
 
-      <nav className={styles.nav} aria-label="Dashboard Navigation">
+      <nav
+        className={styles.nav}
+        aria-label="Dashboard Navigation"
+      >
         {navItems.map((item) => (
-          <NavItem key={item.href} {...item} />
+          <NavItem
+            key={item.href}
+            {...item}
+            unreadCount={unreadCount}
+          />
         ))}
       </nav>
 

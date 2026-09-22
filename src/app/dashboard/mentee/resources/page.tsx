@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Resources | Mentor",
+  title: "Resources | Mentee",
 };
 
 const typeIcons: Record<string, string> = {
@@ -17,7 +17,7 @@ const typeIcons: Record<string, string> = {
   other: "📦",
 };
 
-export default async function MentorResourcesPage() {
+export default async function MenteeResourcesPage() {
   const supabase = await createClient();
 
   const {
@@ -36,8 +36,8 @@ export default async function MentorResourcesPage() {
         <h1 className={styles.title}>Resources</h1>
 
         <p className={styles.subtitle}>
-          Guides, templates, and materials to help you be an effective
-          mentor.
+          Guides, materials, and resources to support your mentorship
+          journey.
         </p>
       </div>
 

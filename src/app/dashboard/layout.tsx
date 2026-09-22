@@ -1,10 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
-import { createClient } from '@/lib/supabase/client';
-import styles from './layout.module.css';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import { NotificationProvider } from "@/providers/NotificationProvider";
+import { createClient } from "@/lib/supabase/client";
+
+import styles from "./layout.module.css";
 
 const supabase = createClient();
 
@@ -23,7 +26,7 @@ export default function DashboardLayout({
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.replace('/login');
+        router.replace("/login");
         return;
       }
 
@@ -37,9 +40,9 @@ export default function DashboardLayout({
     return (
       <div
         style={{
-          display: 'grid',
-          placeItems: 'center',
-          minHeight: '100vh',
+          display: "grid",
+          placeItems: "center",
+          minHeight: "100vh",
         }}
       >
         Loading...
@@ -48,9 +51,14 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className={styles.layout}>
-      <DashboardSidebar />
-      <main className={styles.main}>{children}</main>
-    </div>
+    <NotificationProvider>
+      <div className={styles.layout}>
+        <DashboardSidebar />
+
+        <main className={styles.main}>
+          {children}
+        </main>
+      </div>
+    </NotificationProvider>
   );
 }

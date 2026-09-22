@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAuditLog } from "@/lib/audit";
+import { notifyAllUsers } from "@/lib/notifications";
 
 /* =======================================================
    Upload Resource
@@ -57,7 +58,10 @@ export async function uploadResource(formData: FormData) {
     .single();
 
   if (dbError) {
-    await supabase.storage.from("resources").remove([storagePath]);
+    await supabase.storage
+      .from("resources")
+      .remove([storagePath]);
+
     throw new Error(dbError.message);
   }
 
@@ -73,6 +77,13 @@ export async function uploadResource(formData: FormData) {
       type,
     },
   });
+
+  await notifyAllUsers(
+    "resource",
+    "New Resource Available",
+    `"${title}" has been uploaded.`,
+    resource.id
+  );
 
   revalidatePath("/dashboard/admin/resources");
 
@@ -130,6 +141,13 @@ export async function updateResource(
     newValues: data,
   });
 
+  await notifyAllUsers(
+    "resource",
+    "Resource Updated",
+    `"${data.title}" has been updated.`,
+    id
+  );
+
   revalidatePath("/dashboard/admin/resources");
 
   return {
@@ -184,6 +202,13 @@ export async function deleteResource(id: string) {
     recordId: id,
     description: `Deleted resource "${resource.title}"`,
   });
+
+  await notifyAllUsers(
+    "resource",
+    "Resource Removed",
+    `"${resource.title}" has been removed from the resource library.`,
+    id
+  );
 
   revalidatePath("/dashboard/admin/resources");
 
