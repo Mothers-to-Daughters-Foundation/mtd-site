@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
+import { signIn } from '@/lib/supabase/auth';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
@@ -17,23 +17,24 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus('submitting');
-    setErrorMessage('');
+  e.preventDefault();
 
-    const result = await signIn('credentials', {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-    });
+  setStatus("submitting");
+  setErrorMessage("");
 
-    if (result?.error) {
-      setStatus('error');
-      setErrorMessage('Invalid email or password. Please try again.');
-    } else {
-      router.push('/dashboard');
-    }
-  };
+  const { error } = await signIn(
+    formData.email,
+    formData.password
+  );
+
+  if (error) {
+    setStatus("error");
+    setErrorMessage(error.message);
+    return;
+  }
+
+  router.push("/dashboard");
+};
 
   return (
     <>

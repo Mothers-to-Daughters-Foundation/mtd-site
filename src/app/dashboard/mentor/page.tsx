@@ -1,77 +1,118 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { getMatchesByMentorId } from '@/lib/models/Match';
-import { getUserById } from '@/lib/models/User';
-import StatCard from '@/components/dashboard/StatCard';
-import styles from './page.module.css';
+export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Mentor Dashboard' };
+import { redirect } from "next/navigation";
 
-export default async function MentorOverviewPage() {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user.role !== 'mentor' && session.user.role !== 'admin')) {
-    redirect('/dashboard');
+import { createClient } from "@/lib/supabase/server";
+
+import {
+  getMentorshipsByMentor,
+} from "@/lib/supabase/mentorships";
+
+import {
+  getUserById,
+} from "@/lib/supabase/users";
+
+import StatCard from "@/components/dashboard/StatCard";
+
+import styles from "./page.module.css";
+
+export default async function MentorDashboard() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  const profile = await getUserById(user.id);
+
+  if (!profile) redirect("/login");
+
+  if (
+    profile.role !== "mentor" &&
+    profile.role !== "admin"
+  ) {
+    redirect("/dashboard");
   }
 
-  const matches = await getMatchesByMentorId(session.user.id);
-  const activeMentees = matches.filter((m) => m.status === 'active');
+  const mentorships =
+    await getMentorshipsByMentor(user.id);
 
-  // Fetch mentee details
-  const menteeDetails = await Promise.all(
-    activeMentees.map((m) => getUserById(m.menteeId))
+  const activeMentees = mentorships.filter(
+    (m) => m.status === "active"
+  );
+
+  const mentees = await Promise.all(
+    activeMentees.map((m) => getUserById(m.mentee_id))
   );
 
   return (
     <div>
       <div className={styles.header}>
-        <h1 className={styles.title}>Welcome, {session.user.name}</h1>
-        <p className={styles.subtitle}>Your mentor dashboard</p>
+        <h1 className={styles.title}>
+          Welcome, {profile.full_name}
+        </h1>
+
+        <p className={styles.subtitle}>
+          Mentor Dashboard
+        </p>
       </div>
 
       <div className={styles.statsGrid}>
-        <StatCard label="Active Mentees" value={activeMentees.length} accent />
-        <StatCard label="Total Matches" value={matches.length} />
         <StatCard
-          label="Pending Matches"
-          value={matches.filter((m) => m.status === 'pending').length}
+          label="Active Mentees"
+          value={activeMentees.length}
+          accent
+        />
+
+        <StatCard
+          label="Total Mentorships"
+          value={mentorships.length}
+        />
+
+        <StatCard
+          label="Pending"
+          value={
+            mentorships.filter(
+              (m) => m.status === "pending"
+            ).length
+          }
         />
       </div>
 
-      {activeMentees.length > 0 && (
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Your Active Mentees</h2>
-          <div className={styles.menteeGrid}>
-            {activeMentees.map((match, i) => {
-              const mentee = menteeDetails[i];
-              if (!mentee) return null;
-              return (
-                <div key={match._id} className={styles.menteeCard}>
-                  <div className={styles.menteeAvatar}>
-                    {mentee.name.charAt(0).toUpperCase()}
+      <div className={styles.section}>
+        <h2 className={styles.sectionTitle}>
+          Your Active Mentees
+        </h2>
+
+        <div className={styles.menteeGrid}>
+          {mentees.map((mentee) => {
+            if (!mentee) return null;
+
+            return (
+              <div
+                key={mentee.id}
+                className={styles.menteeCard}
+              >
+                <div className={styles.menteeAvatar}>
+                  {mentee.full_name?.charAt(0)}
+                </div>
+
+                <div>
+                  <div className={styles.menteeName}>
+                    {mentee.full_name}
                   </div>
-                  <div>
-                    <div className={styles.menteeName}>{mentee.name}</div>
-                    <div className={styles.menteeEmail}>{mentee.email}</div>
-                    {mentee.profile?.location && (
-                      <div className={styles.menteeDetail}>{mentee.profile.location}</div>
-                    )}
+
+                  <div className={styles.menteeDetail}>
+                    {mentee.city}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
-      )}
-
-      {activeMentees.length === 0 && (
-        <div className={styles.empty}>
-          <p>You don&apos;t have any active mentees yet. An administrator will assign mentees to you.</p>
-          <a href="/dashboard/mentor/mentees" className={styles.link}>
-            View all matches →
-          </a>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

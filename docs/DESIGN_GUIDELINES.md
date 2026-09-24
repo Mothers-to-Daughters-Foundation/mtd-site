@@ -14,6 +14,7 @@ The site uses a consistent breakpoint system defined in `src/styles/tokens.css`:
 - **Wide**: `1280px` (min-width: 1280px)
 
 **Usage in CSS:**
+
 ```css
 /* Mobile-first: base styles for mobile */
 .component {
@@ -54,19 +55,20 @@ The site uses a consistent breakpoint system defined in `src/styles/tokens.css`:
    - Multi-column on tablet/desktop using CSS Grid
    - Use `grid-template-columns: 1fr` for mobile, then expand for larger screens
    - Example:
+
      ```css
      .grid {
        display: grid;
        grid-template-columns: 1fr;
        gap: var(--spacing-6);
      }
-     
+
      @media (min-width: 768px) {
        .grid {
          grid-template-columns: repeat(2, 1fr);
        }
      }
-     
+
      @media (min-width: 1024px) {
        .grid {
          grid-template-columns: repeat(3, 1fr);
@@ -79,6 +81,7 @@ The site uses a consistent breakpoint system defined in `src/styles/tokens.css`:
    - Use typography tokens (`--text-xs` through `--text-6xl`)
    - Headlines may be smaller on mobile, larger on desktop
    - Example:
+
      ```css
      .title {
        font-size: var(--text-3xl);
@@ -141,6 +144,7 @@ When implementing or updating components, ensure:
 ### Common Responsive Patterns
 
 **Two-Column Layout:**
+
 ```css
 .layout {
   display: grid;
@@ -156,6 +160,7 @@ When implementing or updating components, ensure:
 ```
 
 **Responsive Text:**
+
 ```css
 .heading {
   font-size: var(--text-2xl);
@@ -169,6 +174,7 @@ When implementing or updating components, ensure:
 ```
 
 **Responsive Spacing:**
+
 ```css
 .section {
   padding: var(--spacing-4);
@@ -184,20 +190,25 @@ When implementing or updating components, ensure:
 ## Card Components
 
 ### Interactive Cards
+
 Cards that link to other pages or trigger actions should:
+
 - Have hover states (elevation change, color shift, or scale)
 - Use pointer cursor
 - Provide visual feedback on interaction
 - Use the `Card` component with `href` prop
 
 ### Impact and Informational Cards
+
 Impact and informational cards must:
+
 - **Have no hover state**
 - **Use default cursor**
 - **Not change elevation, color, or scale on hover**
 - **Be visually static**
 
 These cards are used for:
+
 - Impact metrics
 - Informational content
 - Statistics

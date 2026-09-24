@@ -1,17 +1,33 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+export const dynamic = "force-dynamic";
+
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const supabase = await createClient();
 
-  if (!session) {
-    redirect('/login');
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
   }
 
-  const role = session.user.role;
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
 
-  if (role === 'admin') redirect('/dashboard/admin');
-  if (role === 'mentor') redirect('/dashboard/mentor');
-  redirect('/dashboard/mentee');
+  switch (profile?.role) {
+    case "admin":
+      redirect("/dashboard/admin");
+
+    case "mentor":
+      redirect("/dashboard/mentor");
+
+    default:
+      redirect("/dashboard/mentee");
+  }
 }

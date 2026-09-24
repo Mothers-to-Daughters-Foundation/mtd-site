@@ -1,25 +1,52 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { getSubscriptionByUserId } from '@/lib/models/Subscription';
-import { getTierById } from '@/lib/models/SubscriptionTier';
+import { NextResponse } from "next/server";
+
+import { createClient } from "@/lib/supabase/server";
+
+import { getSubscriptionByUserId } from "@/lib/supabase/subscriptions";
+import { getPlanById } from "@/lib/supabase/plans";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
   try {
-    const subscription = await getSubscriptionByUserId(session.user.id);
+    const subscription =
+      await getSubscriptionByUserId(user.id);
+
     if (!subscription) {
-      return NextResponse.json({ subscription: null, tier: null });
+      return NextResponse.json({
+        subscription: null,
+        plan: null,
+      });
     }
 
-    const tier = await getTierById(subscription.tierId);
-    return NextResponse.json({ subscription, tier });
+    const plan = await getPlanById(
+      subscription.plan_id
+    );
+
+    return NextResponse.json({
+      subscription,
+      plan,
+    });
   } catch (error) {
-    console.error('[subscriptions/me GET]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error(
+      "[subscriptions/me GET]",
+      error
+    );
+
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

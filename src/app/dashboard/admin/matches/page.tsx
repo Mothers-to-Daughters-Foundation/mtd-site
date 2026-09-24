@@ -1,41 +1,69 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { getAllMatches } from '@/lib/models/Match';
-import { getAllUsers } from '@/lib/models/User';
-import MatchManager from '@/components/dashboard/MatchManager';
-import styles from './page.module.css';
+export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Matches | Admin' };
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+
+import { getAllMentorships } from "@/lib/supabase/mentorships";
+import { getAllUsers } from "@/lib/supabase/users";
+
+import MatchManager from "@/components/dashboard/MatchManager";
+
+import styles from "./page.module.css";
+
+export const metadata = {
+  title: "Matches | Admin",
+};
 
 export default async function AdminMatchesPage() {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') redirect('/dashboard');
+  const supabase = await createClient();
 
-  const [matches, users] = await Promise.all([getAllMatches(), getAllUsers()]);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role !== "admin") {
+    redirect("/dashboard");
+  }
+
+  const [matches, users] = await Promise.all([
+    getAllMentorships(),
+    getAllUsers(),
+  ]);
 
   const mentors = users
-    .filter((u) => u.role === 'mentor')
-    .map((u) => ({ _id: u._id?.toString() ?? '', name: u.name, email: u.email }));
+    .filter((u) => u.role === "mentor")
+    .map((u) => ({
+      id: u.id,
+      name: u.full_name ?? "Unnamed Mentor",
+      email: "",
+    }));
 
   const mentees = users
-    .filter((u) => u.role === 'mentee')
-    .map((u) => ({ _id: u._id?.toString() ?? '', name: u.name, email: u.email }));
+    .filter((u) => u.role === "mentee")
+    .map((u) => ({
+      id: u.id,
+      name: u.full_name ?? "Unnamed Mentee",
+      email: "",
+    }));
 
-  const serializedMatches = matches.map((m) => ({
-    ...m,
-    _id: m._id?.toString() ?? '',
-    startDate: m.startDate?.toISOString(),
-    endDate: m.endDate?.toISOString(),
-    createdAt: m.createdAt?.toISOString() ?? '',
-    updatedAt: m.updatedAt?.toISOString() ?? '',
-  }));
-
-  // Build user lookup map for display
   const userMap = Object.fromEntries(
     users.map((u) => [
-      u._id?.toString() ?? '',
-      { _id: u._id?.toString() ?? '', name: u.name, email: u.email },
+      u.id,
+      {
+        id: u.id,
+        name: u.full_name ?? "Unknown User",
+        email: "",
+      },
     ])
   );
 
@@ -43,12 +71,14 @@ export default async function AdminMatchesPage() {
     <div>
       <div className={styles.header}>
         <h1 className={styles.title}>Mentor — Mentee Matches</h1>
+
         <p className={styles.subtitle}>
-          Assign mentors to mentees and track the status of each relationship.
+          Assign mentors to mentees and manage mentorships.
         </p>
       </div>
+
       <MatchManager
-        matches={serializedMatches}
+        matches={matches}
         mentors={mentors}
         mentees={mentees}
         userMap={userMap}

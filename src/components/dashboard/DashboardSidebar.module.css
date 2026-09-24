@@ -22,37 +22,37 @@
   font-weight: 800;
   color: #fff;
   text-decoration: none;
-  letter-spacing: 0.04em;
+  letter-spacing: .04em;
 }
 
 .roleTag {
   background: var(--brand-700);
   color: #fff;
-  font-size: 0.7rem;
+  font-size: .7rem;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 999px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: .06em;
 }
 
 .userInfo {
   padding: var(--spacing-4);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255,255,255,.08);
   border-radius: var(--radius-md);
 }
 
 .userName {
   font-weight: 600;
-  color: #fff;
-  font-size: 0.9rem;
+  color: white;
+  font-size: .9rem;
   margin-bottom: 2px;
 }
 
 .userEmail {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.75rem;
-  word-break: break-all;
+  color: rgba(255,255,255,.6);
+  font-size: .75rem;
+  word-break: break-word;
 }
 
 .nav {
@@ -63,93 +63,132 @@
 }
 
 .navItem {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   padding: var(--spacing-3) var(--spacing-4);
-  color: rgba(255, 255, 255, 0.75);
+
+  color: rgba(255,255,255,.75);
   text-decoration: none;
+
   border-radius: var(--radius-md);
-  font-size: 0.9rem;
+
+  font-size: .9rem;
   font-weight: 500;
-  transition: background var(--transition-fast), color var(--transition-fast);
+
+  transition:
+    background .2s ease,
+    color .2s ease;
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: rgba(255,255,255,.1);
+  color: white;
 }
 
 .navItemActive {
   background: var(--brand-700);
-  color: #fff;
+  color: white;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 22px;
+
+  padding: 0 6px;
+
+  border-radius: 999px;
+
+  background: #ef4444;
+  color: white;
+
+  font-size: .72rem;
+  font-weight: 700;
+
+  line-height: 1;
 }
 
 .bottom {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
+
   padding-top: var(--spacing-4);
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+
+  border-top: 1px solid rgba(255,255,255,.15);
 }
 
 .siteLink {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.8rem;
+  color: rgba(255,255,255,.6);
+  font-size: .8rem;
   text-decoration: none;
 }
 
 .siteLink:hover {
-  color: #fff;
+  color: white;
 }
 
 .signOutBtn {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.8);
+
+  border: 1px solid rgba(255,255,255,.2);
   border-radius: var(--radius-md);
+
   padding: var(--spacing-2) var(--spacing-4);
-  font-size: 0.85rem;
+
+  font-size: .85rem;
+
   cursor: pointer;
-  transition: background var(--transition-fast);
+
+  transition: background .2s ease;
 }
 
 .signOutBtn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: rgba(255,255,255,.2);
+  color: white;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    min-height: auto;
-    position: static;
-    padding: var(--spacing-4);
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-3);
-  }
+@media (max-width:768px){
 
-  .userInfo {
-    display: none;
-  }
+.sidebar{
+width:100%;
+min-height:auto;
+position:static;
+padding:var(--spacing-4);
+flex-direction:row;
+flex-wrap:wrap;
+align-items:center;
+gap:var(--spacing-3);
+}
 
-  .nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: var(--spacing-1);
-    flex: none;
-    width: 100%;
-  }
+.userInfo{
+display:none;
+}
 
-  .navItem {
-    padding: var(--spacing-2) var(--spacing-3);
-    font-size: 0.8rem;
-  }
+.nav{
+flex-direction:row;
+flex-wrap:wrap;
+gap:var(--spacing-1);
+width:100%;
+flex:none;
+}
 
-  .bottom {
-    flex-direction: row;
-    border-top: none;
-    padding-top: 0;
-    margin-left: auto;
-  }
+.navItem{
+padding:var(--spacing-2) var(--spacing-3);
+font-size:.8rem;
+}
+
+.bottom{
+flex-direction:row;
+margin-left:auto;
+border-top:none;
+padding-top:0;
+}
+
 }

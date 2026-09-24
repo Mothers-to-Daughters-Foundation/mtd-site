@@ -1,73 +1,123 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { getTierById } from '@/lib/models/SubscriptionTier';
-import { getUserById } from '@/lib/models/User';
-import getStripe from '@/lib/stripe';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { getPlanById } from "@/lib/supabase/plans";
+import { getUserById } from "@/lib/supabase/users";
+import getStripe from "@/lib/stripe";
+import { z } from "zod";
 
 const checkoutSchema = z.object({
-  tierId: z.string().min(1),
+  tierId: z.string().uuid(),
 });
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
   try {
     const body = await req.json();
+
     const parsed = checkoutSchema.safeParse(body);
+
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+      return NextResponse.json(
+        { error: parsed.error.issues[0].message },
+        { status: 400 }
+      );
     }
 
-    const tier = await getTierById(parsed.data.tierId);
-    if (!tier || !tier.isActive) {
-      return NextResponse.json({ error: 'Tier not found or inactive' }, { status: 404 });
+    const plan = await getPlanById(parsed.data.tierId);
+
+    if (!plan || !plan.is_active) {
+      return NextResponse.json(
+        { error: "Plan not found or inactive" },
+        { status: 404 }
+      );
     }
 
-    // If tier uses Zeffy, return the Zeffy URL
-    if (tier.zeffyUrl) {
-      return NextResponse.json({ provider: 'zeffy', url: tier.zeffyUrl });
+    const profile = await getUserById(user.id);
+
+    if (!profile) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
-    if (!tier.stripePriceId) {
-      return NextResponse.json({ error: 'Tier has no payment method configured' }, { status: 400 });
+    /**
+     * If you are no longer using Stripe,
+     * remove everything below this line.
+     */
+
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        {
+          error: "Stripe is not configured.",
+        },
+        {
+          status: 500,
+        }
+      );
     }
 
     const stripe = getStripe();
-    const user = await getUserById(session.user.id);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
 
-    const baseUrl = process.env.NEXTAUTH_URL ?? 'http://localhost:3000';
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/mtd-site';
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      "http://localhost:3000";
 
-    const stripeSession = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      customer_email: user.stripeCustomerId ? undefined : user.email,
-      customer: user.stripeCustomerId ?? undefined,
+    const checkout = await stripe.checkout.sessions.create({
+      mode: "subscription",
+
+      payment_method_types: ["card"],
+
+      customer_email: profile.email,
+
       line_items: [
         {
-          price: tier.stripePriceId,
+          price: plan.stripe_price_id ?? undefined,
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}${basePath}/dashboard/mentee/subscription?success=1`,
-      cancel_url: `${baseUrl}${basePath}/dashboard/mentee/subscription?cancelled=1`,
+
+      success_url:
+        `${baseUrl}/dashboard/mentee/subscription?success=1`,
+
+      cancel_url:
+        `${baseUrl}/dashboard/mentee/subscription?cancelled=1`,
+
       metadata: {
-        userId: session.user.id,
-        tierId: parsed.data.tierId,
+        userId: user.id,
+        planId: plan.id,
       },
     });
 
-    return NextResponse.json({ provider: 'stripe', url: stripeSession.url });
+    return NextResponse.json({
+      provider: "stripe",
+      url: checkout.url,
+    });
   } catch (error) {
-    console.error('[subscriptions/checkout POST]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error(
+      "[subscriptions/checkout POST]",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

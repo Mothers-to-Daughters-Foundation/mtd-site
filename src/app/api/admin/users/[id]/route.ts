@@ -1,66 +1,71 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { getUserById, updateUserById } from '@/lib/models/User';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { z } from "zod";
 
-const updateUserSchema = z.object({
-  role: z.enum(['admin', 'mentor', 'mentee']).optional(),
-  subscriptionStatus: z.enum(['active', 'paused', 'cancelled']).optional(),
-  subscriptionTierId: z.string().optional(),
-  name: z.string().min(2).optional(),
-  profile: z
-    .object({
-      bio: z.string().optional(),
-      phone: z.string().optional(),
-      location: z.string().optional(),
-      image: z.string().optional(),
-      expertise: z.string().optional(),
-      availability: z.string().optional(),
-    })
-    .optional(),
+const schema = z.object({
+  role: z.enum(["admin", "mentor", "mentee"]),
 });
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+export async function PATCH(
+  req: NextRequest,
+  {
+    params,
+  }: {
+    params: { id: string };
+  }
+) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
-  try {
-    const user = await getUserById(params.id);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-    const { password: _pw, ...safeUser } = user as any;
-    return NextResponse.json({ user: safeUser });
-  } catch (error) {
-    console.error('[admin/users/[id] GET]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+  const { data: me } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!me || me.role !== "admin") {
+    return NextResponse.json(
+      { error: "Forbidden" },
+      { status: 403 }
+    );
   }
 
-  try {
-    const body = await req.json();
-    const parsed = updateUserSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
-    }
+  const body = await req.json();
 
-    const user = await updateUserById(params.id, parsed.data);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-    const { password: _pw, ...safeUser } = user as any;
-    return NextResponse.json({ user: safeUser });
-  } catch (error) {
-    console.error('[admin/users/[id] PATCH]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  const parsed = schema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0].message },
+      { status: 400 }
+    );
   }
+
+  const { data, error } = await supabase
+    .from("user_profiles")
+    .update({
+      role: parsed.data.role,
+    })
+    .eq("id", params.id)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json(data);
 }

@@ -1,22 +1,54 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { getAllTiers } from '@/lib/models/SubscriptionTier';
-import TierEditor from '@/components/dashboard/TierEditor';
-import styles from './page.module.css';
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export const metadata = { title: 'Subscription Tiers | Admin' };
+import { getAllPlans } from "@/lib/supabase/plans";
+
+import TierEditor from "@/components/dashboard/TierEditor";
+import styles from "./page.module.css";
+
+export const metadata = {
+  title: "Subscription Tiers | Admin",
+};
 
 export default async function AdminTiersPage() {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'admin') redirect('/dashboard');
+  const supabase = await createClient();
 
-  const tiers = await getAllTiers();
-  const serialized = tiers.map((t) => ({
-    ...t,
-    _id: t._id?.toString() ?? '',
-    createdAt: t.createdAt?.toISOString() ?? '',
-    updatedAt: t.updatedAt?.toISOString() ?? '',
+  // Get current logged in user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Get the user's role from user_profiles
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile || profile.role !== "admin") {
+    redirect("/dashboard");
+  }
+
+  const plans = await getAllPlans();
+
+  const serialized = plans.map((plan) => ({
+    _id: plan.id,
+    name: plan.name,
+    slug: plan.slug,
+    description: plan.description ?? "",
+    pricePerMonth: plan.monthly_price,
+    features: [],
+    isActive: plan.is_active,
+    isDefault: false,
+    stripePriceId: "",
+    zeffyUrl: "",
+    maxMentees: plan.mentor_limit,
+    createdAt: plan.created_at,
+    updatedAt: plan.updated_at,
   }));
 
   return (
@@ -27,6 +59,7 @@ export default async function AdminTiersPage() {
           Create and edit pricing tiers. Changes take effect immediately.
         </p>
       </div>
+
       <TierEditor tiers={serialized} />
     </div>
   );

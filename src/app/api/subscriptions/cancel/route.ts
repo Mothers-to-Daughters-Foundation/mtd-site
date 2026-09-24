@@ -1,43 +1,81 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { getSubscriptionByUserId, updateSubscription } from '@/lib/models/Subscription';
-import { updateUserById } from '@/lib/models/User';
-import getStripe from '@/lib/stripe';
+import { NextResponse } from "next/server";
+import {
+  getSubscriptionByUserId,
+  updateSubscription,
+} from "@/lib/supabase/subscriptions";
+import { createClient } from "@/lib/supabase/server";
+import getStripe from "@/lib/stripe";
 
 export async function POST() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
   try {
-    const subscription = await getSubscriptionByUserId(session.user.id);
+    // Get current subscription
+    const { data: subscription, error } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("is_current", true)
+      .maybeSingle();
+
+    if (error) throw error;
+
     if (!subscription) {
-      return NextResponse.json({ error: 'No active subscription found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "No active subscription found" },
+        { status: 404 }
+      );
     }
 
-    if (subscription.stripeSubscriptionId) {
-      const stripe = getStripe();
-      await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
-    }
+    // Cancel Stripe subscription if it exists
+    if (subscription.stripe_subscription_id) {
+  const stripe = getStripe();
 
-    // Mark subscription as cancelled in DB
-    if (subscription._id) {
-      await updateSubscription(subscription._id, {
-        status: 'cancelled',
-        cancelledAt: new Date(),
-      });
-    }
+  await stripe.subscriptions.cancel(
+    subscription.stripe_subscription_id
+  );
+}
 
-    // Update user record
-    await updateUserById(session.user.id, {
-      subscriptionStatus: 'cancelled',
+await updateSubscription(subscription.id, {
+  status: "cancelled",
+  cancelled_at: new Date().toISOString(),
+});
+
+    // Update Supabase subscription
+    const { error: updateError } = await supabase
+      .from("subscriptions")
+      .update({
+        status: "cancelled",
+        cancelled_at: new Date().toISOString(),
+        is_current: false,
+      })
+      .eq("id", subscription.id);
+
+    if (updateError) throw updateError;
+
+    return NextResponse.json({
+      message: "Subscription cancelled successfully",
     });
-
-    return NextResponse.json({ message: 'Subscription cancelled' });
   } catch (error) {
-    console.error('[subscriptions/cancel POST]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error(
+      "[subscriptions/cancel POST]",
+      error
+    );
+
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

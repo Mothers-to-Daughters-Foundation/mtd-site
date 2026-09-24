@@ -1,50 +1,90 @@
-import styles from './page.module.css';
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getResourcesForUser } from "@/lib/models/resources";
+import styles from "./page.module.css";
 
-export const metadata = { title: 'Resources | Mentor' };
+export const dynamic = "force-dynamic";
 
-export default function MentorResourcesPage() {
+export const metadata = {
+  title: "Resources | Mentor",
+};
+
+const typeIcons: Record<string, string> = {
+  document: "📄",
+  video: "🎥",
+  audio: "🎵",
+  link: "🔗",
+  other: "📦",
+};
+
+export default async function MentorResourcesPage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const resources = await getResourcesForUser(user.id);
+
   return (
     <div>
       <div className={styles.header}>
         <h1 className={styles.title}>Resources</h1>
+
         <p className={styles.subtitle}>
-          Guides, templates, and materials to help you be an effective mentor.
+          Guides, templates, and materials to help you be an effective
+          mentor.
         </p>
       </div>
 
-      <div className={styles.grid}>
-        {resources.map((r) => (
-          <div key={r.title} className={styles.card}>
-            <div className={styles.icon}>{r.icon}</div>
-            <h2 className={styles.resourceTitle}>{r.title}</h2>
-            <p className={styles.resourceDesc}>{r.description}</p>
-            <span className={styles.comingSoon}>Coming Soon</span>
-          </div>
-        ))}
-      </div>
+      {resources.length === 0 ? (
+        <div className={styles.empty}>
+          No resources are available yet.
+        </div>
+      ) : (
+        <div className={styles.grid}>
+          {resources.map((resource) => (
+            <div key={resource.id} className={styles.card}>
+              <div className={styles.icon}>
+                {typeIcons[resource.type] ?? "📦"}
+              </div>
+
+              <h2 className={styles.resourceTitle}>
+                {resource.title}
+              </h2>
+
+              {resource.description && (
+                <p className={styles.resourceDesc}>
+                  {resource.description}
+                </p>
+              )}
+
+              <div className={styles.meta}>
+                <span>
+                  {typeIcons[resource.type] ?? "📄"}{" "}
+                  {resource.type.charAt(0).toUpperCase() +
+                    resource.type.slice(1)}
+                </span>
+
+                <span>
+                  📂 {resource.category || "General"}
+                </span>
+              </div>
+
+              <a
+                href={`/api/resources/${resource.id}/download`}
+                className={styles.downloadButton}
+              >
+                ⬇ Download
+              </a>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
-const resources = [
-  {
-    icon: '📋',
-    title: 'Mentor Handbook',
-    description: 'Your complete guide to the MTD mentorship program and expectations.',
-  },
-  {
-    icon: '🗓️',
-    title: 'Session Templates',
-    description: 'Ready-to-use templates for planning and running mentee sessions.',
-  },
-  {
-    icon: '🎯',
-    title: 'Goal-Setting Worksheets',
-    description: 'Help your mentees identify and track their personal goals.',
-  },
-  {
-    icon: '💬',
-    title: 'Communication Tips',
-    description: 'Best practices for building a strong mentor-mentee relationship.',
-  },
-];
