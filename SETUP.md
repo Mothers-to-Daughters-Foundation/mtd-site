@@ -29,18 +29,34 @@ NEXT_PUBLIC_ZEFFY_URL=https://...
 # Site URL (for sitemap)
 NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 
-# Authentication - NextAuth.js
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret-key-here-generate-with-openssl-rand-base64-32
+# Authentication & Database — Supabase
+# Get these from https://app.supabase.com → your project → Settings → API
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
-# Database - MongoDB
-MONGODB_URI=mongodb://localhost:27017/mtd-site
-# Or for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/mtd-site
-MONGODB_DB_NAME=mtd-site
+# Service role key — NEVER expose this in the browser.
+# Used server-side only (user registration, admin operations).
+# Get it from Settings → API → service_role key (keep it secret).
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
 **Note:** See `docs/GTM_SETUP.md` for detailed instructions on setting up Google Tag Manager with GA4 and Microsoft Clarity.
+
+
+## Test & Admin Accounts
+
+To create test users, run `supabase/seed-users.sql` in the **Supabase SQL editor**
+(https://app.supabase.com → your project → SQL editor → paste & run).
+
+This creates:
+
+| Role   | Email              | Password    |
+|--------|--------------------|-------------|
+| Mentee | test@mtd.org       | Test1234!   |
+| Mentor | mentor@mtd.org     | Test1234!   |
+| Admin  | admin@mtd.org      | Admin1234!  |
+
+> ⚠️ Change these passwords immediately after first login in production.
 
 ## Development
 
