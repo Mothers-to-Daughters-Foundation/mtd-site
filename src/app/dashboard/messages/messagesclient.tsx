@@ -153,6 +153,7 @@ async function assertConversationMember(
   conversationId: string,
   userId: string
 ) {
+  /* Verify active membership in conversation_members */
   const {
     data: membership,
     error,
