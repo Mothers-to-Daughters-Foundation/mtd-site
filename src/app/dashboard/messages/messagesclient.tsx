@@ -5,10 +5,6 @@ import { createClient } from "@/lib/supabase/client";
 
 import styles from "./page.module.css";
 
-interface Props {
-  conversations: Conversation[];
-}
-
 interface Conversation {
   id: string;
   mentorship_id: string;
@@ -32,6 +28,10 @@ interface Message {
   updated_at: string;
 }
 
+interface Props {
+  conversations: Conversation[];
+}
+
 interface UserProfile {
   id: string;
   full_name: string | null;
@@ -39,9 +39,10 @@ interface UserProfile {
   role?: string | null;
 }
 
-const supabase = createClient();
-
-async function getMessages(conversationId: string) {
+async function getMessages(
+  supabase: ReturnType<typeof createClient>,
+  conversationId: string
+) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -79,6 +80,7 @@ async function getMessages(conversationId: string) {
 }
 
 async function sendMessage(
+  supabase: ReturnType<typeof createClient>,
   conversationId: string,
   message: string
 ) {
@@ -126,6 +128,7 @@ async function sendMessage(
 }
 
 async function markMessagesAsRead(
+  supabase: ReturnType<typeof createClient>,
   conversationId: string
 ) {
   const {
@@ -166,6 +169,7 @@ async function markMessagesAsRead(
 export default function MessagesClient({
   conversations,
 }: Props) {
+  const supabase = useMemo(() => createClient(), []);
   const [selectedConversation, setSelectedConversation] =
     useState<string | null>(
       conversations.length > 0
@@ -174,6 +178,9 @@ export default function MessagesClient({
     );
 
   const [messages, setMessages] = useState<Message[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<
+    string | null
+  >(null);
   const [profiles, setProfiles] = useState<
     Record<string, UserProfile>
   >({});
@@ -197,6 +204,22 @@ export default function MessagesClient({
   );
 
   /* =======================================================
+     Load current user
+  ======================================================= */
+
+  useEffect(() => {
+    async function loadCurrentUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setCurrentUserId(user?.id ?? null);
+    }
+
+    loadCurrentUser();
+  }, [supabase]);
+
+  /* =======================================================
      Load messages
   ======================================================= */
 
@@ -215,6 +238,7 @@ export default function MessagesClient({
 
       try {
         const data = await getMessages(
+          supabase,
           conversationId
         );
 
@@ -223,6 +247,7 @@ export default function MessagesClient({
         }
 
         await markMessagesAsRead(
+          supabase,
           conversationId
         );
       } catch (err) {
@@ -245,7 +270,7 @@ export default function MessagesClient({
     return () => {
       cancelled = true;
     };
-  }, [selectedConversation]);
+  }, [selectedConversation, supabase]);
 
   /* =======================================================
      Load user profiles for message senders
@@ -292,7 +317,7 @@ export default function MessagesClient({
     }
 
     loadProfiles();
-  }, [messages]);
+  }, [messages, supabase]);
 
   /* =======================================================
      Send message
@@ -310,6 +335,7 @@ export default function MessagesClient({
     startTransition(async () => {
       try {
         const newMessage = await sendMessage(
+          supabase,
           selectedConversation,
           text
         );
@@ -500,6 +526,7 @@ export default function MessagesClient({
                           message.sender_id
                         ]
                       }
+                      currentUserId={currentUserId}
                       formatTime={formatTime}
                     />
                   ))
@@ -554,27 +581,14 @@ export default function MessagesClient({
 function MessageBubble({
   message,
   profile,
+  currentUserId,
   formatTime,
 }: {
   message: Message;
   profile?: UserProfile;
+  currentUserId: string | null;
   formatTime: (date: string) => string;
 }) {
-  const [currentUserId, setCurrentUserId] =
-    useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadCurrentUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      setCurrentUserId(user?.id ?? null);
-    }
-
-    loadCurrentUser();
-  }, []);
-
   const isOwn =
     currentUserId === message.sender_id;
 
