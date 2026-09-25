@@ -3,18 +3,33 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-import {
-  getMessages,
-  markMessagesAsRead,
-  sendMessage,
-  type Conversation,
-  type Message,
-} from "@/lib/models/messages";
-
 import styles from "./page.module.css";
 
 interface Props {
   conversations: Conversation[];
+}
+
+interface Conversation {
+  id: string;
+  mentorship_id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  message: string;
+  attachment_url: string | null;
+  is_read: boolean;
+  read_at: string | null;
+  is_edited: boolean;
+  edited_at: string | null;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface UserProfile {
@@ -25,6 +40,128 @@ interface UserProfile {
 }
 
 const supabase = createClient();
+
+async function getMessages(conversationId: string) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const { data: membership } = await supabase
+    .from("conversation_members")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!membership) {
+    throw new Error("You do not have access to this conversation.");
+  }
+
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("conversation_id", conversationId)
+    .eq("is_deleted", false)
+    .order("created_at", {
+      ascending: true,
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  return data as Message[];
+}
+
+async function sendMessage(
+  conversationId: string,
+  message: string
+) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const trimmedMessage = message.trim();
+
+  if (!trimmedMessage) {
+    throw new Error("Message cannot be empty.");
+  }
+
+  const { data: membership } = await supabase
+    .from("conversation_members")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!membership) {
+    throw new Error("You do not have access to this conversation.");
+  }
+
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({
+      conversation_id: conversationId,
+      sender_id: user.id,
+      message: trimmedMessage,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as Message;
+}
+
+async function markMessagesAsRead(
+  conversationId: string
+) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const { data: membership } = await supabase
+    .from("conversation_members")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!membership) {
+    throw new Error("You do not have access to this conversation.");
+  }
+
+  const { error } = await supabase
+    .from("messages")
+    .update({
+      is_read: true,
+      read_at: new Date().toISOString(),
+    })
+    .eq("conversation_id", conversationId)
+    .neq("sender_id", user.id)
+    .eq("is_read", false);
+
+  if (error) {
+    throw error;
+  }
+}
 
 export default function MessagesClient({
   conversations,
