@@ -51,17 +51,11 @@ async function getMessages(
     throw new Error("Unauthorized");
   }
 
-  const { data: membership } = await supabase
-    .from("conversation_members")
-    .select("id")
-    .eq("conversation_id", conversationId)
-    .eq("user_id", user.id)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (!membership) {
-    throw new Error("You do not have access to this conversation.");
-  }
+  await assertConversationMember(
+    supabase,
+    conversationId,
+    user.id
+  );
 
   const { data, error } = await supabase
     .from("messages")
@@ -98,17 +92,11 @@ async function sendMessage(
     throw new Error("Message cannot be empty.");
   }
 
-  const { data: membership } = await supabase
-    .from("conversation_members")
-    .select("id")
-    .eq("conversation_id", conversationId)
-    .eq("user_id", user.id)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (!membership) {
-    throw new Error("You do not have access to this conversation.");
-  }
+  await assertConversationMember(
+    supabase,
+    conversationId,
+    user.id
+  );
 
   const { data, error } = await supabase
     .from("messages")
@@ -139,17 +127,11 @@ async function markMessagesAsRead(
     throw new Error("Unauthorized");
   }
 
-  const { data: membership } = await supabase
-    .from("conversation_members")
-    .select("id")
-    .eq("conversation_id", conversationId)
-    .eq("user_id", user.id)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (!membership) {
-    throw new Error("You do not have access to this conversation.");
-  }
+  await assertConversationMember(
+    supabase,
+    conversationId,
+    user.id
+  );
 
   const { error } = await supabase
     .from("messages")
@@ -163,6 +145,24 @@ async function markMessagesAsRead(
 
   if (error) {
     throw error;
+  }
+}
+
+async function assertConversationMember(
+  supabase: ReturnType<typeof createClient>,
+  conversationId: string,
+  userId: string
+) {
+  const { data: membership } = await supabase
+    .from("conversation_members")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!membership) {
+    throw new Error("You do not have access to this conversation.");
   }
 }
 
