@@ -2,9 +2,14 @@ const createMDX = require('@next/mdx');
 const fs = require('fs');
 const path = require('path');
 
+const isPagesDeployment = process.env.GITHUB_PAGES === 'true';
+const basePath = isPagesDeployment ? '/mtd-site' : '';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  basePath,
+  assetPrefix: basePath,
   images: {
     unoptimized: true,
   },
