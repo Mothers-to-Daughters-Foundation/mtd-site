@@ -153,13 +153,20 @@ async function assertConversationMember(
   conversationId: string,
   userId: string
 ) {
-  const { data: membership } = await supabase
+  const {
+    data: membership,
+    error,
+  } = await supabase
     .from("conversation_members")
     .select("id")
     .eq("conversation_id", conversationId)
     .eq("user_id", userId)
     .eq("is_active", true)
     .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
 
   if (!membership) {
     throw new Error("You do not have access to this conversation.");
