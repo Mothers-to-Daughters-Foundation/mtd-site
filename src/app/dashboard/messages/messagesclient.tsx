@@ -206,6 +206,7 @@ export default function MessagesClient({
       return;
     }
 
+    const conversationId = selectedConversation;
     let cancelled = false;
 
     async function loadMessages() {
@@ -214,7 +215,7 @@ export default function MessagesClient({
 
       try {
         const data = await getMessages(
-          selectedConversation
+          conversationId
         );
 
         if (!cancelled) {
@@ -222,7 +223,7 @@ export default function MessagesClient({
         }
 
         await markMessagesAsRead(
-          selectedConversation
+          conversationId
         );
       } catch (err) {
         if (!cancelled) {

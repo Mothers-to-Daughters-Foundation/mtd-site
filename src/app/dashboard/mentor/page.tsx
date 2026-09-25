@@ -72,10 +72,10 @@ export default async function MentorDashboard() {
         />
 
         <StatCard
-          label="Pending"
+          label="Paused"
           value={
             mentorships.filter(
-              (m) => m.status === "pending"
+              (m) => m.status === "paused"
             ).length
           }
         />
