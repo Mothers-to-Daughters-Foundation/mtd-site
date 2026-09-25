@@ -3,15 +3,30 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-import {
-  getMessages,
-  markMessagesAsRead,
-  sendMessage,
-  type Conversation,
-  type Message,
-} from "@/lib/models/messages";
-
 import styles from "./page.module.css";
+
+interface Conversation {
+  id: string;
+  mentorship_id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  message: string;
+  attachment_url: string | null;
+  is_read: boolean;
+  read_at: string | null;
+  is_edited: boolean;
+  edited_at: string | null;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 interface Props {
   conversations: Conversation[];
@@ -24,11 +39,145 @@ interface UserProfile {
   role?: string | null;
 }
 
-const supabase = createClient();
+async function getMessages(
+  supabase: ReturnType<typeof createClient>,
+  conversationId: string
+) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  await assertConversationMember(
+    supabase,
+    conversationId,
+    user.id
+  );
+
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("conversation_id", conversationId)
+    .eq("is_deleted", false)
+    .order("created_at", {
+      ascending: true,
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  return data as Message[];
+}
+
+async function sendMessage(
+  supabase: ReturnType<typeof createClient>,
+  conversationId: string,
+  message: string
+) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const trimmedMessage = message.trim();
+
+  if (!trimmedMessage) {
+    throw new Error("Message cannot be empty.");
+  }
+
+  await assertConversationMember(
+    supabase,
+    conversationId,
+    user.id
+  );
+
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({
+      conversation_id: conversationId,
+      sender_id: user.id,
+      message: trimmedMessage,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as Message;
+}
+
+async function markMessagesAsRead(
+  supabase: ReturnType<typeof createClient>,
+  conversationId: string
+) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  await assertConversationMember(
+    supabase,
+    conversationId,
+    user.id
+  );
+
+  const { error } = await supabase
+    .from("messages")
+    .update({
+      is_read: true,
+      read_at: new Date().toISOString(),
+    })
+    .eq("conversation_id", conversationId)
+    .neq("sender_id", user.id)
+    .eq("is_read", false);
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function assertConversationMember(
+  supabase: ReturnType<typeof createClient>,
+  conversationId: string,
+  userId: string
+) {
+  /* Verify active membership in conversation_members */
+  const {
+    data: membership,
+    error,
+  } = await supabase
+    .from("conversation_members")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!membership) {
+    throw new Error("You do not have access to this conversation.");
+  }
+}
 
 export default function MessagesClient({
   conversations,
 }: Props) {
+  const supabase = useMemo(() => createClient(), []);
   const [selectedConversation, setSelectedConversation] =
     useState<string | null>(
       conversations.length > 0
@@ -37,6 +186,9 @@ export default function MessagesClient({
     );
 
   const [messages, setMessages] = useState<Message[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<
+    string | null
+  >(null);
   const [profiles, setProfiles] = useState<
     Record<string, UserProfile>
   >({});
@@ -60,6 +212,22 @@ export default function MessagesClient({
   );
 
   /* =======================================================
+     Load current user
+  ======================================================= */
+
+  useEffect(() => {
+    async function loadCurrentUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setCurrentUserId(user?.id ?? null);
+    }
+
+    loadCurrentUser();
+  }, [supabase]);
+
+  /* =======================================================
      Load messages
   ======================================================= */
 
@@ -69,6 +237,7 @@ export default function MessagesClient({
       return;
     }
 
+    const conversationId = selectedConversation;
     let cancelled = false;
 
     async function loadMessages() {
@@ -77,7 +246,8 @@ export default function MessagesClient({
 
       try {
         const data = await getMessages(
-          selectedConversation
+          supabase,
+          conversationId
         );
 
         if (!cancelled) {
@@ -85,7 +255,8 @@ export default function MessagesClient({
         }
 
         await markMessagesAsRead(
-          selectedConversation
+          supabase,
+          conversationId
         );
       } catch (err) {
         if (!cancelled) {
@@ -107,7 +278,7 @@ export default function MessagesClient({
     return () => {
       cancelled = true;
     };
-  }, [selectedConversation]);
+  }, [selectedConversation, supabase]);
 
   /* =======================================================
      Load user profiles for message senders
@@ -154,7 +325,7 @@ export default function MessagesClient({
     }
 
     loadProfiles();
-  }, [messages]);
+  }, [messages, supabase]);
 
   /* =======================================================
      Send message
@@ -172,6 +343,7 @@ export default function MessagesClient({
     startTransition(async () => {
       try {
         const newMessage = await sendMessage(
+          supabase,
           selectedConversation,
           text
         );
@@ -362,6 +534,7 @@ export default function MessagesClient({
                           message.sender_id
                         ]
                       }
+                      currentUserId={currentUserId}
                       formatTime={formatTime}
                     />
                   ))
@@ -416,27 +589,14 @@ export default function MessagesClient({
 function MessageBubble({
   message,
   profile,
+  currentUserId,
   formatTime,
 }: {
   message: Message;
   profile?: UserProfile;
+  currentUserId: string | null;
   formatTime: (date: string) => string;
 }) {
-  const [currentUserId, setCurrentUserId] =
-    useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadCurrentUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      setCurrentUserId(user?.id ?? null);
-    }
-
-    loadCurrentUser();
-  }, []);
-
   const isOwn =
     currentUserId === message.sender_id;
 
