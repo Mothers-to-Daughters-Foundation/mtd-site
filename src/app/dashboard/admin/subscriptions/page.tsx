@@ -50,7 +50,7 @@ export default async function AdminSubscriptionsPage() {
             <tr>
               <th>User</th>
               <th>Plan</th>
-              <th>Provider</th>
+              <th>Billing Cycle</th>
               <th>Status</th>
               <th>Renewal</th>
               <th>Started</th>
@@ -77,7 +77,7 @@ export default async function AdminSubscriptionsPage() {
                     </div>
                   </td>
 
-                  <td>{sub.subscription_plans?.name}</td>
+                  <td>{sub.plans?.name}</td>
 
                   <td className={styles.capitalize}>
                     {sub.billing_cycle}

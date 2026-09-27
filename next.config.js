@@ -7,7 +7,7 @@ const basePath = isPagesDeployment ? '/mtd-site' : '';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  ...(isPagesDeployment ? { output: 'export' } : {}),
   basePath,
   assetPrefix: basePath,
   images: {
