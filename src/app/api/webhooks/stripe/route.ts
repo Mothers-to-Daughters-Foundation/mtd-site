@@ -61,9 +61,12 @@ export async function POST(req: NextRequest) {
 
         if (!userId || !planId || !stripeSubscriptionId) break;
 
-        const stripeSub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
-        const periodEndIso = stripeSub.current_period_end
-          ? new Date(stripeSub.current_period_end * 1000).toISOString()
+        const stripeSubResponse = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+        if ('deleted' in stripeSubResponse && stripeSubResponse.deleted) break;
+        const stripeSub = stripeSubResponse as Stripe.Subscription;
+        const currentPeriodEnd = (stripeSub as any).current_period_end as number | undefined;
+        const periodEndIso = currentPeriodEnd
+          ? new Date(currentPeriodEnd * 1000).toISOString()
           : null;
         const nowIso = new Date().toISOString();
 
@@ -155,8 +158,8 @@ export async function POST(req: NextRequest) {
           .from('subscriptions')
           .update({
             status: mappedStatus,
-            expires_at: stripeSub.current_period_end
-              ? new Date(stripeSub.current_period_end * 1000).toISOString()
+            expires_at: (stripeSub as any).current_period_end
+              ? new Date((stripeSub as any).current_period_end * 1000).toISOString()
               : null,
             cancelled_at:
               mappedStatus === 'cancelled'
