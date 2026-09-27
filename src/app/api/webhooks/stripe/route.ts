@@ -1,16 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  getSubscriptionByStripeId,
-  createSubscription,
-  updateSubscription,
-  appendBillingEntry,
-} from '@/lib/models/Subscription';
-import { updateUserById, getUserByEmail } from '@/lib/models/User';
+import { createAdminClient } from '@/lib/supabase/admin';
 import getStripe from '@/lib/stripe';
 import Stripe from 'stripe';
 
 // Disable body parsing so we can read raw body for signature verification
 export const runtime = 'nodejs';
+
+function mapStripeStatus(
+  status: Stripe.Subscription.Status
+): 'active' | 'trial' | 'expired' | 'paused' | 'cancelled' {
+  switch (status) {
+    case 'active':
+      return 'active';
+    case 'trialing':
+      return 'trial';
+    case 'past_due':
+    case 'incomplete':
+    case 'incomplete_expired':
+    case 'unpaid':
+    case 'paused':
+      return 'paused';
+    case 'canceled':
+      return 'cancelled';
+    default:
+      return 'expired';
+  }
+}
 
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature');
@@ -32,47 +47,67 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const supabase = createAdminClient();
+    const stripe = getStripe();
+
     switch (event.type) {
       case 'checkout.session.completed': {
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
         if (checkoutSession.mode !== 'subscription') break;
 
         const userId = checkoutSession.metadata?.userId;
-        const tierId = checkoutSession.metadata?.tierId;
+        const planId = checkoutSession.metadata?.tierId;
         const stripeSubscriptionId = checkoutSession.subscription as string;
-        const stripeCustomerId = checkoutSession.customer as string;
 
-        if (!userId || !tierId) break;
+        if (!userId || !planId || !stripeSubscriptionId) break;
 
-        // Create or update subscription record
-        const existing = stripeSubscriptionId
-          ? await getSubscriptionByStripeId(stripeSubscriptionId)
+        const stripeSub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+        const periodEndIso = stripeSub.current_period_end
+          ? new Date(stripeSub.current_period_end * 1000).toISOString()
           : null;
+        const nowIso = new Date().toISOString();
 
-        if (!existing) {
-          await createSubscription({
-            userId,
-            tierId,
-            paymentProvider: 'stripe',
-            status: 'active',
-            stripeSubscriptionId,
-            stripeCustomerId,
-            currentPeriodStart: new Date(),
-            currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-            billingHistory: [],
+        await supabase
+          .from('subscriptions')
+          .update({ is_current: false })
+          .eq('user_id', userId)
+          .eq('is_current', true);
+
+        const { data: existing } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('stripe_subscription_id', stripeSubscriptionId)
+          .maybeSingle();
+
+        if (existing?.id) {
+          await supabase
+            .from('subscriptions')
+            .update({
+              user_id: userId,
+              plan_id: planId,
+              status: mapStripeStatus(stripeSub.status),
+              billing_cycle: 'monthly',
+              expires_at: periodEndIso,
+              cancelled_at: null,
+              auto_renew: true,
+              is_current: true,
+              updated_at: nowIso,
+            })
+            .eq('id', existing.id);
+        } else {
+          await supabase.from('subscriptions').insert({
+            user_id: userId,
+            plan_id: planId,
+            status: mapStripeStatus(stripeSub.status),
+            billing_cycle: 'monthly',
+            started_at: nowIso,
+            expires_at: periodEndIso,
+            cancelled_at: null,
+            auto_renew: true,
+            is_current: true,
+            stripe_subscription_id: stripeSubscriptionId,
           });
-        } else if (existing._id) {
-          await updateSubscription(existing._id, { status: 'active' });
         }
-
-        await updateUserById(userId, {
-          subscriptionStatus: 'active',
-          subscriptionTierId: tierId,
-          stripeCustomerId,
-          stripeSubscriptionId,
-          subscriptionStartDate: new Date(),
-          subscriptionRenewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        });
         break;
       }
 
@@ -81,59 +116,57 @@ export async function POST(req: NextRequest) {
         const stripeSubId = (invoice as Stripe.Invoice & { subscription?: string }).subscription ?? null;
         if (!stripeSubId) break;
 
-        const sub = await getSubscriptionByStripeId(stripeSubId);
-        if (!sub?._id) break;
-
-        await appendBillingEntry(sub._id, {
-          date: new Date((invoice.status_transitions?.paid_at ?? Date.now() / 1000) * 1000),
-          amountCents: invoice.amount_paid,
-          status: 'paid',
-          stripeInvoiceId: invoice.id,
-          description: `Invoice ${invoice.number}`,
-        });
-
-        // Update renewal date
         const periodEnd = (invoice as any).lines?.data?.[0]?.period?.end;
-        if (periodEnd) {
-          await updateSubscription(sub._id, {
+        await supabase
+          .from('subscriptions')
+          .update({
             status: 'active',
-            currentPeriodEnd: new Date(periodEnd * 1000),
-          });
-          await updateUserById(sub.userId, {
-            subscriptionStatus: 'active',
-            subscriptionRenewDate: new Date(periodEnd * 1000),
-          });
-        }
+            expires_at: periodEnd
+              ? new Date(periodEnd * 1000).toISOString()
+              : null,
+            cancelled_at: null,
+            auto_renew: true,
+            is_current: true,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('stripe_subscription_id', stripeSubId);
         break;
       }
 
       case 'customer.subscription.deleted': {
         const stripeSub = event.data.object as Stripe.Subscription;
-        const sub = await getSubscriptionByStripeId(stripeSub.id);
-        if (!sub?._id) break;
-
-        await updateSubscription(sub._id, {
-          status: 'cancelled',
-          cancelledAt: new Date(),
-        });
-        await updateUserById(sub.userId, { subscriptionStatus: 'cancelled' });
+        await supabase
+          .from('subscriptions')
+          .update({
+            status: 'cancelled',
+            cancelled_at: new Date().toISOString(),
+            auto_renew: false,
+            is_current: false,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('stripe_subscription_id', stripeSub.id);
         break;
       }
 
       case 'customer.subscription.updated': {
         const stripeSub = event.data.object as Stripe.Subscription;
-        const sub = await getSubscriptionByStripeId(stripeSub.id);
-        if (!sub?._id) break;
-
-        const newStatus =
-          stripeSub.status === 'active'
-            ? 'active'
-            : stripeSub.status === 'past_due'
-            ? 'past_due'
-            : 'paused';
-
-        await updateSubscription(sub._id, { status: newStatus as any });
-        await updateUserById(sub.userId, { subscriptionStatus: newStatus === 'past_due' ? 'active' : newStatus as any });
+        const mappedStatus = mapStripeStatus(stripeSub.status);
+        await supabase
+          .from('subscriptions')
+          .update({
+            status: mappedStatus,
+            expires_at: stripeSub.current_period_end
+              ? new Date(stripeSub.current_period_end * 1000).toISOString()
+              : null,
+            cancelled_at:
+              mappedStatus === 'cancelled'
+                ? new Date().toISOString()
+                : null,
+            auto_renew: !stripeSub.cancel_at_period_end,
+            is_current: mappedStatus !== 'cancelled',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('stripe_subscription_id', stripeSub.id);
         break;
       }
 

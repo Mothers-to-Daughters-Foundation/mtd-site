@@ -44,7 +44,8 @@ export async function getAllSubscriptions() {
     *,
     user_profiles!subscriptions_user_fkey(
       id,
-      full_name
+      full_name,
+      email
     ),
     plans!subscriptions_plan_fkey(
       id,
