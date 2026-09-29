@@ -1,4 +1,4 @@
-import { getAllTiers } from '@/lib/models/SubscriptionTier';
+import { getPublicPlans, type Plan } from '@/lib/supabase/plans';
 import TierCard from '@/components/membership/TierCard';
 import styles from './page.module.css';
 
@@ -12,13 +12,13 @@ export const metadata = {
 export const revalidate = 3600;
 
 export default async function MembershipPage() {
-  let tiers: Awaited<ReturnType<typeof getAllTiers>> = [];
+  let activeTiers: Plan[] = [];
   try {
-    tiers = await getAllTiers();
-  } catch {
+    activeTiers = await getPublicPlans();
+  } catch (error) {
     // DB not available (e.g. static export build) — render empty state gracefully
+    console.warn('[membership] could not load plans', error);
   }
-  const activeTiers = tiers.filter((t) => t.isActive);
 
   return (
     <main className={styles.page}>
@@ -43,14 +43,13 @@ export default async function MembershipPage() {
         <section className={styles.tiersGrid}>
           {activeTiers.map((tier) => (
             <TierCard
-              key={tier._id?.toString()}
-              id={tier._id?.toString() ?? ''}
+              key={tier.id}
+              id={tier.id}
               name={tier.name}
               description={tier.description ?? ''}
-              pricePerMonth={tier.pricePerMonth}
-              features={tier.features}
-              zeffyUrl={tier.zeffyUrl}
-              isDefault={tier.isDefault}
+              pricePerMonth={tier.monthly_price}
+              features={planFeatures(tier)}
+              zeffyUrl={tier.zeffy_url ?? undefined}
             />
           ))}
         </section>
@@ -69,6 +68,16 @@ export default async function MembershipPage() {
       </section>
     </main>
   );
+}
+
+function planFeatures(plan: Plan): string[] {
+  const features = [
+    plan.mentor_limit === 1 ? '1 dedicated mentor' : `Up to ${plan.mentor_limit} mentors`,
+    plan.session_limit == null ? 'Unlimited sessions' : `${plan.session_limit} sessions per month`,
+  ];
+  if (plan.resource_access) features.push('Resource library access');
+  if (plan.priority_support) features.push('Priority support');
+  return features;
 }
 
 const faqs = [

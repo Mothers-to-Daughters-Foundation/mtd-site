@@ -8,6 +8,7 @@ import styles from './SiteHeader.module.css';
 import Container from './Container';
 import Button from '../ui/Button';
 import { getImagePath } from '@/lib/utils';
+import { appHref } from '@/lib/appUrl';
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,7 +83,7 @@ export default function SiteHeader() {
             >
               Donate
             </Button>
-            <Link href="/login" className={styles.signInLink} onClick={closeMenu}>
+            <Link href={appHref('/login')} className={styles.signInLink} onClick={closeMenu}>
               <LoginIcon className={styles.signInIcon} />
               <span>Sign In</span>
             </Link>

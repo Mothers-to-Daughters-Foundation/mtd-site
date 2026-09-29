@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './TierCard.module.css';
+import { appHref } from '@/lib/appUrl';
 
 interface TierCardProps {
   id: string;
@@ -51,7 +52,7 @@ export default function TierCard({
           </a>
         ) : (
           <Link
-            href={`/register?tier=${id}`}
+            href={appHref(`/register?tier=${id}`)}
             className={`${styles.btn} ${isDefault ? styles.btnFeatured : ''}`}
           >
             Get Started

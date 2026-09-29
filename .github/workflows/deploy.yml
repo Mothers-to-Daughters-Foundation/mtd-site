@@ -53,6 +53,9 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: true
+          # URL of the full app (e.g. Vercel) that serves sign-in, dashboard and payments.
+          # Set it under Settings -> Secrets and variables -> Actions -> Variables -> APP_URL.
+          NEXT_PUBLIC_APP_URL: ${{ vars.APP_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

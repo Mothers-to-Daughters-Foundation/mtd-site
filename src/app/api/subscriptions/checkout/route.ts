@@ -69,11 +69,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!plan.stripe_price_id) {
+      return NextResponse.json(
+        {
+          error: "This plan has no Stripe price configured. An admin must set its Stripe price ID.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     const stripe = getStripe();
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      "http://localhost:3000";
+      process.env.NEXT_PUBLIC_APP_URL ??
+      req.nextUrl.origin;
 
     const checkout = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -84,7 +95,7 @@ export async function POST(req: NextRequest) {
 
       line_items: [
         {
-          price: plan.stripe_price_id ?? undefined,
+          price: plan.stripe_price_id,
           quantity: 1,
         },
       ],
