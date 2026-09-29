@@ -1,3 +1,4 @@
+import { createServerClient } from "@supabase/ssr";
 import { createClient } from "./server";
 
 export interface Plan {
@@ -30,6 +31,30 @@ export async function getAllPlans() {
   const { data, error } = await supabase
     .from("plans")
     .select("*")
+    .order("monthly_price");
+
+  if (error) throw error;
+
+  return data as Plan[];
+}
+
+/**
+ * Active plans for public pages. Uses a cookieless anon client so the page can
+ * be statically rendered; returns [] when Supabase is not configured.
+ */
+export async function getPublicPlans() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return [];
+
+  const supabase = createServerClient(url, anonKey, {
+    cookies: { getAll: () => [], setAll: () => {} },
+  });
+
+  const { data, error } = await supabase
+    .from("plans")
+    .select("*")
+    .eq("is_active", true)
     .order("monthly_price");
 
   if (error) throw error;

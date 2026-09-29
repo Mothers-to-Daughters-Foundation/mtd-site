@@ -69,7 +69,9 @@ export async function POST(req: NextRequest) {
         if (checkoutSession.mode !== 'subscription') break;
 
         const userId = checkoutSession.metadata?.userId;
-        const planId = checkoutSession.metadata?.tierId;
+        // Checkout sends `planId`; `tierId` is accepted for sessions created by older code.
+        const planId =
+          checkoutSession.metadata?.planId ?? checkoutSession.metadata?.tierId;
         const stripeSubscriptionId = checkoutSession.subscription as string;
 
         if (!userId || !planId || !stripeSubscriptionId) break;

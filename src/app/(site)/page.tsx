@@ -5,6 +5,7 @@ import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { appHref } from '@/lib/appUrl';
 import NewsletterFormInline from '@/components/forms/NewsletterFormInline';
 import { getAllPosts } from '@/lib/mdx';
 import { getAllEvents } from '@/lib/mdx';
@@ -64,7 +65,7 @@ export default function HomePage() {
                 <Button href="/donate" variant="primary" size="lg">
                   Support Our Mission
                 </Button>
-                <Button href="/register" variant="secondary" size="lg">
+                <Button as="a" href={appHref('/register')} variant="secondary" size="lg">
                   Join the Community
                 </Button>
               </div>
