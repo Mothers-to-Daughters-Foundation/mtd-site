@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
+import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -19,6 +21,8 @@ const speakers = [
   { name: 'Evangeline Chima', role: 'Founder, Black Mentorship Inc.' },
 ];
 
+const gallery = [1, 2, 3, 4, 5, 6].map((n) => `/images/mixers/mixer-4-0-gallery-${n}.jpg`);
+
 export default function MentorsMixer40Page() {
   return (
     <>
@@ -29,6 +33,21 @@ export default function MentorsMixer40Page() {
             &ldquo;Rebels with a Cause&rdquo; &middot; May 30th, 2024 &middot;
             Gotstyle Distillery
           </p>
+        </Container>
+      </Section>
+
+      <Section spacing="none">
+        <Container>
+          <div className={styles.heroImage}>
+            <Image
+              src={getImagePath('/images/mixers/mixer-4-0-hero.png')}
+              alt="Mentors Mixer 4.0 — Rebels with a Cause"
+              width={1234}
+              height={556}
+              className={styles.heroImageContent}
+              priority
+            />
+          </div>
         </Container>
       </Section>
 
@@ -65,6 +84,23 @@ export default function MentorsMixer40Page() {
                   </li>
                 ))}
               </ul>
+            </div>
+
+            <div className={styles.section}>
+              <h2>Event Gallery</h2>
+              <div className={styles.gallery}>
+                {gallery.map((src, i) => (
+                  <div key={src} className={styles.galleryItem}>
+                    <Image
+                      src={getImagePath(src)}
+                      alt={`Mentors Mixer 4.0 photo ${i + 1}`}
+                      width={900}
+                      height={675}
+                      className={styles.galleryImage}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className={styles.cta}>

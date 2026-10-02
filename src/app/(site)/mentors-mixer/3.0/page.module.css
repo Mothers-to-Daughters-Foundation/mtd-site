@@ -90,6 +90,44 @@
   color: var(--text-secondary);
 }
 
+.heroImage {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.heroImageContent {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-4);
+}
+
+.galleryItem {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-base);
+}
+
+.galleryItem:hover .galleryImage {
+  transform: scale(1.05);
+}
+
 @media (min-width: 768px) {
   .heroTitle {
     font-size: var(--text-6xl);
@@ -97,5 +135,9 @@
 
   .speakerList {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
