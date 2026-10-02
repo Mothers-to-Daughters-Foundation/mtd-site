@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
@@ -9,22 +8,20 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Programs',
   description:
-    'Explore our mentorship programs designed to empower young women through intergenerational wisdom.',
+    'Explore the M2D Intergenerational Mentoring Program—a six-month, no-cost journey equipping young women to lead.',
 };
 
-export default function ProgramsPage() {
-  const programs = [
-    {
-      slug: 'intergenerational-mentoring',
-      title: 'Intergenerational Mentoring Program',
-      description:
-        'A high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops.',
-      image: '/images/programs/mentoring.jpg',
-      featured: true,
-    },
-    // Add more programs here during content migration
-  ];
+const INTEREST_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfGETNfWrbzLiA4TJUTX5Ki--Zhnj2Mu5UzUxbjceTGTUUspw/viewform';
 
+const impactStats = [
+  { number: '5+', label: 'Years empowering women' },
+  { number: '100+', label: 'Mentorship pairs formed' },
+  { number: '200+', label: 'Hybrid networking events since 2020' },
+  { number: '50,000+', label: 'Online engagements' },
+];
+
+export default function ProgramsPage() {
   return (
     <>
       <Section spacing="xl" className={styles.hero}>
@@ -32,7 +29,8 @@ export default function ProgramsPage() {
           <h1 className={styles.heroTitle}>Our Programs</h1>
           <p className={styles.heroDescription}>
             We offer transformative programs that connect women across
-            generations, fostering growth, learning, and meaningful relationships.
+            generations, fostering growth, learning, and meaningful
+            relationships.
           </p>
         </Container>
       </Section>
@@ -40,62 +38,68 @@ export default function ProgramsPage() {
       <Section spacing="lg">
         <Container>
           <div className={styles.programsGrid}>
-            {programs.map((program) => (
-              <Card
-                key={program.slug}
-                href={`/programs/${program.slug}`}
-                className={program.featured ? styles.featuredCard : ''}
-              >
-                <div className={styles.cardImage}>
-                  <div className={styles.imagePlaceholder}>
-                    <span>Program Image</span>
-                  </div>
+            <Card className={styles.featuredCard}>
+              <div className={styles.cardImage}>
+                <div className={styles.imagePlaceholder}>
+                  <span>Program Image</span>
                 </div>
-                <div className={styles.cardContent}>
-                  <h2>{program.title}</h2>
-                  <p>{program.description}</p>
-                  <Button
-                    href={`/programs/${program.slug}`}
-                    variant="primary"
-                    size="md"
-                  >
-                    Learn More
-                  </Button>
-                </div>
-              </Card>
-            ))}
+              </div>
+              <div className={styles.cardContent}>
+                <h2>M2D Intergenerational Mentoring Program</h2>
+                <p>
+                  A high-impact mentorship program designed to equip young women
+                  with the entrepreneurial mindset, strategies, and leadership
+                  skills needed to excel. Through immersive mentorship and
+                  hands-on workshops, participants engage in a transformational
+                  six-month journey—at no cost.
+                </p>
+                <p>
+                  <strong>Invest in yourself. Build your legacy. Enroll today.</strong>
+                </p>
+                <Button
+                  as="a"
+                  href={INTEREST_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="primary"
+                  size="md"
+                >
+                  Complete the Interest Form ↗
+                </Button>
+              </div>
+            </Card>
           </div>
-
-          {programs.length === 0 && (
-            <div className={styles.placeholder}>
-              <p>Program information will be added during content migration.</p>
-            </div>
-          )}
         </Container>
       </Section>
 
       <Section spacing="lg" className={styles.outcomesSection}>
         <Container>
-          <h2 className={styles.sectionTitle}>Program Outcomes</h2>
+          <h2 className={styles.sectionTitle}>Our Impact So Far</h2>
           <div className={styles.outcomesGrid}>
-            <div className={styles.outcomeCard}>
-              <div className={styles.outcomeNumber}>95%</div>
-              <div className={styles.outcomeLabel}>
-                of mentees report clarity in goals
+            {impactStats.map((stat) => (
+              <div key={stat.label} className={styles.outcomeCard}>
+                <div className={styles.outcomeNumber}>{stat.number}</div>
+                <div className={styles.outcomeLabel}>{stat.label}</div>
               </div>
-            </div>
-            <div className={styles.outcomeCard}>
-              <div className={styles.outcomeNumber}>89%</div>
-              <div className={styles.outcomeLabel}>
-                increase in confidence levels
-              </div>
-            </div>
-            <div className={styles.outcomeCard}>
-              <div className={styles.outcomeNumber}>100%</div>
-              <div className={styles.outcomeLabel}>
-                of participants recommend the program
-              </div>
-            </div>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <Section spacing="lg">
+        <Container>
+          <div className={styles.commitment}>
+            <h2>Our Commitment</h2>
+            <p>
+              We&apos;re working to support{' '}
+              <strong>100,000 business launches by 2035</strong>—equipping the
+              next generation of women to build economic independence and lasting
+              legacies. Your partnership and support help make that future
+              possible.
+            </p>
+            <Button href="/donate" variant="primary" size="lg">
+              Support the Mission
+            </Button>
           </div>
         </Container>
       </Section>

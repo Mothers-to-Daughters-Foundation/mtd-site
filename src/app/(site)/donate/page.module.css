@@ -1,3 +1,29 @@
+.intro {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.intro h1 {
+  font-size: var(--text-5xl);
+  color: var(--text-primary);
+}
+
+.intro p {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.taxNote {
+  font-size: var(--text-base) !important;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
 .zeffyContainer {
   width: 100%;
   max-width: 800px;

@@ -84,6 +84,31 @@
   line-height: var(--leading-relaxed);
 }
 
+.testimonial {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: var(--spacing-10);
+  background-color: var(--surface-0);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--brand-700);
+}
+
+.testimonialQuote {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+  font-style: italic;
+  margin-bottom: var(--spacing-6);
+}
+
+.testimonialAuthor {
+  font-size: var(--text-base);
+  color: var(--brand-700);
+  font-weight: var(--font-semibold);
+  font-style: normal;
+}
+
 @media (min-width: 768px) {
   .heroTitle {
     font-size: var(--text-6xl);

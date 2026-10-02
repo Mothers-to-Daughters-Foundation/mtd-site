@@ -16,8 +16,8 @@ export default function MentorsMixerPage() {
         <Container>
           <h1 className={styles.heroTitle}>Mentors Mixer</h1>
           <p className={styles.heroDescription}>
-            Connect with fellow mentors and mentees at our signature networking
-            events.
+            A dynamic networking event connecting aspiring professionals with
+            experienced mentors in their industry.
           </p>
         </Container>
       </Section>
@@ -28,21 +28,22 @@ export default function MentorsMixerPage() {
             <div className={styles.intro}>
               <h2>About Mentors Mixer</h2>
               <p>
-                Mentors Mixer events bring together our community of mentors and
-                mentees for networking, learning, and celebration. These events
-                provide opportunities to connect, share experiences, and build
-                lasting relationships.
+                Mentor Mixers bring together our community for casual yet
+                impactful conversations, career guidance, and professional
+                network expansion. Whether you&apos;re seeking advice,
+                inspiration, or new opportunities, these events are where
+                connections turn into lasting relationships.
               </p>
             </div>
 
             <div className={styles.eventsList}>
-              <h2>Upcoming Events</h2>
+              <h2>Our Events</h2>
               <div className={styles.eventLinks}>
                 <Button href="/mentors-mixer/4.0" variant="primary" size="lg">
-                  Mentors Mixer 4.0
+                  Mixer 4.0 — Rebels with a Cause
                 </Button>
                 <Button href="/mentors-mixer/3.0" variant="secondary" size="lg">
-                  Mentors Mixer 3.0
+                  Mixer 3.0 — Women As a Powerful Force
                 </Button>
               </div>
             </div>

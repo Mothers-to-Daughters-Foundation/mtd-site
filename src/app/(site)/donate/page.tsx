@@ -14,8 +14,19 @@ export default function DonatePage() {
   return (
     <Section spacing="lg">
       <Container>
-        <h1>Donate</h1>
-        <p>Your support helps us continue our mission of connecting mentors and mentees.</p>
+        <div className={styles.intro}>
+          <h1>Donate</h1>
+          <p>
+            She could be your daughter. Your sister. Your future leader. Your
+            gift fuels free, high-impact mentorship that equips young women with
+            the confidence, skills, and community they need to thrive—and to lift
+            up the next generation after them.
+          </p>
+          <p className={styles.taxNote}>
+            Mothers to Daughters is a registered 501(c)(3) nonprofit. Every
+            contribution, big or small, makes a difference.
+          </p>
+        </div>
         <div className={styles.zeffyContainer}>
           <iframe
             src={zeffyUrl}

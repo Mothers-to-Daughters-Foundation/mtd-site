@@ -25,6 +25,17 @@
   font-style: italic;
 }
 
+.group {
+  margin-bottom: var(--spacing-12);
+}
+
+.groupTitle {
+  font-size: var(--text-3xl);
+  color: var(--brand-700);
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+}
+
 .teamGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -85,6 +96,17 @@
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
   margin: 0;
+}
+
+.location {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.imagePlaceholder span {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
 }
 
 @media (min-width: 768px) {

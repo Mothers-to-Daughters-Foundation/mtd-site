@@ -8,8 +8,65 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Become a Partner',
   description:
-    'Partner with Mothers to Daughters to make a lasting impact. Learn about partnership opportunities.',
+    'Partner with Mothers to Daughters to make a lasting impact. Explore monetary and non-monetary partnership opportunities.',
 };
+
+const monetaryTiers = [
+  {
+    name: 'Legacy Partner',
+    amount: '$100,000+',
+    description:
+      'Lead funding, policy advocacy, research partnerships, and strategic advisory positions. Ideal for government and public-sector leaders.',
+  },
+  {
+    name: 'Pioneer Partner',
+    amount: '$75,000 – $99,999',
+    description:
+      'Signature summit sponsorship, premier branding, VIP speaking opportunities, and program development input.',
+  },
+  {
+    name: 'Visionary Partner',
+    amount: '$50,000 – $74,999',
+    description:
+      'Regional mentorship sponsorships, annual report recognition, networking event access, and collaborative development.',
+  },
+  {
+    name: 'Empowerment Partner',
+    amount: '$25,000 – $49,999',
+    description:
+      'Flagship program sponsorship, prominent branding, panel speaking roles, and gender equity research collaboration.',
+  },
+  {
+    name: 'Impact Partner',
+    amount: '$10,000 – $24,999',
+    description:
+      'Event sponsorships with platform recognition and research opportunities.',
+  },
+  {
+    name: 'Catalyst Partner',
+    amount: '$5,000 – $9,999',
+    description:
+      'Initiative support with marketing recognition and workshop access.',
+  },
+  {
+    name: 'Champion Partner',
+    amount: '$1,000 – $4,999',
+    description: 'Digital recognition and leadership event access.',
+  },
+];
+
+const nonMonetaryTiers = [
+  {
+    name: 'Strategic Ally',
+    description:
+      'Venue hosting, professional services, technology support, and media production.',
+  },
+  {
+    name: 'Collaborative Partner',
+    description:
+      'Joint programming, resource-sharing, co-developed workshops, and funding proposals.',
+  },
+];
 
 export default function PartnerPage() {
   return (
@@ -28,62 +85,47 @@ export default function PartnerPage() {
         <Container>
           <div className={styles.intro}>
             <p>
-              Your generosity, alongside our community of supporters, fuels our
-              mission and brings us closer to empowering the next generation.
+              Intentional actions create impact—big or small, it matters.
+              Together we create meaningful dialogue, foster deep connections,
+              and amplify shared values through intergenerational mentorship and
+              women&apos;s empowerment.
             </p>
           </div>
 
           <div className={styles.partnershipTypes}>
-            <h2>Types of Partnership</h2>
-            <div className={styles.typesGrid}>
-              <div className={styles.typeCard}>
-                <h3>Financial Support</h3>
-                <p>
-                  Direct financial contributions help us expand our programs and
-                  reach more women.
-                </p>
-              </div>
-              <div className={styles.typeCard}>
-                <h3>In-Kind Support</h3>
-                <p>
-                  Donate services, resources, or expertise that directly benefit
-                  our programs and participants.
-                </p>
-              </div>
-              <div className={styles.typeCard}>
-                <h3>Mentorship</h3>
-                <p>
-                  Become a mentor and share your wisdom and experience with the
-                  next generation.
-                </p>
-              </div>
+            <h2>Monetary Partnerships</h2>
+            <div className={styles.tierGrid}>
+              {monetaryTiers.map((tier) => (
+                <div key={tier.name} className={styles.tierCard}>
+                  <div className={styles.tierAmount}>{tier.amount}</div>
+                  <h3>{tier.name}</h3>
+                  <p>{tier.description}</p>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className={styles.benefits}>
-            <h2>Partnership Benefits</h2>
-            <ul className={styles.benefitsList}>
-              <li>Recognition on our website and at events</li>
-              <li>Access to our community of changemakers</li>
-              <li>Impact reports showing your contribution&apos;s effect</li>
-              <li>Networking opportunities with other partners</li>
-              <li>The satisfaction of making a real difference</li>
-            </ul>
-          </div>
-
-          <div className={styles.partners}>
-            <h2>Our Partners</h2>
-            <div className={styles.partnerLogos}>
-              {/* Partner logos will be added during content migration */}
-              <p className={styles.placeholder}>
-                Partner logos will be displayed here.
-              </p>
+          <div className={styles.partnershipTypes}>
+            <h2>Non-Monetary Partnerships</h2>
+            <div className={styles.typesGrid}>
+              {nonMonetaryTiers.map((tier) => (
+                <div key={tier.name} className={styles.typeCard}>
+                  <h3>{tier.name}</h3>
+                  <p>{tier.description}</p>
+                </div>
+              ))}
             </div>
           </div>
 
           <div className={styles.ctaSection}>
             <h2>Ready to Partner With Us?</h2>
-            <p>Get in touch to discuss partnership opportunities.</p>
+            <p>
+              Get in touch to discuss partnership opportunities, or email us at{' '}
+              <a href="mailto:connect@motherstodaughters.org">
+                connect@motherstodaughters.org
+              </a>
+              .
+            </p>
             <div className={styles.formContainer}>
               <ContactForm />
             </div>

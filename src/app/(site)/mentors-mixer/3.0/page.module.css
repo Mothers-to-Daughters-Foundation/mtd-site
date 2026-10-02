@@ -60,8 +60,42 @@
   color: var(--text-secondary);
 }
 
+.speakerList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-4);
+}
+
+.speakerItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-5);
+  background-color: var(--surface-1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.speakerName {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.speakerRole {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+}
+
 @media (min-width: 768px) {
   .heroTitle {
     font-size: var(--text-6xl);
+  }
+
+  .speakerList {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

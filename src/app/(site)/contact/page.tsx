@@ -16,8 +16,8 @@ export default function ContactPage() {
         <div className={styles.header}>
           <h1>Contact Us</h1>
           <p className={styles.intro}>
-            We&apos;d love to hear from you. Reach out with questions, ideas, or
-            to learn more about how you can get involved.
+            Have any questions or need help in any way? Kindly send a message or
+            give us a call—we&apos;d love to hear from you.
           </p>
         </div>
 
@@ -33,11 +33,33 @@ export default function ContactPage() {
             </div>
 
             <div className={styles.infoBlock}>
+              <h3>Email</h3>
+              <p>
+                <a href="mailto:connect@motherstodaughters.org">
+                  connect@motherstodaughters.org
+                </a>
+                <br />
+                <a href="mailto:francine@motherstodaughters.org">
+                  francine@motherstodaughters.org
+                </a>
+              </p>
+            </div>
+
+            <div className={styles.infoBlock}>
+              <h3>Phone</h3>
+              <p>
+                <a href="tel:+16463026676">+1 (646) 302-6676</a>
+              </p>
+            </div>
+
+            <div className={styles.infoBlock}>
               <h3>Mailing Address</h3>
               <p>
                 Mothers to Daughters
                 <br />
-                [Address will be added during content migration]
+                1001 6th Ave
+                <br />
+                New York, NY 10018
               </p>
             </div>
 
@@ -45,7 +67,7 @@ export default function ContactPage() {
               <h3>Connect With Us</h3>
               <div className={styles.socialLinks}>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/mothers_to_daughters/"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -54,7 +76,7 @@ export default function ContactPage() {
                   Instagram
                 </a>
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/mothers2daughters/"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -63,7 +85,16 @@ export default function ContactPage() {
                   LinkedIn
                 </a>
                 <a
-                  href="#"
+                  href="https://www.facebook.com/103109278024073"
+                  className={styles.socialLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
+                  Facebook
+                </a>
+                <a
+                  href="https://www.tiktok.com/@mothers2daughters_"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -72,7 +103,7 @@ export default function ContactPage() {
                   TikTok
                 </a>
                 <a
-                  href="#"
+                  href="https://www.youtube.com/channel/UCG7gLfQjkEDGuE7SSwiLU6A"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"

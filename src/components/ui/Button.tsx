@@ -7,6 +7,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg';
   as?: 'button' | 'a';
   href?: string;
+  target?: string;
+  rel?: string;
 }
 
 export default function Button({

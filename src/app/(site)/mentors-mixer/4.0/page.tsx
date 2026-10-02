@@ -5,9 +5,19 @@ import Button from '@/components/ui/Button';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Mentors Mixer 4.0',
-  description: 'Join us for Mentors Mixer 4.0 - our latest networking event.',
+  title: 'Mentors Mixer 4.0 — Rebels with a Cause',
+  description:
+    'Mentors Mixer 4.0: "Rebels with a Cause" — May 30th, 2024 at Gotstyle Distillery.',
 };
+
+const speakers = [
+  { name: 'Arnella Renda', role: 'Real Estate Broker' },
+  { name: 'Shein Zutshi', role: 'Educational Consultant' },
+  { name: 'Maria Carolina Ojeda', role: 'Entrepreneur' },
+  { name: 'Satie Narain-Simon', role: 'CRA Senior Tax Auditor' },
+  { name: 'Nunu Francisco', role: 'Tech Programs Lead, Black Entrepreneurship Alliance' },
+  { name: 'Evangeline Chima', role: 'Founder, Black Mentorship Inc.' },
+];
 
 export default function MentorsMixer40Page() {
   return (
@@ -16,7 +26,8 @@ export default function MentorsMixer40Page() {
         <Container>
           <h1 className={styles.heroTitle}>Mentors Mixer 4.0</h1>
           <p className={styles.heroDescription}>
-            Join us for our fourth annual Mentors Mixer event.
+            &ldquo;Rebels with a Cause&rdquo; &middot; May 30th, 2024 &middot;
+            Gotstyle Distillery
           </p>
         </Container>
       </Section>
@@ -25,25 +36,40 @@ export default function MentorsMixer40Page() {
         <Container>
           <div className={styles.content}>
             <div className={styles.section}>
-              <h2>Event Description & Goals</h2>
+              <h2>About the Event</h2>
               <p>
-                Event details will be added during content migration from Wix.
+                An evening connecting youth changemakers with industry
+                disruptors who think outside the box. The night featured
+                networking, refreshments, pop-up vendors, and live performances
+                from high school bands and DJs. Attendees were encouraged to
+                channel the era and wear their best 1990s high school attire.
               </p>
             </div>
 
             <div className={styles.section}>
-              <h2>Speakers & Highlights</h2>
-              <p>Speaker information will be added during content migration.</p>
+              <h2>A Cause Worth Celebrating</h2>
+              <p>
+                6IX Academy students partnered with Foxy Customs to launch hair
+                barrettes and necklace pendants, with proceeds supporting
+                Womenmind through CAMH.
+              </p>
             </div>
 
             <div className={styles.section}>
-              <h2>Photos & Videos</h2>
-              <p>Media gallery will be added during content migration.</p>
+              <h2>Featured Mentors &amp; Speakers</h2>
+              <ul className={styles.speakerList}>
+                {speakers.map((speaker) => (
+                  <li key={speaker.name} className={styles.speakerItem}>
+                    <span className={styles.speakerName}>{speaker.name}</span>
+                    <span className={styles.speakerRole}>{speaker.role}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className={styles.cta}>
               <Button href="/contact" variant="primary" size="lg">
-                RSVP / Get Tickets
+                Get in Touch About Our Next Mixer
               </Button>
             </div>
           </div>

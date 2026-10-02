@@ -47,6 +47,44 @@
   gap: var(--spacing-6);
 }
 
+.tierGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+.tierCard {
+  background-color: var(--surface-1);
+  padding: var(--spacing-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--brand-700);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.tierCard:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.tierAmount {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--brand-700);
+  margin-bottom: var(--spacing-2);
+}
+
+.tierCard h3 {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-3);
+}
+
+.tierCard p {
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
 .typeCard {
   background-color: var(--surface-1);
   padding: var(--spacing-6);
@@ -172,6 +210,16 @@
   }
 
   .typesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tierGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .tierGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
