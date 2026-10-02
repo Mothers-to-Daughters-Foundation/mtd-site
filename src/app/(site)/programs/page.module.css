@@ -46,6 +46,13 @@
   font-weight: var(--font-medium);
 }
 
+.cardImageContent {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .cardContent {
   padding: var(--spacing-6);
   display: flex;

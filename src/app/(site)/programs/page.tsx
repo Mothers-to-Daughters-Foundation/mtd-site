@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -40,9 +42,13 @@ export default function ProgramsPage() {
           <div className={styles.programsGrid}>
             <Card className={styles.featuredCard}>
               <div className={styles.cardImage}>
-                <div className={styles.imagePlaceholder}>
-                  <span>Program Image</span>
-                </div>
+                <Image
+                  src={getImagePath('/images/intergenerational.jpg')}
+                  alt="Women connecting through intergenerational mentorship"
+                  width={600}
+                  height={338}
+                  className={styles.cardImageContent}
+                />
               </div>
               <div className={styles.cardContent}>
                 <h2>M2D Intergenerational Mentoring Program</h2>
