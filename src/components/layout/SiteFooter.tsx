@@ -14,10 +14,9 @@ export default function SiteFooter() {
           <div className={styles.section}>
             <h3 className={styles.heading}>About</h3>
             <p className={styles.mission}>
-              We empower young women by connecting them with the wisdom and
-              insights of experienced mentors, fostering personal growth,
-              professional development, and meaningful intergenerational
-              relationships that create lasting positive change.
+              A global movement dedicated to forging deep connections,
+              amplifying voices, and driving meaningful action—empowering women
+              to thrive across generations.
             </p>
           </div>
 
@@ -52,9 +51,6 @@ export default function SiteFooter() {
               <Link href="/courses" className={styles.link}>
                 Courses
               </Link>
-              <Link href="/careers" className={styles.link}>
-                Careers
-              </Link>
             </nav>
           </div>
 
@@ -65,10 +61,16 @@ export default function SiteFooter() {
               <Link href="/contact" className={styles.link}>
                 Get in Touch
               </Link>
+              <a href="mailto:connect@motherstodaughters.org" className={styles.link}>
+                connect@motherstodaughters.org
+              </a>
+              <a href="tel:+16463026676" className={styles.link}>
+                +1 (646) 302-6676
+              </a>
             </div>
             <div className={styles.social}>
               <a
-                href="#"
+                href="https://www.instagram.com/mothers_to_daughters/"
                 className={styles.socialLink}
                 aria-label="Instagram"
                 target="_blank"
@@ -77,7 +79,7 @@ export default function SiteFooter() {
                 Instagram
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/mothers2daughters/"
                 className={styles.socialLink}
                 aria-label="LinkedIn"
                 target="_blank"
@@ -86,7 +88,16 @@ export default function SiteFooter() {
                 LinkedIn
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/103109278024073"
+                className={styles.socialLink}
+                aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook
+              </a>
+              <a
+                href="https://www.tiktok.com/@mothers2daughters_"
                 className={styles.socialLink}
                 aria-label="TikTok"
                 target="_blank"
@@ -95,7 +106,7 @@ export default function SiteFooter() {
                 TikTok
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/channel/UCG7gLfQjkEDGuE7SSwiLU6A"
                 className={styles.socialLink}
                 aria-label="YouTube"
                 target="_blank"
@@ -133,7 +144,10 @@ export default function SiteFooter() {
         </div>
 
         <div className={styles.copyright}>
-          <p>&copy; {currentYear} MTD. All rights reserved.</p>
+          <p>
+            &copy; {currentYear} Mothers to Daughters. A registered 501(c)(3)
+            nonprofit. All rights reserved.
+          </p>
         </div>
       </Container>
     </footer>

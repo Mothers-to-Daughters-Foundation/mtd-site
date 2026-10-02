@@ -6,33 +6,57 @@
 .content h1 {
   font-size: var(--text-5xl);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-8);
+  margin-bottom: var(--spacing-4);
 }
 
-.legalNav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
-
-.legalNav a {
-  color: var(--brand-700);
-  text-decoration: none;
+.intro {
   font-size: var(--text-lg);
-  padding: var(--spacing-3);
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--spacing-10);
 }
 
-.legalNav a:hover,
-.legalNav a:focus {
-  background-color: var(--accent-100);
-  text-decoration: underline;
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+.card {
+  display: block;
+  background-color: var(--surface-1);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card:hover,
+.card:focus {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  font-size: var(--text-2xl);
+  color: var(--brand-700);
+  margin-bottom: var(--spacing-3);
+}
+
+.card p {
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--spacing-4);
+}
+
+.cardLink {
+  color: var(--brand-700);
+  font-weight: var(--font-semibold);
 }
 
 @media (min-width: 768px) {
-  .legalNav {
-    flex-direction: row;
-    gap: var(--spacing-6);
+  .cardGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
