@@ -56,16 +56,25 @@ export default function ProgramsPage() {
                 <p>
                   <strong>Invest in yourself. Build your legacy. Enroll today.</strong>
                 </p>
-                <Button
-                  as="a"
-                  href={INTEREST_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="primary"
-                  size="md"
-                >
-                  Complete the Interest Form ↗
-                </Button>
+                <div className={styles.cardActions}>
+                  <Button
+                    href="/programs/intergenerational-mentoring"
+                    variant="primary"
+                    size="md"
+                  >
+                    Learn More
+                  </Button>
+                  <Button
+                    as="a"
+                    href={INTEREST_FORM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="secondary"
+                    size="md"
+                  >
+                    Interest Form ↗
+                  </Button>
+                </div>
               </div>
             </Card>
           </div>

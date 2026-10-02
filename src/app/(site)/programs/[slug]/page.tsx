@@ -28,16 +28,20 @@ const programs: Record<string, any> = {
       'Access to a supportive community of women',
       'Networking opportunities and professional development',
     ],
-    schedule: 'New cohorts begin quarterly. Contact us for upcoming dates.',
+    schedule:
+      'A transformational six-month journey, offered at no cost to participants. Complete the interest form and our team will share upcoming cohort dates.',
     testimonials: [
       {
         quote:
-          'This program changed my perspective on what I could achieve. My mentor helped me see possibilities I never imagined.',
-        author: 'Program Participant',
+          'The mentorship I received through Mothers to Daughters gave me the clarity and confidence to take the next step in my career. Having someone believe in me changed everything.',
+        author: 'Wan Chung, Daughter, Fall 2024 Cohort',
       },
     ],
   },
 };
+
+const INTEREST_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfGETNfWrbzLiA4TJUTX5Ki--Zhnj2Mu5UzUxbjceTGTUUspw/viewform';
 
 export async function generateStaticParams() {
   return Object.keys(programs).map((slug) => ({
@@ -121,8 +125,15 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
             )}
 
             <div className={styles.cta}>
-              <Button href="/contact" variant="primary" size="lg">
-                Apply / Join Now
+              <Button
+                as="a"
+                href={INTEREST_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="primary"
+                size="lg"
+              >
+                Complete the Interest Form ↗
               </Button>
             </div>
           </div>

@@ -72,6 +72,12 @@
   font-style: italic;
 }
 
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+}
+
 .commitment {
   max-width: 800px;
   margin: 0 auto;

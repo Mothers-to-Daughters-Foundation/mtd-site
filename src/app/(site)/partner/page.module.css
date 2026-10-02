@@ -166,6 +166,28 @@
   border-radius: var(--radius-lg);
 }
 
+.partnerLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partnerImage {
+  width: auto;
+  height: auto;
+  max-width: 160px;
+  max-height: 72px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.75;
+  transition: filter var(--transition-base), opacity var(--transition-base);
+}
+
+.partnerImage:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
 .placeholder {
   color: var(--text-secondary);
   font-style: italic;
