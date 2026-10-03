@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import './globals.css';
 import Analytics from '@/components/Analytics';
 import AppProvider from '@/components/providers/AppProvider';
+import ChatDock from '@/components/chat/ChatDock';
 
 const SITE_DESCRIPTION =
   'Mothers to Daughters is a 501(c)(3) nonprofit connecting women across generations through mentorship—bridging the generational gap and empowering young women to lead.';
@@ -57,6 +58,7 @@ export default function RootLayout({
         <Analytics />
     </Suspense>
     {children}
+    <ChatDock />
 </AppProvider>
       </body>
     </html>
