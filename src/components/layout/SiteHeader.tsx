@@ -10,6 +10,7 @@ import Button from '../ui/Button';
 import { getImagePath } from '@/lib/utils';
 import { appHref } from '@/lib/appUrl';
 import { createClient } from '@/lib/supabase/client';
+import NotificationBell from './NotificationBell';
 
 type HeaderUser = {
   name: string;
@@ -151,12 +152,14 @@ export default function SiteHeader() {
               Donate
             </Button>
             {user ? (
-              <a
-                href={dashboardHref(user.role)}
-                className={styles.profileLink}
-                onClick={closeMenu}
-                aria-label={`${user.name} — go to your dashboard`}
-              >
+              <div className={styles.userControls}>
+                <NotificationBell />
+                <a
+                  href={dashboardHref(user.role)}
+                  className={styles.profileLink}
+                  onClick={closeMenu}
+                  aria-label={`${user.name} — go to your dashboard`}
+                >
                 <span className={styles.avatar}>
                   {user.avatarUrl ? (
                     <Image
@@ -173,8 +176,9 @@ export default function SiteHeader() {
                     </span>
                   )}
                 </span>
-                <span className={styles.profileName}>{user.name}</span>
-              </a>
+                  <span className={styles.profileName}>{user.name}</span>
+                </a>
+              </div>
             ) : (
               <Link href={appHref('/login')} className={styles.signInLink} onClick={closeMenu}>
                 <LoginIcon className={styles.signInIcon} />

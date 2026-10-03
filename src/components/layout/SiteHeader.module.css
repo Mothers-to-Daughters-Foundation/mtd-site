@@ -149,6 +149,12 @@
   height: 1em;
 }
 
+.userControls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
 .profileLink {
   display: flex;
   align-items: center;
