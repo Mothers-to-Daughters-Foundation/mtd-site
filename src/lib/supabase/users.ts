@@ -1,4 +1,5 @@
 import { createClient } from "./server";
+import { createAdminClient } from "./admin";
 
 export interface AdminUser {
   id: string;
@@ -33,7 +34,8 @@ export interface AdminUser {
  * Get every user profile
  */
 export async function getAllUsers(): Promise<AdminUser[]> {
-  const supabase = await createClient();
+  // admin_users exposes email (auth.users) and is locked to the service role.
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("admin_users")
@@ -49,7 +51,8 @@ export async function getAllUsers(): Promise<AdminUser[]> {
  * Get a single user by ID
  */
 export async function getUserById(id: string): Promise<AdminUser | null> {
-  const supabase = await createClient();
+  // admin_users exposes email (auth.users) and is locked to the service role.
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("admin_users")
@@ -68,7 +71,8 @@ export async function getUserById(id: string): Promise<AdminUser | null> {
 export async function getUsersByRole(
   role: "admin" | "mentor" | "mentee"
 ) {
-  const supabase = await createClient();
+  // admin_users exposes email (auth.users) and is locked to the service role.
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("admin_users")
