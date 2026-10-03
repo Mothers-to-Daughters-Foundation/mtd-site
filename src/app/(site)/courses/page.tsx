@@ -8,7 +8,7 @@ import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'Courses',
-  description: 'Explore our educational courses designed to empower and educate.',
+  description: 'Explore educational courses we recommend to help you grow with confidence.',
 };
 
 const externalCourses = [
@@ -24,84 +24,25 @@ const externalCourses = [
 ];
 
 export default function CoursesPage() {
-  const courses: Array<{
-    slug: string;
-    title: string;
-    description: string;
-    featured?: boolean;
-    new?: boolean;
-  }> = [
-    // Course data will be added during content migration
-  ];
-
   return (
     <>
       <Section spacing="xl" className={styles.hero}>
         <Container>
           <h1 className={styles.heroTitle}>Courses</h1>
           <p className={styles.heroDescription}>
-            Explore our educational offerings designed to empower and inspire.
+            We partner with trusted educators to bring you courses that build
+            confidence, skills, and leadership.
           </p>
         </Container>
       </Section>
 
       <Section spacing="lg">
         <Container>
-          {courses.length === 0 ? (
-            <div className={styles.placeholder}>
-              <p>Course information will be added during content migration.</p>
-            </div>
-          ) : (
-            <div className={styles.coursesGrid}>
-              {courses.map((course: any) => (
-                <Card
-                  key={course.slug}
-                  href={`/courses/${course.slug}`}
-                  className={styles.courseCard}
-                >
-                  {course.featured && (
-                    <Tag variant="accent" className={styles.featuredBadge}>
-                      Featured
-                    </Tag>
-                  )}
-                  {course.new && (
-                    <Tag variant="default" className={styles.newBadge}>
-                      New
-                    </Tag>
-                  )}
-                  <div className={styles.cardImage}>
-                    <div className={styles.imagePlaceholder}>
-                      <span>Course Image</span>
-                    </div>
-                  </div>
-                  <div className={styles.cardContent}>
-                    <h2>{course.title}</h2>
-                    <p>{course.description}</p>
-                    <Button
-                      href={`/courses/${course.slug}`}
-                      variant="primary"
-                      size="md"
-                    >
-                      Learn More
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
-        </Container>
-      </Section>
-
-      <Section spacing="lg">
-        <Container>
-          <h2 className={styles.sectionTitle}>Featured External Courses</h2>
           <div className={styles.coursesGrid}>
             {externalCourses.map((course) => (
               <Card
                 key={course.id}
-                href={course.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                variant="static"
                 className={styles.courseCard}
               >
                 {course.featured && (
@@ -109,17 +50,14 @@ export default function CoursesPage() {
                     Featured
                   </Tag>
                 )}
-                <div className={styles.cardImage}>
-                  <div className={styles.imagePlaceholder}>
-                    <span>Course Image</span>
-                  </div>
-                </div>
                 <div className={styles.cardContent}>
                   <Tag variant="default">{course.provider}</Tag>
                   <h2>{course.title}</h2>
                   <p>{course.description}</p>
                   <Button
                     href={course.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     variant="primary"
                     size="md"
                     aria-label={`Enroll in ${course.title} on ${course.provider} (opens in new tab)`}

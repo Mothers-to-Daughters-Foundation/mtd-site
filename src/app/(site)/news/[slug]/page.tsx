@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import Markdown from '@/components/ui/Markdown';
 import { getNewsBySlug, getAllNews } from '@/lib/mdx';
 
 interface NewsPageProps {
@@ -51,11 +52,7 @@ export default function NewsItemPage({ params }: NewsPageProps) {
               {new Date(item.frontmatter.date).toLocaleDateString()}
             </time>
           </header>
-          <div>
-            {/* MDX content will be rendered here */}
-            <p>MDX rendering will be implemented with proper MDX components.</p>
-            <pre>{item.content.substring(0, 200)}...</pre>
-          </div>
+          <Markdown content={item.content} />
         </article>
       </Container>
     </Section>

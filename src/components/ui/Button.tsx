@@ -25,7 +25,9 @@ export default function Button({
   const sizeClass = styles[`size-${size}`];
   const combinedClass = `${baseClass} ${variantClass} ${sizeClass} ${className || ''}`;
 
-  if (as === 'a' && href) {
+  // Render an anchor whenever an href is provided (not just when as="a"),
+  // otherwise a <button href> is emitted which does not navigate.
+  if (href || as === 'a') {
     return (
       <a href={href} className={combinedClass} {...(props as any)}>
         {children}

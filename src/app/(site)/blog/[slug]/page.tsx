@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import Markdown from '@/components/ui/Markdown';
 import { getPostBySlug, getAllPosts } from '@/lib/mdx';
 
 interface BlogPostPageProps {
@@ -54,11 +55,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               <span>Category: {post.frontmatter.category}</span>
             )}
           </header>
-          <div>
-            {/* MDX content will be rendered here */}
-            <p>MDX rendering will be implemented with proper MDX components.</p>
-            <pre>{post.content.substring(0, 200)}...</pre>
-          </div>
+          <Markdown content={post.content} />
         </article>
       </Container>
     </Section>

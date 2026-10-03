@@ -32,8 +32,12 @@ export default function EventsPage() {
             <h2 className={styles.sectionTitle}>Upcoming Events</h2>
             <div className={styles.eventsGrid}>
               {upcoming.map((event) => (
-                <Card key={event.slug} href={`/events/${event.slug}`}>
-                  <h3>{event.frontmatter.title}</h3>
+                <Card key={event.slug} variant="static">
+                  <h3>
+                    <Link href={`/events/${event.slug}`}>
+                      {event.frontmatter.title}
+                    </Link>
+                  </h3>
                   <p>{event.frontmatter.excerpt}</p>
                   <time dateTime={event.frontmatter.date}>
                     {new Date(event.frontmatter.date).toLocaleDateString()}
@@ -44,6 +48,8 @@ export default function EventsPage() {
                   {event.frontmatter.rsvpUrl && (
                     <Button
                       href={event.frontmatter.rsvpUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       variant="primary"
                       size="sm"
                     >
@@ -58,7 +64,7 @@ export default function EventsPage() {
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Mentors Mixer</h2>
-          <Card href="/mentors-mixer" className={styles.mentorsMixerCard}>
+          <Card variant="static" className={styles.mentorsMixerCard}>
             <h3>Mentors Mixer</h3>
             <p>Connect with fellow mentors and mentees at our signature networking events.</p>
             <Button href="/mentors-mixer" variant="primary" size="md">

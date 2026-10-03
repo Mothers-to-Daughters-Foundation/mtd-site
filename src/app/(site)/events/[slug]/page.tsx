@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
+import Markdown from '@/components/ui/Markdown';
 import { getEventBySlug, getAllEvents } from '@/lib/mdx';
 
 interface EventPageProps {
@@ -60,13 +61,15 @@ export default function EventPage({ params }: EventPageProps) {
               <p>Location: {event.frontmatter.location}</p>
             )}
           </header>
-          <div>
-            {/* MDX content will be rendered here */}
-            <p>MDX rendering will be implemented with proper MDX components.</p>
-            <pre>{event.content.substring(0, 200)}...</pre>
-          </div>
+          <Markdown content={event.content} />
           {event.frontmatter.rsvpUrl && (
-            <Button href={event.frontmatter.rsvpUrl} variant="primary" size="lg">
+            <Button
+              href={event.frontmatter.rsvpUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="primary"
+              size="lg"
+            >
               RSVP on Zeffy
             </Button>
           )}
