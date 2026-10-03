@@ -2,12 +2,14 @@
 
 import { useEffect, useState, FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import AvatarUpload from '@/components/dashboard/AvatarUpload';
 import styles from './page.module.css';
 
 export default function MenteeProfilePage() {
   const supabase = createClient();
 
   const [userId, setUserId] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -39,6 +41,8 @@ export default function MenteeProfilePage() {
         .single();
 
       if (error || !data) return;
+
+      setAvatarUrl(data.avatar_url ?? null);
 
       setFormData({
         name: data.full_name ?? '',
@@ -120,6 +124,14 @@ export default function MenteeProfilePage() {
         onSubmit={handleSubmit}
         className={styles.form}
       >
+        {userId && (
+          <AvatarUpload
+            userId={userId}
+            initialUrl={avatarUrl}
+            name={formData.name}
+          />
+        )}
+
         <div className={styles.field}>
           <label htmlFor="name">Full Name</label>
 
