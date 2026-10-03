@@ -1,4 +1,5 @@
 import { createClient } from "./server";
+import { createAdminClient } from "./admin";
 
 
 
@@ -36,7 +37,9 @@ export interface Subscription {
 }
 
 export async function getAllSubscriptions() {
-  const supabase = await createClient();
+  // Admin-only report (the page is role-guarded). subscriptions has no
+  // admin-all RLS policy, so read with the service role to see every row.
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
   .from("subscriptions")
