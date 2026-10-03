@@ -4,6 +4,7 @@ import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
 import Markdown from '@/components/ui/Markdown';
+import styles from '@/components/ui/Article.module.css';
 import { getEventBySlug, getAllEvents } from '@/lib/mdx';
 
 interface EventPageProps {
@@ -46,32 +47,40 @@ export default function EventPage({ params }: EventPageProps) {
   return (
     <Section spacing="lg">
       <Container>
-        <article>
-          <header>
-            <h1>{event.frontmatter.title}</h1>
-            <time dateTime={event.frontmatter.date}>
-              {new Date(event.frontmatter.date).toLocaleDateString()}
-            </time>
-            {event.frontmatter.endDate && (
-              <time dateTime={event.frontmatter.endDate}>
-                - {new Date(event.frontmatter.endDate).toLocaleDateString()}
+        <article className={styles.article}>
+          <header className={styles.header}>
+            <h1 className={styles.title}>{event.frontmatter.title}</h1>
+            <div className={styles.meta}>
+              <time className={styles.date} dateTime={event.frontmatter.date}>
+                {new Date(event.frontmatter.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+                {event.frontmatter.endDate &&
+                  ` – ${new Date(event.frontmatter.endDate).toLocaleDateString(
+                    'en-US',
+                    { year: 'numeric', month: 'long', day: 'numeric' }
+                  )}`}
               </time>
-            )}
-            {event.frontmatter.location && (
-              <p>Location: {event.frontmatter.location}</p>
-            )}
+              {event.frontmatter.location && (
+                <p className={styles.location}>📍 {event.frontmatter.location}</p>
+              )}
+            </div>
           </header>
           <Markdown content={event.content} />
           {event.frontmatter.rsvpUrl && (
-            <Button
-              href={event.frontmatter.rsvpUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="primary"
-              size="lg"
-            >
-              RSVP on Zeffy
-            </Button>
+            <div className={styles.cta}>
+              <Button
+                href={event.frontmatter.rsvpUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="primary"
+                size="lg"
+              >
+                RSVP on Zeffy
+              </Button>
+            </div>
           )}
         </article>
       </Container>

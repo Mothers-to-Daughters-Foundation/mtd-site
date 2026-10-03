@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Markdown from '@/components/ui/Markdown';
+import styles from '@/components/ui/Article.module.css';
 import { getPostBySlug, getAllPosts } from '@/lib/mdx';
 
 interface BlogPostPageProps {
@@ -45,15 +46,23 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <Section spacing="lg">
       <Container>
-        <article>
-          <header>
-            <h1>{post.frontmatter.title}</h1>
-            <time dateTime={post.frontmatter.date}>
-              {new Date(post.frontmatter.date).toLocaleDateString()}
-            </time>
-            {post.frontmatter.category && (
-              <span>Category: {post.frontmatter.category}</span>
-            )}
+        <article className={styles.article}>
+          <header className={styles.header}>
+            <h1 className={styles.title}>{post.frontmatter.title}</h1>
+            <div className={styles.meta}>
+              <time className={styles.date} dateTime={post.frontmatter.date}>
+                {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
+              {post.frontmatter.category && (
+                <span className={styles.category}>
+                  {post.frontmatter.category}
+                </span>
+              )}
+            </div>
           </header>
           <Markdown content={post.content} />
         </article>

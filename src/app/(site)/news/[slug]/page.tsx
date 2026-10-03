@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Markdown from '@/components/ui/Markdown';
+import styles from '@/components/ui/Article.module.css';
 import { getNewsBySlug, getAllNews } from '@/lib/mdx';
 
 interface NewsPageProps {
@@ -45,12 +46,18 @@ export default function NewsItemPage({ params }: NewsPageProps) {
   return (
     <Section spacing="lg">
       <Container>
-        <article>
-          <header>
-            <h1>{item.frontmatter.title}</h1>
-            <time dateTime={item.frontmatter.date}>
-              {new Date(item.frontmatter.date).toLocaleDateString()}
-            </time>
+        <article className={styles.article}>
+          <header className={styles.header}>
+            <h1 className={styles.title}>{item.frontmatter.title}</h1>
+            <div className={styles.meta}>
+              <time className={styles.date} dateTime={item.frontmatter.date}>
+                {new Date(item.frontmatter.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
+            </div>
           </header>
           <Markdown content={item.content} />
         </article>
