@@ -13,15 +13,25 @@ export const metadata: Metadata = {
 };
 
 const speakers = [
-  { name: 'Arnella Renda', role: 'Real Estate Broker' },
-  { name: 'Shein Zutshi', role: 'Educational Consultant' },
-  { name: 'Maria Carolina Ojeda', role: 'Entrepreneur' },
-  { name: 'Satie Narain-Simon', role: 'CRA Senior Tax Auditor' },
-  { name: 'Nunu Francisco', role: 'Tech Programs Lead, Black Entrepreneurship Alliance' },
-  { name: 'Evangeline Chima', role: 'Founder, Black Mentorship Inc.' },
+  { name: 'Arnella Renda', role: 'Real Estate Broker', image: '/images/mixers/speakers/arnella-renda.png' },
+  { name: 'Shein Zutshi', role: 'Educational Consultant', image: '/images/mixers/speakers/shein-zutshi.png' },
+  { name: 'Maria Carolina Ojeda', role: 'Entrepreneur', image: '/images/mixers/speakers/maria-carolina-ojeda.png' },
+  { name: 'Satie Narain-Simon', role: 'CRA Senior Tax Auditor', image: '/images/mixers/speakers/satie-narain-simon.png' },
+  { name: 'Nunu Francisco', role: 'Tech Programs Lead, Black Entrepreneurship Alliance', image: '/images/mixers/speakers/nunu-francisco.jpg' },
+  { name: 'Evangeline Chima', role: 'Founder, Black Mentorship Inc.', image: '/images/mixers/speakers/evangeline-chima.jpg' },
 ];
 
 const gallery = [1, 2, 3, 4, 5, 6].map((n) => `/images/mixers/mixer-4-0-gallery-${n}.jpg`);
+
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
 
 export default function MentorsMixer40Page() {
   return (
@@ -79,6 +89,21 @@ export default function MentorsMixer40Page() {
               <ul className={styles.speakerList}>
                 {speakers.map((speaker) => (
                   <li key={speaker.name} className={styles.speakerItem}>
+                    <div className={styles.speakerPhoto}>
+                      {speaker.image ? (
+                        <Image
+                          src={getImagePath(speaker.image)}
+                          alt={speaker.name}
+                          width={400}
+                          height={400}
+                          className={styles.speakerImage}
+                        />
+                      ) : (
+                        <div className={styles.speakerInitials}>
+                          <span>{initials(speaker.name)}</span>
+                        </div>
+                      )}
+                    </div>
                     <span className={styles.speakerName}>{speaker.name}</span>
                     <span className={styles.speakerRole}>{speaker.role}</span>
                   </li>

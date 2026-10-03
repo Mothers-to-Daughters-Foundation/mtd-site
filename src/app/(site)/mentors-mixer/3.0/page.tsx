@@ -12,17 +12,27 @@ export const metadata: Metadata = {
 };
 
 const speakers = [
-  { name: 'Anna Lolomari', role: 'Zesty Lifestyle' },
+  { name: 'Anna Lolomari', role: 'Zesty Lifestyle', image: '/images/mixers/speakers/anna-lolomari.png' },
   { name: 'Beckie Di Leo', role: 'HeARTs Dept' },
-  { name: 'Tamara Bahry', role: 'Documentary & Studio Photographer' },
-  { name: 'Dimitra Davidson', role: 'Indeed Labs' },
-  { name: 'Klaudia Zinaty', role: 'Women Empowerment Awards' },
-  { name: 'Aynur Jahan', role: 'NOORÈLLE Jewelry' },
-  { name: 'Claudia Chan', role: 'Mindset Life Coach' },
-  { name: 'Lisa Ventura', role: '1st Link Group' },
+  { name: 'Tamara Bahry', role: 'Documentary & Studio Photographer', image: '/images/mixers/speakers/tamara-bahry.png' },
+  { name: 'Dimitra Davidson', role: 'Indeed Labs', image: '/images/mixers/speakers/dimitra-davidson.png' },
+  { name: 'Klaudia Zinaty', role: 'Women Empowerment Awards', image: '/images/mixers/speakers/klaudia-zinaty.png' },
+  { name: 'Aynur Jahan', role: 'NOORÈLLE Jewelry', image: '/images/mixers/speakers/aynur-jahan.png' },
+  { name: 'Claudia Chan', role: 'Mindset Life Coach', image: '/images/mixers/speakers/claudia-chan.png' },
+  { name: 'Lisa Ventura', role: '1st Link Group', image: '/images/mixers/speakers/lisa-ventura.png' },
 ];
 
 const gallery = [1, 2, 3, 4, 5, 6].map((n) => `/images/mixers/mixer-3-0-gallery-${n}.jpg`);
+
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
 
 export default function MentorsMixer30Page() {
   return (
@@ -69,6 +79,21 @@ export default function MentorsMixer30Page() {
               <ul className={styles.speakerList}>
                 {speakers.map((speaker) => (
                   <li key={speaker.name} className={styles.speakerItem}>
+                    <div className={styles.speakerPhoto}>
+                      {speaker.image ? (
+                        <Image
+                          src={getImagePath(speaker.image)}
+                          alt={speaker.name}
+                          width={400}
+                          height={400}
+                          className={styles.speakerImage}
+                        />
+                      ) : (
+                        <div className={styles.speakerInitials}>
+                          <span>{initials(speaker.name)}</span>
+                        </div>
+                      )}
+                    </div>
                     <span className={styles.speakerName}>{speaker.name}</span>
                     <span className={styles.speakerRole}>{speaker.role}</span>
                   </li>
