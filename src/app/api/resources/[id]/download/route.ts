@@ -52,6 +52,7 @@ export async function GET(
 
   const canAccess =
     profile.role === "admin" ||
+    resource.uploaded_by === user.id ||
     resource.visibility === "public" ||
     (profile.role === "mentor" &&
       resource.visibility === "mentor_only") ||

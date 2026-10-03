@@ -48,6 +48,18 @@
   flex: 1;
 }
 
+.sharedBadge {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--brand-700);
+  background: var(--accent-100);
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
 .comingSoon {
   font-size: 0.75rem;
   font-weight: 600;

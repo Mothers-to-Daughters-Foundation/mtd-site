@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export type ResourceType =
   | "document"
@@ -150,6 +151,36 @@ export async function getResourcesForMentor(): Promise<
     .order("created_at", {
       ascending: false,
     });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as Resource[];
+}
+
+/* =========================================================
+   Mentor Resources view (list)
+   ---------------------------------------------------------
+   What a mentor sees on their Resources page: public +
+   mentor_only resources, PLUS everything they uploaded
+   themselves (including mentee_only files they shared).
+   Uses the service role so a mentor's own mentee_only
+   uploads are not hidden by row-level security.
+========================================================= */
+
+export async function getMentorResourceView(
+  userId: string
+): Promise<Resource[]> {
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("resources")
+    .select("*")
+    .or(
+      `visibility.eq.public,visibility.eq.mentor_only,uploaded_by.eq.${userId}`
+    )
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw error;

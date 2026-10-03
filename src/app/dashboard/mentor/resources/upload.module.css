@@ -1,0 +1,107 @@
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-8);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.dropzone:hover,
+.dragging {
+  border-color: var(--brand-700);
+  background-color: var(--surface-0);
+}
+
+.hint {
+  color: var(--text-secondary);
+}
+
+.fileName {
+  color: var(--text-primary);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.fileInput {
+  display: none;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.field input,
+.field textarea {
+  padding: var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--surface-1);
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--brand-700);
+}
+
+.submit {
+  align-self: flex-start;
+  padding: var(--spacing-3) var(--spacing-5);
+  background: var(--brand-700);
+  color: var(--surface-1);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--brand-800);
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.error {
+  color: var(--error, #c0392b);
+  font-size: 0.9rem;
+}
+
+.success {
+  color: var(--success, #2e7d32);
+  font-size: 0.9rem;
+}

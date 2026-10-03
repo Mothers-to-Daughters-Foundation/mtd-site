@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getResourcesForUser } from "@/lib/models/resources";
+import { getMentorResourceView } from "@/lib/models/resources";
+import UploadResource from "./UploadResource";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +29,7 @@ export default async function MentorResourcesPage() {
     redirect("/login");
   }
 
-  const resources = await getResourcesForUser(user.id);
+  const resources = await getMentorResourceView(user.id);
 
   return (
     <div>
@@ -37,9 +38,11 @@ export default async function MentorResourcesPage() {
 
         <p className={styles.subtitle}>
           Guides, templates, and materials to help you be an effective
-          mentor.
+          mentor — and share your own with your mentees.
         </p>
       </div>
+
+      <UploadResource />
 
       {resources.length === 0 ? (
         <div className={styles.empty}>
@@ -56,6 +59,13 @@ export default async function MentorResourcesPage() {
               <h2 className={styles.resourceTitle}>
                 {resource.title}
               </h2>
+
+              {resource.uploaded_by === user.id &&
+                resource.visibility === "mentee_only" && (
+                  <span className={styles.sharedBadge}>
+                    Shared with mentees
+                  </span>
+                )}
 
               {resource.description && (
                 <p className={styles.resourceDesc}>
