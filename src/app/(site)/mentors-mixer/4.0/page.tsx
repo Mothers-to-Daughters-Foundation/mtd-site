@@ -23,6 +23,22 @@ const speakers = [
 
 const gallery = [1, 2, 3, 4, 5, 6].map((n) => `/images/mixers/mixer-4-0-gallery-${n}.jpg`);
 
+const sponsors = [
+  { name: '6ix Academy', file: '6ix-academy.png' },
+  { name: 'CAMH', file: 'camh.png' },
+  { name: 'CAFA', file: 'cafa.png' },
+  { name: 'Gotstyle', file: 'gotstyle.png' },
+  { name: 'Foxy Originals', file: 'foxy-originals.png' },
+  { name: 'Sully & Son Co.', file: 'sully-and-son-co.png' },
+  { name: 'Fatima Hughes', file: 'fatima-hughes.png' },
+  { name: 'Monika Myers', file: 'monika-myers.png' },
+  { name: 'Aynur Jahan', file: 'aynur-jahan.png' },
+  { name: 'Mave & Chez', file: 'mave-and-chez.png' },
+  { name: 'Lo & Co Design', file: 'lo-and-co-design.png' },
+  { name: 'VASANTI Cosmetics', file: 'vasanti-cosmetics.png' },
+  { name: 'MAC Cosmetics', file: 'mac-cosmetics.png' },
+];
+
 function initials(name: string): string {
   return name
     .split(' ')
@@ -122,6 +138,23 @@ export default function MentorsMixer40Page() {
                       width={900}
                       height={675}
                       className={styles.galleryImage}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.section}>
+              <h2>Partners &amp; Sponsors</h2>
+              <div className={styles.sponsors}>
+                {sponsors.map((sponsor) => (
+                  <div key={sponsor.name} className={styles.sponsorLogo}>
+                    <Image
+                      src={getImagePath(`/images/mixers/sponsors/${sponsor.file}`)}
+                      alt={sponsor.name}
+                      width={160}
+                      height={100}
+                      className={styles.sponsorImage}
                     />
                   </div>
                 ))}

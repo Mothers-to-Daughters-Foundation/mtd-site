@@ -78,6 +78,31 @@
   display: block;
 }
 
+.sponsors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-6);
+  padding: var(--spacing-8);
+  background-color: var(--surface-1);
+  border-radius: var(--radius-lg);
+}
+
+.sponsorLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sponsorImage {
+  width: auto;
+  height: auto;
+  max-width: 130px;
+  max-height: 64px;
+  object-fit: contain;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
