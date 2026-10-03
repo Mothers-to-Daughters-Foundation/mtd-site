@@ -51,6 +51,20 @@
   color: var(--text-secondary);
 }
 
+.activateLink {
+  margin-top: var(--spacing-2);
+  align-self: flex-start;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--brand-700);
+  text-decoration: none;
+}
+
+.activateLink:hover,
+.activateLink:focus {
+  text-decoration: underline;
+}
+
 .badge {
   display: inline-block;
   padding: 2px 10px;

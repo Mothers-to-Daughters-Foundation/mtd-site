@@ -80,6 +80,12 @@ export default async function MenteeDashboard() {
               <div className={styles.cardValue}>
                 No active plan
               </div>
+              <a
+                href="/dashboard/mentee/subscription"
+                className={styles.activateLink}
+              >
+                Activate a plan →
+              </a>
             </>
           )}
         </div>

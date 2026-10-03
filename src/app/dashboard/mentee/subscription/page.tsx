@@ -14,12 +14,10 @@ interface Tier {
 }
 
 interface Subscription {
-  _id: string;
-  tierId: string;
+  id: string;
+  plan_id: string;
   status: string;
-  paymentProvider: string;
-  currentPeriodEnd?: string;
-  billingHistory: { date: string; amount: number; description: string; status: string }[];
+  expires_at?: string | null;
 }
 
 export default function MenteeSubscriptionPage() {
@@ -33,15 +31,18 @@ export default function MenteeSubscriptionPage() {
   useEffect(() => {
     const load = async () => {
       const [tiersRes, subRes] = await Promise.all([
-        fetch('/api/admin/tiers'),
+        fetch('/api/subscriptions/plans'),
         fetch('/api/subscriptions/me'),
       ]);
-      const tiersData = tiersRes.ok ? await tiersRes.json() : [];
-      const subData = subRes.ok ? await subRes.json() : null;
-      setTiers(tiersData.filter((t: Tier) => t.isActive));
-      setSub(subData);
-      if (subData) {
-        setCurrentTier(tiersData.find((t: Tier) => t._id === subData.tierId) ?? null);
+      const tiersData: Tier[] = tiersRes.ok ? await tiersRes.json() : [];
+      const subJson = subRes.ok ? await subRes.json() : null;
+      const subscription: Subscription | null = subJson?.subscription ?? null;
+      setTiers(tiersData.filter((t) => t.isActive));
+      setSub(subscription);
+      if (subscription) {
+        setCurrentTier(
+          tiersData.find((t) => t._id === subscription.plan_id) ?? null
+        );
       }
       setLoading(false);
     };
@@ -111,9 +112,9 @@ export default function MenteeSubscriptionPage() {
           <span className={`${styles.badge} ${styles[`badge-${sub.status}`]}`}>
             {sub.status}
           </span>
-          {sub.currentPeriodEnd && (
+          {sub.expires_at && (
             <div className={styles.renewDate}>
-              Renews {new Date(sub.currentPeriodEnd).toLocaleDateString()}
+              Renews {new Date(sub.expires_at).toLocaleDateString()}
             </div>
           )}
           <button onClick={handleCancel} className={styles.cancelBtn}>
@@ -125,7 +126,7 @@ export default function MenteeSubscriptionPage() {
       <div className={styles.sectionTitle}>Available Plans</div>
       <div className={styles.tiersGrid}>
         {tiers.map((tier) => {
-          const isCurrent = sub?.tierId === tier._id && sub.status !== 'cancelled';
+          const isCurrent = sub?.plan_id === tier._id && sub.status !== 'cancelled';
           return (
             <div key={tier._id} className={`${styles.tierCard} ${isCurrent ? styles.tierCardActive : ''}`}>
               {isCurrent && <div className={styles.currentBadge}>Current</div>}
@@ -154,35 +155,6 @@ export default function MenteeSubscriptionPage() {
         })}
       </div>
 
-      {sub && sub.billingHistory && sub.billingHistory.length > 0 && (
-        <div className={styles.historySection}>
-          <div className={styles.sectionTitle}>Billing History</div>
-          <table className={styles.historyTable}>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sub.billingHistory.map((entry, i) => (
-                <tr key={i}>
-                  <td>{new Date(entry.date).toLocaleDateString()}</td>
-                  <td>{entry.description}</td>
-                  <td>${entry.amount.toFixed(2)}</td>
-                  <td>
-                    <span className={`${styles.badge} ${styles[`badge-${entry.status}`]}`}>
-                      {entry.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }
