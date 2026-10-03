@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import LoginIcon from '@mui/icons-material/Login';
@@ -9,9 +9,76 @@ import Container from './Container';
 import Button from '../ui/Button';
 import { getImagePath } from '@/lib/utils';
 import { appHref } from '@/lib/appUrl';
+import { createClient } from '@/lib/supabase/client';
+
+type HeaderUser = {
+  name: string;
+  role: 'admin' | 'mentor' | 'mentee';
+  avatarUrl: string | null;
+};
+
+function dashboardHref(role: HeaderUser['role']): string {
+  if (role === 'admin') return appHref('/dashboard/admin');
+  if (role === 'mentor') return appHref('/dashboard/mentor/profile');
+  return appHref('/dashboard/mentee/profile');
+}
+
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<HeaderUser | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let active = true;
+
+    async function loadProfile() {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+
+      if (!authUser) {
+        if (active) setUser(null);
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('full_name, role, avatar_url')
+        .eq('id', authUser.id)
+        .single();
+
+      if (!active) return;
+
+      setUser({
+        name: profile?.full_name ?? authUser.email ?? 'Account',
+        role: (profile?.role as HeaderUser['role']) ?? 'mentee',
+        avatarUrl: profile?.avatar_url ?? null,
+      });
+    }
+
+    loadProfile();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      loadProfile();
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -83,10 +150,37 @@ export default function SiteHeader() {
             >
               Donate
             </Button>
-            <Link href={appHref('/login')} className={styles.signInLink} onClick={closeMenu}>
-              <LoginIcon className={styles.signInIcon} />
-              <span>Sign In</span>
-            </Link>
+            {user ? (
+              <a
+                href={dashboardHref(user.role)}
+                className={styles.profileLink}
+                onClick={closeMenu}
+                aria-label={`${user.name} — go to your dashboard`}
+              >
+                <span className={styles.avatar}>
+                  {user.avatarUrl ? (
+                    <Image
+                      src={user.avatarUrl}
+                      alt=""
+                      width={32}
+                      height={32}
+                      className={styles.avatarImage}
+                      unoptimized
+                    />
+                  ) : (
+                    <span className={styles.avatarInitials}>
+                      {initials(user.name)}
+                    </span>
+                  )}
+                </span>
+                <span className={styles.profileName}>{user.name}</span>
+              </a>
+            ) : (
+              <Link href={appHref('/login')} className={styles.signInLink} onClick={closeMenu}>
+                <LoginIcon className={styles.signInIcon} />
+                <span>Sign In</span>
+              </Link>
+            )}
           </nav>
         </div>
       </Container>
