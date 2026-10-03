@@ -2,10 +2,12 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import Markdown from '@/components/ui/Markdown';
 import styles from '@/components/ui/Article.module.css';
 import { getEventBySlug, getAllEvents } from '@/lib/mdx';
+import { getImagePath } from '@/lib/utils';
 
 interface EventPageProps {
   params: {
@@ -68,6 +70,18 @@ export default function EventPage({ params }: EventPageProps) {
               )}
             </div>
           </header>
+          {event.frontmatter.image && (
+            <div className={styles.heroImage}>
+              <Image
+                src={getImagePath(event.frontmatter.image)}
+                alt={event.frontmatter.title}
+                width={1200}
+                height={675}
+                className={styles.heroImageContent}
+                priority
+              />
+            </div>
+          )}
           <Markdown content={event.content} />
           {event.frontmatter.rsvpUrl && (
             <div className={styles.cta}>

@@ -2,9 +2,11 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import Image from 'next/image';
 import Markdown from '@/components/ui/Markdown';
 import styles from '@/components/ui/Article.module.css';
 import { getPostBySlug, getAllPosts } from '@/lib/mdx';
+import { getImagePath } from '@/lib/utils';
 
 interface BlogPostPageProps {
   params: {
@@ -64,6 +66,18 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               )}
             </div>
           </header>
+          {post.frontmatter.image && (
+            <div className={styles.heroImage}>
+              <Image
+                src={getImagePath(post.frontmatter.image)}
+                alt={post.frontmatter.title}
+                width={1200}
+                height={675}
+                className={styles.heroImageContent}
+                priority
+              />
+            </div>
+          )}
           <Markdown content={post.content} />
         </article>
       </Container>

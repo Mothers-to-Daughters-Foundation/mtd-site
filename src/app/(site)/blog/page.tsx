@@ -1,13 +1,16 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import { getAllPosts } from '@/lib/mdx';
+import { getImagePath } from '@/lib/utils';
+import styles from '@/components/ui/ContentList.module.css';
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Read our latest blog posts and updates.',
+  description:
+    'Stories, perspectives, and updates from the Mothers to Daughters community.',
 };
 
 export default function BlogPage() {
@@ -16,18 +19,58 @@ export default function BlogPage() {
   return (
     <Section spacing="lg">
       <Container>
-        <h1>Blog</h1>
+        <div className={styles.hero}>
+          <h1 className={styles.heroTitle}>Blog</h1>
+          <p className={styles.heroDescription}>
+            Stories, perspectives, and updates from our community.
+          </p>
+        </div>
+
         {posts.length === 0 ? (
-          <p>No blog posts yet. Check back soon!</p>
+          <p className={styles.empty}>No blog posts yet. Check back soon!</p>
         ) : (
-          <div className="blog-grid">
+          <div className={styles.grid}>
             {posts.map((post) => (
-              <Card key={post.slug} href={`/blog/${post.slug}`}>
-                <h2>{post.frontmatter.title}</h2>
-                <p>{post.frontmatter.excerpt}</p>
-                <time dateTime={post.frontmatter.date}>
-                  {new Date(post.frontmatter.date).toLocaleDateString()}
-                </time>
+              <Card
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className={styles.card}
+              >
+                <div className={styles.cardImage}>
+                  {post.frontmatter.image ? (
+                    <Image
+                      src={getImagePath(post.frontmatter.image)}
+                      alt={post.frontmatter.title}
+                      width={400}
+                      height={225}
+                      className={styles.cardImageContent}
+                    />
+                  ) : (
+                    <div className={styles.cardImagePlaceholder}>
+                      <span>Mothers to Daughters</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.cardBody}>
+                  {post.frontmatter.category && (
+                    <span className={styles.cardCategory}>
+                      {post.frontmatter.category}
+                    </span>
+                  )}
+                  <h2 className={styles.cardTitle}>{post.frontmatter.title}</h2>
+                  {post.frontmatter.excerpt && (
+                    <p className={styles.cardExcerpt}>
+                      {post.frontmatter.excerpt}
+                    </p>
+                  )}
+                  <time dateTime={post.frontmatter.date} className={styles.cardDate}>
+                    {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </time>
+                </div>
               </Card>
             ))}
           </div>
