@@ -33,6 +33,7 @@ export default function ChatDock() {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [blocked, setBlocked] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // --- load the user's conversations + unread count (graceful on error) ---
@@ -133,6 +134,15 @@ export default function ChatDock() {
       } = await supabase.auth.getUser();
       if (!user || !active) return;
       setUserId(user.id);
+      try {
+        const res = await fetch('/api/me/access');
+        if (res.ok) {
+          const a = await res.json();
+          if (active) setBlocked(a.hasAccess === false);
+        }
+      } catch {
+        /* leave unblocked on transient error; the send API still enforces 403 */
+      }
       await loadThreads(user.id);
 
       channel = supabase
@@ -202,11 +212,11 @@ export default function ChatDock() {
         aria-label={`Open chat${unread > 0 ? ` (${unread} unread)` : ''}`}
       >
         <ChatBubbleOutlineIcon />
-        {unread > 0 && (
-          <span className={styles.launcherBadge}>
-            {unread > 9 ? '9+' : unread}
-          </span>
-        )}
+        {blocked ? (
+          <span className={styles.launcherBadge}>🔒</span>
+        ) : unread > 0 ? (
+          <span className={styles.launcherBadge}>{unread > 9 ? '9+' : unread}</span>
+        ) : null}
       </button>
     );
   }
@@ -239,7 +249,14 @@ export default function ChatDock() {
         </div>
       </div>
 
-      {!activeThread ? (
+      {blocked ? (
+        <div className={styles.empty}>
+          <p>Upgrade to a paid plan to message your mentor.</p>
+          <a href="/dashboard/mentee/subscription" className={styles.threadName}>
+            Choose a plan →
+          </a>
+        </div>
+      ) : !activeThread ? (
         <div className={styles.threadList}>
           {threads.length === 0 ? (
             <div className={styles.empty}>No conversations yet.</div>
