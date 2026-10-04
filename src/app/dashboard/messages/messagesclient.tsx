@@ -74,45 +74,27 @@ async function getMessages(
 }
 
 async function sendMessage(
-  supabase: ReturnType<typeof createClient>,
   conversationId: string,
   message: string
 ) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
   const trimmedMessage = message.trim();
 
   if (!trimmedMessage) {
     throw new Error("Message cannot be empty.");
   }
 
-  await assertConversationMember(
-    supabase,
-    conversationId,
-    user.id
-  );
+  const res = await fetch('/api/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ conversationId, message: trimmedMessage }),
+  });
 
-  const { data, error } = await supabase
-    .from("messages")
-    .insert({
-      conversation_id: conversationId,
-      sender_id: user.id,
-      message: trimmedMessage,
-    })
-    .select()
-    .single();
-
-  if (error) {
-    throw error;
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error((data as { error?: string }).error ?? 'Unable to send message.');
   }
 
-  return data as Message;
+  return (await res.json()) as Message;
 }
 
 async function markMessagesAsRead(
@@ -343,7 +325,6 @@ export default function MessagesClient({
     startTransition(async () => {
       try {
         const newMessage = await sendMessage(
-          supabase,
           selectedConversation,
           text
         );
