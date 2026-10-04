@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getMenteeAccess } from "@/lib/access";
 import { getResourcesForUser } from "@/lib/models/resources";
+import LockedFeature from "@/components/dashboard/LockedFeature";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +28,11 @@ export default async function MenteeResourcesPage() {
 
   if (!user) {
     redirect("/login");
+  }
+
+  const access = await getMenteeAccess(user.id);
+  if (!access.hasAccess) {
+    return <LockedFeature feature="Resources" reason={access.reason} />;
   }
 
   const resources = await getResourcesForUser(user.id);

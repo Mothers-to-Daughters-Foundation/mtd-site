@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
+import { getMenteeAccess } from '@/lib/access';
 import { getMySessions } from '@/lib/models/session';
+import LockedFeature from '@/components/dashboard/LockedFeature';
 
 import styles from './page.module.css';
 
@@ -16,6 +18,11 @@ export default async function MenteeSessionsPage() {
 
   if (!user) {
     return null;
+  }
+
+  const access = await getMenteeAccess(user.id);
+  if (!access.hasAccess) {
+    return <LockedFeature feature="Sessions" reason={access.reason} />;
   }
 
   const sessions = await getMySessions(user.id);
