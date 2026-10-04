@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getMenteeAccess } from "@/lib/access";
 
 /**
  * Send a message in a conversation and notify the other member(s).
@@ -18,6 +19,11 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const access = await getMenteeAccess(user.id);
+  if (!access.hasAccess) {
+    return NextResponse.json({ error: "Upgrade required" }, { status: 403 });
   }
 
   let conversationId: string;

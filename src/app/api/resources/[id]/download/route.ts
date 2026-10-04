@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getResourceById } from "@/lib/models/resources";
 import { createAuditLog } from "@/lib/audit";
+import { getMenteeAccess } from "@/lib/access";
 
 interface RouteContext {
   params: Promise<{
@@ -26,6 +27,11 @@ export async function GET(
       { error: "Unauthorized" },
       { status: 401 }
     );
+  }
+
+  const access = await getMenteeAccess(user.id);
+  if (!access.hasAccess) {
+    return NextResponse.json({ error: "Upgrade required" }, { status: 403 });
   }
 
   const resource = await getResourceById(id);
