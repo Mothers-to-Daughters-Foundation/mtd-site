@@ -24,7 +24,11 @@ This document tracks planned features and integrations for the MTD site.
 | Donor portal | ✅ Planned (see `AUTHENTICATION_FEATURES.md`) | Donation history & impact |
 | External course integration — Doltam "Create Your Personal Brand" | 🔲 Planned | Embed/link in dashboard courses section |
 | Admin panel | 🔲 Future | Manage users, content, and events |
-| Mentee–mentor matching | 🔲 Future | Pairing system for mentors and mentees |
+| Mentor availability calendar | 🔲 Launch | Date-time picker; assigned mentee is notified. External calendar/Calendly is post-launch |
+| Automatic mentor–mentee matching | 🔲 Launch | Career areas + expertise. Soft and deterministic match, paid mentees only |
+| Mentee profile setup at signup | 🔲 Launch | Interests, career goals, subscription tier. Stripe Express provisions first |
+| Paid-access gating | 🔲 Launch | Expired subscription blocks chat, resources, and sessions |
+| Mentee–mentor matching | 🔲 Future | See automatic matching above; external calendar sync stays post-launch |
 
 ## Courses Page Roadmap
 
@@ -32,3 +36,44 @@ This document tracks planned features and integrations for the MTD site.
 
 |---|---|---|
 | Create Your Personal Brand: 5 Steps to Building Authenticity | Doltam Creative Solutions | 🔲 Integrate into `/courses` and dashboard |
+
+## Launch
+
+### Mentor availability
+
+Mentors set availability with a date-time calendar picker. Saving a slot syncs it and notifies the assigned mentee.
+
+Post-launch only: connect that availability to an external calendar or a Calendly API. Do not block launch on that integration.
+
+### Automatic matching
+
+Mentors choose the career areas they have developed in, and their areas of expertise.
+
+Matching runs in two ways:
+
+- **Deterministic:** pair when career area and expertise line up directly.
+- **Soft:** pair on a partial overlap when a strict pair is not available.
+
+Automatic pairing happens only when the mentee is on a paid subscription. Free accounts are not auto-matched.
+
+### Mentee account setup
+
+A new mentee account goes to a profile setup page before the rest of the app. That page collects:
+
+- Interests
+- Career goals, as a list
+- Subscription tier
+
+The tier choice hooks into Stripe. Build the Stripe Express provisions first (account link, price IDs, checkout session, webhook to mark the subscription active) so the live keys and price IDs can be dropped in without rewriting the flow.
+
+### Subscription access
+
+When a mentee's subscription runs out, they cannot access:
+
+- Mentor chat
+- Resources
+- Sessions
+
+## Post-launch
+
+- Mentor availability syncs to an external calendar or Calendly.

@@ -106,6 +106,19 @@ Launch
 
 ---
 
+## Launch additions
+
+- Mentor availability as a date-time calendar picker that notifies the assigned mentee
+- Automatic matching from mentor career areas and expertise (deterministic and soft), paid mentees only
+- Mentee profile setup immediately after signup: interests, career goals, subscription tier, with Stripe Express provisions in place first
+- Expired mentee subscriptions block mentor chat, resources, and sessions
+
+Detail is in `docs/ROADMAP.md`.
+
+## Post-launch
+
+- Connect mentor availability to an external calendar or Calendly API
+
 ## Future Enhancements
 
 AI Mentor Matching
