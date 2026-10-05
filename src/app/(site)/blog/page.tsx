@@ -5,6 +5,7 @@ import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import { getAllPosts } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
+import { readingTime } from '@/lib/reading-time';
 import styles from '@/components/ui/ContentList.module.css';
 
 export const metadata: Metadata = {
@@ -63,13 +64,15 @@ export default function BlogPage() {
                       {post.frontmatter.excerpt}
                     </p>
                   )}
-                  <time dateTime={post.frontmatter.date} className={styles.cardDate}>
+                  <div className={styles.cardDate}>
+                    {post.frontmatter.author ? `${post.frontmatter.author} · ` : ''}
                     {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                     })}
-                  </time>
+                    {` · ${readingTime(post.content)} min read`}
+                  </div>
                 </div>
               </Card>
             ))}
