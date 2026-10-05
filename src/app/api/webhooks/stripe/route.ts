@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import getStripe from '@/lib/stripe';
 import Stripe from 'stripe';
+import { autoMatchMentee } from '@/lib/matching-service';
 
 // Disable body parsing so we can read raw body for signature verification
 export const runtime = 'nodejs';
@@ -145,6 +146,11 @@ export async function POST(req: NextRequest) {
           .neq('id', currentSubscriptionId)
           .eq('is_current', true);
         if (deactivateError) throw deactivateError;
+
+        // Once a mentee's subscription is active, try to auto-match them.
+        void autoMatchMentee(userId).catch((e) =>
+          console.error('[webhook auto-match]', e)
+        );
         break;
       }
 
