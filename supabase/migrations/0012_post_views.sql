@@ -6,5 +6,6 @@ create table if not exists public.post_views (
   updated_at timestamptz not null default now()
 );
 alter table public.post_views enable row level security;
+drop policy if exists "Anyone can read view counts" on public.post_views;
 create policy "Anyone can read view counts" on public.post_views
   for select to anon, authenticated using (true);

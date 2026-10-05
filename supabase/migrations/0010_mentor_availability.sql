@@ -24,18 +24,21 @@ create index if not exists mentor_availability_status_idx on public.mentor_avail
 alter table public.mentor_availability enable row level security;
 
 -- Admins manage everything.
+drop policy if exists "Admins manage availability" on public.mentor_availability;
 create policy "Admins manage availability" on public.mentor_availability
   for all to authenticated
   using ((select get_user_role()) = 'admin')
   with check ((select get_user_role()) = 'admin');
 
 -- Mentors fully manage their own slots.
+drop policy if exists "Mentors manage own availability" on public.mentor_availability;
 create policy "Mentors manage own availability" on public.mentor_availability
   for all to authenticated
   using (mentor_id = (select auth.uid()))
   with check (mentor_id = (select auth.uid()));
 
 -- Mentees may read slots of a mentor they have an active mentorship with.
+drop policy if exists "Mentees view their mentor availability" on public.mentor_availability;
 create policy "Mentees view their mentor availability" on public.mentor_availability
   for select to authenticated
   using (exists (
