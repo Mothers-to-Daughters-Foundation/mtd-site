@@ -121,24 +121,17 @@ export async function notifyAllUsers(
   message: string,
   relatedId?: string
 ) {
-  console.log("========== NOTIFICATION START ==========");
-
   const supabase = await createClient();
 
   const { data: users, error } = await supabase
     .from("user_profiles")
     .select("id");
 
-  console.log("USER QUERY");
-  console.log(users);
-  console.log(error);
-
   if (error) {
     throw error;
   }
 
   if (!users || users.length === 0) {
-    console.log("NO USERS FOUND");
     return;
   }
 
@@ -150,23 +143,13 @@ export async function notifyAllUsers(
     related_id: relatedId ?? null,
   }));
 
-  console.log("INSERT PAYLOAD");
-  console.log(payload);
-
-  const { data, error: insertError } = await supabase
+  const { error: insertError } = await supabase
     .from("notifications")
-    .insert(payload)
-    .select();
-
-  console.log("INSERT RESULT");
-  console.log(data);
-  console.log(insertError);
+    .insert(payload);
 
   if (insertError) {
     throw insertError;
   }
-
-  console.log("========== NOTIFICATION END ==========");
 }
 
 

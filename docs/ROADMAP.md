@@ -143,3 +143,18 @@ When a mentee's subscription runs out, they cannot access:
 ## Post-launch
 
 - Mentor availability syncs to an external calendar or Calendly.
+
+## Future Enhancements
+
+Longer-term backlog (not scheduled for launch):
+
+- AI mentor matching
+- Referral program
+- Mobile application
+- Certificates
+- Email marketing
+- Analytics dashboard
+- Sponsor portal
+- Community forum
+- Volunteer management
+- Multi-language support
