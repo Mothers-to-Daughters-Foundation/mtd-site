@@ -6,6 +6,7 @@ import Card from '@/components/ui/Card';
 import { getAllNews } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
 import styles from '@/components/ui/ContentList.module.css';
+import newsStyles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'News',
@@ -18,11 +19,38 @@ export default function NewsPage() {
   return (
     <Section spacing="lg">
       <Container>
-        <div className={styles.hero}>
-          <h1 className={styles.heroTitle}>News</h1>
-          <p className={styles.heroDescription}>
-            The latest announcements and updates from Mothers to Daughters.
-          </p>
+        <div className={newsStyles.introWrap}>
+          <div className={newsStyles.heroImage}>
+            <Image
+              src={getImagePath('/images/news/hero.jpg')}
+              alt="Mothers to Daughters newsroom"
+              width={573}
+              height={621}
+              className={newsStyles.heroImageContent}
+              priority
+            />
+          </div>
+          <div className={newsStyles.intro}>
+            <h1 className={styles.heroTitle}>News</h1>
+            <p className={newsStyles.lead}>Stay Inspired. Stay Informed.</p>
+            <p>
+              Welcome to the M2D Newsroom&mdash;your go-to space for updates,
+              insights, and stories shaping the future of women in business,
+              leadership, and social impact.
+            </p>
+            <h2 className={newsStyles.whatTitle}>What You&rsquo;ll Find Here:</h2>
+            <ul className={newsStyles.whatList}>
+              <li><strong>Program Highlights</strong> &ndash; Success stories and major milestones from our mentorship cohorts</li>
+              <li><strong>Community Impact</strong> &ndash; How M2D is empowering women globally through innovation and entrepreneurship</li>
+              <li><strong>Voices of Wisdom</strong> &ndash; Thought leadership from our mentors, mentees, and partners</li>
+              <li><strong>Announcements &amp; Events</strong> &ndash; Exclusive updates on upcoming programs, networking opportunities, and collaborations</li>
+            </ul>
+            <p>
+              We&rsquo;re not just telling stories&mdash;we&rsquo;re documenting a
+              movement. Stay connected, celebrate our wins, and be part of the
+              journey.
+            </p>
+          </div>
         </div>
 
         {news.length === 0 ? (
