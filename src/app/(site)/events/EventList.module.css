@@ -1,0 +1,49 @@
+.section { margin-bottom: var(--spacing-12); }
+.sectionTitle { font-size: var(--text-3xl); color: var(--text-primary); margin-bottom: var(--spacing-6); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.cardImage { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
+.cardImageContent { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cardImagePlaceholder {
+  width: 100%; height: 100%;
+  background-color: var(--accent-100);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--brand-700); font-weight: var(--font-medium);
+}
+
+.cardBody { padding: var(--spacing-6); display: flex; flex-direction: column; gap: var(--spacing-2); flex: 1; }
+.cardTitle { font-size: var(--text-xl); color: var(--text-primary); margin: 0; line-height: 1.25; }
+.cardWhen { color: var(--brand-700); font-weight: var(--font-medium); margin: 0; }
+.cardLocation, .cardExcerpt { color: var(--text-secondary); margin: 0; line-height: var(--leading-relaxed); }
+
+.cardActions { display: flex; flex-wrap: wrap; gap: var(--spacing-3); align-items: center; margin-top: auto; padding-top: var(--spacing-3); }
+.rsvpBtn {
+  background: var(--brand-700); color: #fff; padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-md); font-weight: var(--font-medium); text-decoration: none;
+}
+.rsvpClosed { color: var(--text-secondary); font-weight: var(--font-medium); }
+.moreInfo, .detailsLink { color: var(--brand-700); text-decoration: none; font-weight: var(--font-medium); }
+
+.loadMoreWrap { display: flex; justify-content: center; margin-top: var(--spacing-6); }
+.loadMore {
+  background: transparent; border: 1px solid var(--brand-700); color: var(--brand-700);
+  padding: 0.6rem 1.4rem; border-radius: 9999px; cursor: pointer; font-weight: var(--font-medium);
+}
+.loadMore:hover { background: var(--brand-700); color: #fff; }
+
+@media (min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
