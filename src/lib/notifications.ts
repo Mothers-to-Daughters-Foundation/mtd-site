@@ -15,7 +15,11 @@ export type NotificationType =
   // New notifications
   | "resource"
   | "subscription"
-  | "match";
+  | "match"
+  | "availability_published"
+  | "booking_requested"
+  | "booking_approved"
+  | "booking_declined";
 
 interface CreateNotificationProps {
   userId: string;
