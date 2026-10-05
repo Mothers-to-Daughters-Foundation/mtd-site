@@ -105,17 +105,6 @@ export default function SiteHeader() {
             />
           </Link>
 
-          <button
-            className={styles.menuToggle}
-            onClick={toggleMenu}
-            aria-expanded={isMenuOpen}
-            aria-label="Toggle navigation menu"
-          >
-            <span className={styles.menuIcon}></span>
-            <span className={styles.menuIcon}></span>
-            <span className={styles.menuIcon}></span>
-          </button>
-
           <nav
             className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}
             aria-label="Main navigation"
@@ -151,6 +140,18 @@ export default function SiteHeader() {
             >
               Donate
             </Button>
+          </nav>
+          <div className={styles.headerActions}>
+            <button
+              className={styles.menuToggle}
+              onClick={toggleMenu}
+              aria-expanded={isMenuOpen}
+              aria-label="Toggle navigation menu"
+            >
+              <span className={styles.menuIcon}></span>
+              <span className={styles.menuIcon}></span>
+              <span className={styles.menuIcon}></span>
+            </button>
             {user ? (
               <div className={styles.userControls}>
                 <NotificationBell />
@@ -160,22 +161,22 @@ export default function SiteHeader() {
                   onClick={closeMenu}
                   aria-label={`${user.name} — go to your dashboard`}
                 >
-                <span className={styles.avatar}>
-                  {user.avatarUrl ? (
-                    <Image
-                      src={user.avatarUrl}
-                      alt=""
-                      width={32}
-                      height={32}
-                      className={styles.avatarImage}
-                      unoptimized
-                    />
-                  ) : (
-                    <span className={styles.avatarInitials}>
-                      {initials(user.name)}
-                    </span>
-                  )}
-                </span>
+                  <span className={styles.avatar}>
+                    {user.avatarUrl ? (
+                      <Image
+                        src={user.avatarUrl}
+                        alt=""
+                        width={32}
+                        height={32}
+                        className={styles.avatarImage}
+                        unoptimized
+                      />
+                    ) : (
+                      <span className={styles.avatarInitials}>
+                        {initials(user.name)}
+                      </span>
+                    )}
+                  </span>
                   <span className={styles.profileName}>{user.name}</span>
                 </a>
               </div>
@@ -185,7 +186,7 @@ export default function SiteHeader() {
                 <span>Sign In</span>
               </Link>
             )}
-          </nav>
+          </div>
         </div>
       </Container>
     </header>

@@ -126,6 +126,19 @@ The rows are readable with the service role. This is the row-level security poli
 - Load them with a mentee-accessible query, the same set `getPublicPlans()` already returns. Do not call the admin tiers route.
 - Each card keeps a subscribe action. The current plan, once one exists, stays marked on its card.
 
+## 8. Bug: admin Subscriptions and Resources crash
+
+**What happens now**
+
+- `/dashboard/admin/subscriptions` crashes. `getAllSubscriptions()` in `src/lib/supabase/subscriptions.ts` selects `user_profiles.email`. `user_profiles` has no `email` column, so the query throws and the page error boundary replaces the screen.
+- `/dashboard/admin/resources` crashes. `src/app/dashboard/admin/resources/page.tsx` calls `getAllResources()` and throws on any query error, with no fallback.
+
+**Fix**
+
+- Stop selecting `email` from `user_profiles` (or read it from auth) so Subscriptions renders.
+- On that page, let an admin gift or waive a user’s subscription fee, or enter a prorated discount for that user.
+- Remove the admin Resources page and its sidebar link. Mentors upload resources; mentees receive them. Admins do not need this screen.
+
 ## Suggested order
 
 1. Item 3, so Messages stops crashing.

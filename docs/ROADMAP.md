@@ -35,6 +35,8 @@ This document tracks planned features and integrations for the MTD site.
 | News page rip | 🔲 Launch | `/news` matches the live newsroom HTML |
 | Events page rip | 🔲 Launch | `/events` matches the live event list |
 | Blog rip | 🔲 Launch | Live posts in markdown, with a view counter and a post page |
+| Admin subscription controls | 🔲 Launch | Bug: page crashes. Then gift, waive, or prorate a user’s fee |
+| Remove admin Resources | 🔲 Launch | Bug: page crashes. Drop the admin Resources screen; mentors own uploads |
 | Mentee–mentor matching | 🔲 Future | See automatic matching above; external calendar sync stays post-launch |
 
 ## Courses Page Roadmap
@@ -121,6 +123,14 @@ The tier choice hooks into Stripe. Build the Stripe Express provisions first (ac
 ### Promo codes
 
 Checkout accepts a promo code. Stripe applies the discount to the plan the mentee selected. Codes are created in Stripe so the app only needs to pass the code through checkout.
+
+### Admin subscriptions and resources
+
+**Bug.** `/dashboard/admin/subscriptions` and `/dashboard/admin/resources` both crash.
+
+Subscriptions fails because `getAllSubscriptions()` selects `user_profiles.email`, and that column does not exist. Once the page loads, an admin can gift or waive the fee for a specific user, or enter a prorated discount for that user.
+
+Resources should not be an admin screen. Mentors upload; mentees receive. Remove the admin Resources page and its nav link.
 
 ### Subscription access
 

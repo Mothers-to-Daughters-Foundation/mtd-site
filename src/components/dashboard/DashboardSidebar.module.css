@@ -18,11 +18,18 @@
 }
 
 .brandLink {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  letter-spacing: .04em;
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  line-height: 0;
+}
+
+.brandLogo {
+  width: auto;
+  height: 27px;
 }
 
 .roleTag {

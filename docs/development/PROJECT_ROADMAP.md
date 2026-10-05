@@ -121,6 +121,7 @@ Launch
 - News page ripped from the live newsroom as HTML
 - Events page ripped from the live event list
 - Blog ripped from the live site, each post a markdown file with its own page and a view counter
+- Bug: admin Subscriptions and Resources crash. Fix Subscriptions, then allow gift, waive, or a prorated discount per user. Remove admin Resources
 
 Detail is in `docs/ROADMAP.md`.
 
