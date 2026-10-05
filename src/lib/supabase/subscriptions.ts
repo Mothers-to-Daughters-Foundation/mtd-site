@@ -63,7 +63,7 @@ export async function getAllSubscriptions() {
 }
 
 
-  return data;
+  return data ?? [];
 }
 
 export async function getSubscriptionByUserId(userId: string) {
