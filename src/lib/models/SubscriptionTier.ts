@@ -10,7 +10,6 @@ export interface SubscriptionTier {
   features: string[];
   isActive: boolean;
   isDefault: boolean;
-  stripePriceId?: string;
   zeffyUrl?: string; // optional Zeffy campaign URL
   maxMentees?: number; // optional cap on mentees per mentor at this tier
   createdAt?: Date;

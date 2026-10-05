@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
             <h2>Third-Party Services</h2>
             <p>
               We rely on trusted third parties to run our programs, including
-              Stripe and Zeffy for payment processing and Supabase for data
+              Zeffy for payment processing and Supabase for data
               storage. These providers process your information only as needed to
               deliver their services and under their own privacy and security
               commitments.

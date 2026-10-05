@@ -91,7 +91,7 @@ const faqs = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We accept all major credit/debit cards via Stripe, and some plans also support donations via Zeffy.',
+    a: 'We accept payments via Zeffy for all membership plans.',
   },
   {
     q: 'I have more questions.',

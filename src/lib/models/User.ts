@@ -23,8 +23,6 @@ export interface User {
   subscriptionStatus?: 'active' | 'paused' | 'cancelled';
   subscriptionStartDate?: Date;
   subscriptionRenewDate?: Date;
-  stripeCustomerId?: string;
-  stripeSubscriptionId?: string;
 }
 
 export async function createUser(userData: {

@@ -44,7 +44,6 @@ export default async function AdminTiersPage() {
     features: [],
     isActive: plan.is_active,
     isDefault: false,
-    stripePriceId: "",
     zeffyUrl: "",
     maxMentees: plan.mentor_limit,
     createdAt: plan.created_at,

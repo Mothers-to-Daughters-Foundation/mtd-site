@@ -5,7 +5,6 @@ export interface BillingEntry {
   date: Date;
   amountCents: number;
   status: 'paid' | 'failed' | 'refunded';
-  stripeInvoiceId?: string;
   description?: string;
 }
 
@@ -13,10 +12,8 @@ export interface Subscription {
   _id?: string;
   userId: string;
   tierId: string;
-  paymentProvider: 'stripe' | 'zeffy' | 'manual';
+  paymentProvider: 'zeffy' | 'manual';
   status: 'active' | 'paused' | 'cancelled' | 'past_due';
-  stripeSubscriptionId?: string;
-  stripeCustomerId?: string;
   currentPeriodStart?: Date;
   currentPeriodEnd?: Date;
   cancelledAt?: Date;
@@ -39,14 +36,6 @@ export async function getSubscriptionById(id: string): Promise<Subscription | nu
   } catch {
     return null;
   }
-}
-
-export async function getSubscriptionByStripeId(
-  stripeSubscriptionId: string
-): Promise<Subscription | null> {
-  const db = await getDb();
-  const subs = db.collection<Subscription>('subscriptions');
-  return await subs.findOne({ stripeSubscriptionId }) as Subscription | null;
 }
 
 export async function getAllSubscriptions(filter: {
