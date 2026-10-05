@@ -44,8 +44,6 @@ const userMap = new Map(
     usersResult,
     mentorsResult,
     menteesResult,
-    resourcesResult,
-    recentResources,
   ] = await Promise.all([
     supabase.from("user_profiles").select("*", { count: "exact", head: true }),
 
@@ -58,21 +56,6 @@ const userMap = new Map(
       .from("user_profiles")
       .select("*", { count: "exact", head: true })
       .eq("role", "mentee"),
-
-    supabase.from("resources").select("*", {
-      count: "exact",
-      head: true,
-
-      
-
-
-    }),
-
-    supabase
-      .from("resources")
-      .select("id,title,created_at")
-      .order("created_at", { ascending: false })
-      .limit(5),
   ]);
 
   return (
@@ -101,11 +84,6 @@ const userMap = new Map(
         <StatCard
           title="Mentees"
           value={menteesResult.count ?? 0}
-        />
-
-        <StatCard
-          title="Resources"
-          value={resourcesResult.count ?? 0}
         />
       </div>
 
@@ -151,35 +129,11 @@ const userMap = new Map(
 
       <div className={styles.sectionGrid}>
         <div className={styles.panel}>
-          <h2>Recent Resources</h2>
-
-          {recentResources.data?.length ? (
-            <ul className={styles.resourceList}>
-              {recentResources.data.map((resource) => (
-                <li key={resource.id}>
-                  {resource.title}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No resources uploaded yet.</p>
-          )}
-        </div>
-
-        <div className={styles.panel}>
           <h2>Quick Actions</h2>
 
           <div className={styles.actions}>
             <Link href="/dashboard/admin/users">
               Manage Users
-            </Link>
-
-            <Link href="/dashboard/admin/resources">
-              Upload Resources
-            </Link>
-
-            <Link href="/dashboard/admin/subscriptions">
-              Manage Subscriptions
             </Link>
 
             <Link href="/dashboard/admin/matches">
