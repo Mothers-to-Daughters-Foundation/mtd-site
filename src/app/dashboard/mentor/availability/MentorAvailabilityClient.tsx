@@ -9,6 +9,7 @@ import {
   declineRequest,
 } from "@/app/dashboard/availability/actions";
 import type { SessionType } from "@/lib/models/session";
+import styles from "./MentorAvailabilityClient.module.css";
 
 export type MentorSlot = {
   id: string;
@@ -83,29 +84,29 @@ export default function MentorAvailabilityClient({
   }
 
   return (
-    <div style={{ maxWidth: 760 }}>
+    <div className={styles.page}>
       <h1>Availability</h1>
-      <p style={{ color: "var(--text-secondary)" }}>
+      <p className={styles.intro}>
         Publish open time slots. Your mentees can request one, and you approve it
         to create a session.
       </p>
 
       {error && (
-        <div role="alert" style={{ color: "var(--error, #b00020)", margin: "0.5rem 0" }}>
+        <div role="alert" className={styles.error}>
           {error}
         </div>
       )}
 
-      <form onSubmit={addSlot} style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "end", margin: "1rem 0" }}>
-        <label style={{ display: "flex", flexDirection: "column" }}>
+      <form onSubmit={addSlot} className={styles.addForm}>
+        <label className={styles.field}>
           <span>Date</span>
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </label>
-        <label style={{ display: "flex", flexDirection: "column" }}>
+        <label className={styles.field}>
           <span>Start</span>
           <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
         </label>
-        <label style={{ display: "flex", flexDirection: "column" }}>
+        <label className={styles.field}>
           <span>End</span>
           <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
         </label>
@@ -124,7 +125,7 @@ export default function MentorAvailabilityClient({
         <h2>Open slots</h2>
         {open.length === 0 && <p>No open slots.</p>}
         {open.map((s) => (
-          <div key={s.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderBottom: "1px solid var(--border-color)" }}>
+          <div key={s.id} className={styles.row}>
             <span>{fmt(s.startsAt)} – {fmt(s.endsAt)}</span>
             <button type="button" disabled={busy} onClick={() => run(() => deleteSlot(s.id))}>Delete</button>
           </div>
@@ -135,7 +136,7 @@ export default function MentorAvailabilityClient({
         <h2>Booked</h2>
         {booked.length === 0 && <p>No booked slots yet.</p>}
         {booked.map((s) => (
-          <div key={s.id} style={{ padding: "0.5rem 0", borderBottom: "1px solid var(--border-color)" }}>
+          <div key={s.id} className={styles.bookedRow}>
             {fmt(s.startsAt)} – {fmt(s.endsAt)}
             {s.requesterName ? ` · ${s.requesterName}` : ""}
           </div>
@@ -166,11 +167,11 @@ function PendingRow({
   const [meetingLink, setMeetingLink] = useState("");
 
   return (
-    <div style={{ padding: "0.75rem 0", borderBottom: "1px solid var(--border-color)" }}>
+    <div className={styles.pendingRow}>
       <div><strong>{fmt(slot.startsAt)} – {fmt(slot.endsAt)}</strong></div>
       <div>Requested by {slot.requesterName ?? "a mentee"}</div>
-      {slot.requestNote && <div style={{ fontStyle: "italic" }}>&ldquo;{slot.requestNote}&rdquo;</div>}
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
+      {slot.requestNote && <div className={styles.note}>&ldquo;{slot.requestNote}&rdquo;</div>}
+      <div className={styles.actions}>
         <input placeholder="Session title" value={title} onChange={(e) => setTitle(e.target.value)} />
         <select value={meetingType} onChange={(e) => setMeetingType(e.target.value as SessionType)}>
           {MEETING_TYPES.map((t) => (

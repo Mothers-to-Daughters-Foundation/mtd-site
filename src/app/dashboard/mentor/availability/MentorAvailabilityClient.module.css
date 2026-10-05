@@ -1,0 +1,53 @@
+.page {
+  max-width: 760px;
+}
+
+.intro {
+  color: var(--text-secondary);
+}
+
+.error {
+  color: var(--error, #b00020);
+  margin: 0.5rem 0;
+}
+
+.addForm {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin: 1rem 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.bookedRow {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.pendingRow {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.note {
+  font-style: italic;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}

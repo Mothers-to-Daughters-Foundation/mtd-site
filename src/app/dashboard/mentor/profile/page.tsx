@@ -218,21 +218,14 @@ export default function MentorProfilePage() {
 
         <div className={styles.field}>
           <label>Career areas (for matching)</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div className={styles.chipRow}>
             {INTEREST_CATEGORIES.map((c) => (
               <button
                 type="button"
                 key={c}
                 onClick={() => toggleCareerArea(c)}
                 aria-pressed={careerAreas.includes(c)}
-                style={{
-                  padding: '0.4rem 0.8rem',
-                  borderRadius: 9999,
-                  border: '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                  background: careerAreas.includes(c) ? 'var(--brand-700)' : 'var(--surface-1)',
-                  color: careerAreas.includes(c) ? '#fff' : 'var(--text-primary)',
-                }}
+                className={`${styles.chip} ${careerAreas.includes(c) ? styles.chipOn : ''}`}
               >
                 {c}
               </button>

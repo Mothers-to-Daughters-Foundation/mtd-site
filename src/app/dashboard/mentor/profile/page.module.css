@@ -13,6 +13,26 @@
   margin-bottom: var(--spacing-2);
 }
 
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.4rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+
+.chipOn {
+  background: var(--brand-700);
+  color: #fff;
+}
+
 .subtitle {
   color: var(--text-secondary);
 }

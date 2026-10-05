@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { requestSlot } from "@/app/dashboard/availability/actions";
+import styles from "./MenteeAvailabilityClient.module.css";
 
 export type MenteeSlot = {
   id: string;
@@ -48,7 +49,7 @@ export default function MenteeAvailabilityClient({
 
   if (!hasMentor) {
     return (
-      <div style={{ maxWidth: 680 }}>
+      <div className={styles.page}>
         <h1>Availability</h1>
         <p>You do not have an assigned mentor yet.</p>
       </div>
@@ -56,15 +57,15 @@ export default function MenteeAvailabilityClient({
   }
 
   return (
-    <div style={{ maxWidth: 680 }}>
+    <div className={styles.page}>
       <h1>Availability</h1>
-      <p style={{ color: "var(--text-secondary)" }}>
+      <p className={styles.intro}>
         Request a time that works for you. Your mentor approves it to schedule a
         session.
       </p>
 
       {error && (
-        <div role="alert" style={{ color: "var(--error, #b00020)", margin: "0.5rem 0" }}>
+        <div role="alert" className={styles.error}>
           {error}
         </div>
       )}
@@ -73,13 +74,13 @@ export default function MenteeAvailabilityClient({
         <h2>Open times</h2>
         {open.length === 0 && <p>No open times right now.</p>}
         {open.length > 0 && (
-          <label style={{ display: "block", margin: "0.5rem 0" }}>
+          <label className={styles.noteField}>
             <span>Note to your mentor (optional)</span>
-            <input value={note} onChange={(e) => setNote(e.target.value)} style={{ width: "100%" }} />
+            <input value={note} onChange={(e) => setNote(e.target.value)} className={styles.noteInput} />
           </label>
         )}
         {open.map((s) => (
-          <div key={s.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderBottom: "1px solid var(--border-color)" }}>
+          <div key={s.id} className={styles.row}>
             <span>{fmt(s.startsAt)} – {fmt(s.endsAt)}</span>
             <button type="button" disabled={busy} onClick={() => request(s.id)}>Request</button>
           </div>
@@ -90,7 +91,7 @@ export default function MenteeAvailabilityClient({
         <h2>Your requests</h2>
         {mine.length === 0 && <p>You have no pending or booked requests.</p>}
         {mine.map((s) => (
-          <div key={s.id} style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderBottom: "1px solid var(--border-color)" }}>
+          <div key={s.id} className={styles.row}>
             <span>{fmt(s.startsAt)} – {fmt(s.endsAt)}</span>
             <span>{s.status === "pending" ? "Awaiting approval" : "Booked"}</span>
           </div>

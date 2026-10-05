@@ -11,6 +11,12 @@
   max-width: 100%;
 }
 
+.loading {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
 @media (max-width: 768px) {
   .layout {
     flex-direction: column;

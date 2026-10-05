@@ -233,9 +233,9 @@ export default function AdminMatchesPage() {
       )}
 
       {/* ── Auto-match section ─────────────────────────────────────── */}
-      <div className={styles.createBox} style={{ marginBottom: "var(--spacing-4)" }}>
+      <div className={`${styles.createBox} ${pageStyles.autoMatchBox}`}>
         <h2 className={styles.createTitle}>Auto-Match</h2>
-        <p style={{ fontSize: "0.875rem", color: "var(--text-secondary)", marginBottom: "var(--spacing-4)" }}>
+        <p className={pageStyles.hint}>
           Automatically pair all unmatched mentees with an available mentor.
         </p>
 
@@ -248,7 +248,7 @@ export default function AdminMatchesPage() {
         </button>
 
         {autoSummary && (
-          <p style={{ marginTop: "var(--spacing-3)", fontSize: "0.875rem", color: "var(--text-primary)" }}>
+          <p className={pageStyles.summary}>
             {[
               autoSummary.matched > 0 && `Matched ${autoSummary.matched}`,
               autoSummary.already_matched > 0 && `${autoSummary.already_matched} already matched`,
@@ -350,7 +350,7 @@ export default function AdminMatchesPage() {
                         ))}
                       </select>
                     ) : (
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                      <span className={pageStyles.noMentors}>
                         No mentors
                       </span>
                     )}

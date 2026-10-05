@@ -38,13 +38,7 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "grid",
-          placeItems: "center",
-          minHeight: "100vh",
-        }}
-      >
+      <div className={styles.loading}>
         Loading...
       </div>
     );

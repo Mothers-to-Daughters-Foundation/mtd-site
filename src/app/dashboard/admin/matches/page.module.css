@@ -13,3 +13,24 @@
   color: var(--text-secondary);
   max-width: 560px;
 }
+
+.autoMatchBox {
+  margin-bottom: var(--spacing-4);
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-4);
+}
+
+.summary {
+  margin-top: var(--spacing-3);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.noMentors {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
