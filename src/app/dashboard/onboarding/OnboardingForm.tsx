@@ -13,6 +13,7 @@ type Plan = {
 };
 
 export default function OnboardingForm() {
+  const [name, setName] = useState('');
   const [interests, setInterests] = useState<string[]>([]);
   const [customInterest, setCustomInterest] = useState('');
   const [goals, setGoals] = useState<string[]>([]);
@@ -51,6 +52,7 @@ export default function OnboardingForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    if (!name.trim()) return setError('Enter your name.');
     if (interests.length === 0) return setError('Pick at least one interest.');
     if (goals.length === 0) return setError('Add at least one career goal.');
     if (!planId) return setError('Choose a plan.');
@@ -60,7 +62,7 @@ export default function OnboardingForm() {
       const res = await fetch('/api/mentee/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interests, careerGoals: goals, planId }),
+        body: JSON.stringify({ fullName: name.trim(), interests, careerGoals: goals, planId }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -98,6 +100,19 @@ export default function OnboardingForm() {
           Tell us about yourself so we can match you with the right mentor.
         </p>
       </div>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Your name</h2>
+        <div className={styles.addRow}>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your full name"
+            autoComplete="name"
+          />
+        </div>
+      </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Your interests</h2>

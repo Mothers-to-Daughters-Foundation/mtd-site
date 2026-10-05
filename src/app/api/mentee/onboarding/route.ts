@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { tierKind } from '@/lib/onboarding';
 
 const schema = z.object({
+  fullName: z.string().trim().min(1, 'Enter your name.'),
   interests: z.array(z.string().trim().min(1)).min(1, 'Pick at least one interest.'),
   careerGoals: z.array(z.string().trim().min(1)).min(1, 'Add at least one career goal.'),
   planId: z.string().uuid('Choose a plan.'),
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
   const { error: updateError } = await admin
     .from('user_profiles')
     .update({
+      full_name: body.fullName,
       interests: body.interests,
       career_goals: body.careerGoals,
       onboarding_completed: true,
@@ -60,6 +62,15 @@ export async function POST(request: Request) {
   if (updateError) {
     console.error('[mentee/onboarding] profile update', updateError);
     return NextResponse.json({ error: 'Could not save your profile.' }, { status: 500 });
+  }
+
+  // Sync the name into auth metadata too, so the dashboard sidebar (which reads
+  // user_metadata) shows the real name instead of the "User" fallback.
+  const { error: metaError } = await admin.auth.admin.updateUserById(user.id, {
+    user_metadata: { full_name: body.fullName },
+  });
+  if (metaError) {
+    console.error('[mentee/onboarding] auth metadata update', metaError);
   }
 
   if (tierKind(plan.monthly_price) === 'free') {
