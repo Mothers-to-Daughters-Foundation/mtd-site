@@ -169,7 +169,7 @@ function PendingRow({
     <div style={{ padding: "0.75rem 0", borderBottom: "1px solid var(--border-color)" }}>
       <div><strong>{fmt(slot.startsAt)} – {fmt(slot.endsAt)}</strong></div>
       <div>Requested by {slot.requesterName ?? "a mentee"}</div>
-      {slot.requestNote && <div style={{ fontStyle: "italic" }}>"{slot.requestNote}"</div>}
+      {slot.requestNote && <div style={{ fontStyle: "italic" }}>&ldquo;{slot.requestNote}&rdquo;</div>}
       <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
         <input placeholder="Session title" value={title} onChange={(e) => setTitle(e.target.value)} />
         <select value={meetingType} onChange={(e) => setMeetingType(e.target.value as SessionType)}>
