@@ -14,22 +14,23 @@ interface ProgramDetailPageProps {
 // This will be replaced with actual data from MDX or CMS during migration
 const programs: Record<string, any> = {
   'intergenerational-mentoring': {
-    title: 'Intergenerational Mentoring Program',
+    title: 'M2D Intergenerational Mentoring Program',
+    subtitle: 'A Transformational Six-Month Journey—At No Cost',
     description:
-      'A high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel.',
-    whoItsFor: [
-      'Young women seeking guidance and mentorship',
-      'Women looking to develop leadership skills',
-      'Those interested in entrepreneurship and career growth',
+      'Mothers to Daughters (M2D) offers a high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops, participants gain the tools to launch and grow their ventures.',
+    tagline: 'Invest in yourself. Build your legacy. Enroll today.',
+    mission:
+      'Our Commitment is to support 100,000 business launches by 2035.',
+    impact: [
+      { value: '5+', label: 'years of empowering women' },
+      { value: '100+', label: 'mentorship pairs formed' },
+      { value: '200+', label: 'hybrid networking events since 2020' },
+      { value: '50,000+', label: 'online engagements' },
     ],
-    whatYoullGet: [
-      'One-on-one mentorship with experienced leaders',
-      'Hands-on workshops and skill-building sessions',
-      'Access to a supportive community of women',
-      'Networking opportunities and professional development',
+    commitment: [
+      { value: '100,000', label: 'businesses by 2035' },
+      { value: '1,000,000+', label: 'funding required' },
     ],
-    schedule:
-      'A transformational six-month journey, offered at no cost to participants. Complete the interest form and our team will share upcoming cohort dates.',
     testimonials: [
       {
         quote:
@@ -78,39 +79,76 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
       <Section spacing="xl" className={styles.hero}>
         <Container>
           <h1 className={styles.heroTitle}>{program.title}</h1>
+          {program.subtitle && (
+            <p className={styles.heroSubtitle}>{program.subtitle}</p>
+          )}
           <p className={styles.heroDescription}>{program.description}</p>
+          {program.tagline && (
+            <p className={styles.heroTagline}>{program.tagline}</p>
+          )}
+          <div className={styles.heroCta}>
+            <a
+              href={INTEREST_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroButton}
+            >
+              Interest Form ↗
+            </a>
+          </div>
         </Container>
       </Section>
 
-      <Section spacing="lg">
-        <Container>
-          <div className={styles.content}>
-            <div className={styles.section}>
-              <h2>Who It&apos;s For</h2>
-              <ul className={styles.list}>
-                {program.whoItsFor?.map((item: string, index: number) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
+      {program.mission && (
+        <Section spacing="lg" className={styles.mission}>
+          <Container>
+            <p className={styles.missionText}>{program.mission}</p>
+          </Container>
+        </Section>
+      )}
 
-            <div className={styles.section}>
-              <h2>What You&apos;ll Get</h2>
-              <ul className={styles.list}>
-                {program.whatYoullGet?.map((item: string, index: number) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
+      {(program.impact?.length || program.commitment?.length) && (
+        <Section spacing="lg">
+          <Container>
+            <div className={styles.statsGrid}>
+              {program.impact?.length > 0 && (
+                <div className={styles.statGroup}>
+                  <h2>Our Impact</h2>
+                  <ul className={styles.statList}>
+                    {program.impact.map((stat: any, index: number) => (
+                      <li key={index} className={styles.stat}>
+                        <span className={styles.statValue}>{stat.value}</span>
+                        <span className={styles.statLabel}>{stat.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-            <div className={styles.section}>
-              <h2>Schedule & Cohorts</h2>
-              <p>{program.schedule}</p>
+              {program.commitment?.length > 0 && (
+                <div className={styles.statGroup}>
+                  <h2>Our Commitment</h2>
+                  <ul className={styles.statList}>
+                    {program.commitment.map((stat: any, index: number) => (
+                      <li key={index} className={styles.stat}>
+                        <span className={styles.statValue}>{stat.value}</span>
+                        <span className={styles.statLabel}>{stat.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
+          </Container>
+        </Section>
+      )}
 
-            {program.testimonials && program.testimonials.length > 0 && (
+      {program.testimonials && program.testimonials.length > 0 && (
+        <Section spacing="lg" className={styles.storiesSection}>
+          <Container>
+            <div className={styles.content}>
               <div className={styles.section}>
-                <h2>What Participants Say</h2>
+                <h2>Impact Stories</h2>
                 <div className={styles.testimonials}>
                   {program.testimonials.map(
                     (testimonial: any, index: number) => (
@@ -122,23 +160,23 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
                   )}
                 </div>
               </div>
-            )}
 
-            <div className={styles.cta}>
-              <Button
-                as="a"
-                href={INTEREST_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="primary"
-                size="lg"
-              >
-                Complete the Interest Form ↗
-              </Button>
+              <div className={styles.cta}>
+                <Button
+                  as="a"
+                  href={INTEREST_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="primary"
+                  size="lg"
+                >
+                  Complete the Interest Form ↗
+                </Button>
+              </div>
             </div>
-          </div>
-        </Container>
-      </Section>
+          </Container>
+        </Section>
+      )}
     </>
   );
 }
