@@ -5,28 +5,31 @@
 }
 
 .heroTitle {
-  font-size: var(--text-5xl);
-  margin-bottom: var(--spacing-6);
+  font-size: 48px;
+  font-weight: var(--font-extrabold);
+  margin-bottom: var(--spacing-5);
   color: var(--surface-1);
+  line-height: var(--leading-tight);
 }
 
 .heroSubtitle {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-medium);
+  font-size: 21px;
+  font-weight: var(--font-bold);
   color: var(--accent-100);
   margin-bottom: var(--spacing-5);
 }
 
 .heroDescription {
-  font-size: var(--text-xl);
+  font-size: 16px;
+  font-weight: var(--font-medium);
   color: var(--accent-100);
-  max-width: 800px;
+  max-width: 640px;
   margin: 0 auto;
   line-height: var(--leading-relaxed);
 }
 
 .heroTagline {
-  font-size: var(--text-xl);
+  font-size: 18px;
   font-weight: var(--font-bold);
   color: var(--surface-1);
   margin-top: var(--spacing-6);
@@ -35,21 +38,29 @@
 
 .heroCta {
   margin-top: var(--spacing-6);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-4);
 }
 
-.heroButton {
+.heroButton,
+.heroButtonSecondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-4) var(--spacing-8);
-  font-size: var(--text-lg);
+  padding: var(--spacing-3) var(--spacing-8);
+  font-size: 18px;
   font-weight: var(--font-bold);
-  color: var(--brand-700);
-  background-color: var(--surface-1);
-  border: 2px solid var(--surface-1);
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: all var(--transition-base);
+}
+
+.heroButton {
+  color: var(--brand-700);
+  background-color: var(--surface-1);
+  border: 2px solid var(--surface-1);
 }
 
 .heroButton:hover,
@@ -57,6 +68,18 @@
   background-color: var(--accent-100);
   border-color: var(--accent-100);
   color: var(--brand-800);
+}
+
+.heroButtonSecondary {
+  color: var(--surface-1);
+  background-color: transparent;
+  border: 2px solid var(--surface-1);
+}
+
+.heroButtonSecondary:hover,
+.heroButtonSecondary:focus {
+  background-color: var(--surface-1);
+  color: var(--brand-700);
 }
 
 .mission {
@@ -205,10 +228,6 @@
 }
 
 @media (min-width: 768px) {
-  .heroTitle {
-    font-size: var(--text-6xl);
-  }
-
   .statsGrid {
     flex-direction: row;
     gap: var(--spacing-16);

@@ -17,7 +17,7 @@ const programs: Record<string, any> = {
     title: 'M2D Intergenerational Mentoring Program',
     subtitle: 'A Transformational Six-Month Journey—At No Cost',
     description:
-      'Mothers to Daughters (M2D) offers a high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops, participants gain the tools to launch and grow their ventures.',
+      'A high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops, participants engage in a transformational six-month journey—at no cost.',
     tagline: 'Invest in yourself. Build your legacy. Enroll today.',
     mission:
       'Our Commitment is to support 100,000 business launches by 2035.',
@@ -87,6 +87,9 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
             <p className={styles.heroTagline}>{program.tagline}</p>
           )}
           <div className={styles.heroCta}>
+            <a href="#program-impact" className={styles.heroButtonSecondary}>
+              Learn More
+            </a>
             <a
               href={INTEREST_FORM_URL}
               target="_blank"
@@ -110,7 +113,7 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
       {(program.impact?.length || program.commitment?.length) && (
         <Section spacing="lg">
           <Container>
-            <div className={styles.statsGrid}>
+            <div id="program-impact" className={styles.statsGrid}>
               {program.impact?.length > 0 && (
                 <div className={styles.statGroup}>
                   <h2>Our Impact</h2>
