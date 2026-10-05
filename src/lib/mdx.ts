@@ -22,6 +22,7 @@ export interface EventFrontmatter {
   endDate?: string;
   location?: string;
   rsvpUrl?: string;
+  rsvpState?: 'open' | 'closed';
   excerpt?: string;
   image?: string;
 }
