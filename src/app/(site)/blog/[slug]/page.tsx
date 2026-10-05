@@ -1,76 +1,77 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
-import Image from 'next/image';
 import Markdown from '@/components/ui/Markdown';
 import styles from '@/components/ui/Article.module.css';
+import post from './post.module.css';
 import { getPostBySlug, getAllPosts } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
+import { readingTime } from '@/lib/reading-time';
+import { getPostViews } from '@/lib/supabase/post-views';
+import ViewBeacon from './ViewBeacon';
 
 interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 }
 
+// ISR: regenerate periodically so the displayed view count reflects increments
+// (pure SSG would freeze the count at build time).
+export const revalidate = 60;
+
 export async function generateStaticParams() {
-  const posts = getAllPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  return getAllPosts().map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
-
-  if (!post) {
-    return {
-      title: 'Post Not Found',
-    };
-  }
-
-  return {
-    title: post.frontmatter.title,
-    description: post.frontmatter.excerpt,
-  };
+  const item = getPostBySlug(params.slug);
+  if (!item) return { title: 'Post Not Found' };
+  return { title: item.frontmatter.title, description: item.frontmatter.excerpt };
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const item = getPostBySlug(params.slug);
+  if (!item) notFound();
 
-  if (!post) {
-    notFound();
-  }
+  const minutes = readingTime(item.content);
+  const views = await getPostViews(params.slug);
+  const recent = getAllPosts()
+    .filter((p) => p.slug !== params.slug)
+    .slice(0, 3);
 
   return (
     <Section spacing="lg">
       <Container>
         <article className={styles.article}>
           <header className={styles.header}>
-            <h1 className={styles.title}>{post.frontmatter.title}</h1>
+            <h1 className={styles.title}>{item.frontmatter.title}</h1>
             <div className={styles.meta}>
-              <time className={styles.date} dateTime={post.frontmatter.date}>
-                {new Date(post.frontmatter.date).toLocaleDateString('en-US', {
+              {item.frontmatter.author && <span>{item.frontmatter.author}</span>}
+              <time className={styles.date} dateTime={item.frontmatter.date}>
+                {new Date(item.frontmatter.date).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 })}
               </time>
-              {post.frontmatter.category && (
-                <span className={styles.category}>
-                  {post.frontmatter.category}
-                </span>
+              <span>{minutes} min read</span>
+              {item.frontmatter.category && (
+                <span className={styles.category}>{item.frontmatter.category}</span>
               )}
+              <span className={post.views}>
+                {views} {views === 1 ? 'view' : 'views'}
+              </span>
             </div>
           </header>
-          {post.frontmatter.image && (
+          {item.frontmatter.image && (
             <div className={styles.heroImage}>
               <Image
-                src={getImagePath(post.frontmatter.image)}
-                alt={post.frontmatter.title}
+                src={getImagePath(item.frontmatter.image)}
+                alt={item.frontmatter.title}
                 width={1200}
                 height={675}
                 className={styles.heroImageContent}
@@ -78,8 +79,23 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               />
             </div>
           )}
-          <Markdown content={post.content} />
+          <Markdown content={item.content} />
         </article>
+
+        {recent.length > 0 && (
+          <aside className={post.recent}>
+            <h2 className={post.recentTitle}>Recent Posts</h2>
+            <ul className={post.recentList}>
+              {recent.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/blog/${p.slug}`}>{p.frontmatter.title}</Link>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+
+        <ViewBeacon slug={params.slug} />
       </Container>
     </Section>
   );
