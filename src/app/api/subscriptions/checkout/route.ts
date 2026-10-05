@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/supabase/plans";
-import { getUserById } from "@/lib/supabase/users";
-import getStripe from "@/lib/stripe";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -17,17 +15,12 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const body = await req.json();
-
     const parsed = checkoutSchema.safeParse(body);
-
     if (!parsed.success) {
       return NextResponse.json(
         { error: parsed.error.issues[0].message },
@@ -36,7 +29,6 @@ export async function POST(req: NextRequest) {
     }
 
     const plan = await getPlanById(parsed.data.tierId);
-
     if (!plan || !plan.is_active) {
       return NextResponse.json(
         { error: "Plan not found or inactive" },
@@ -44,91 +36,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const profile = await getUserById(user.id);
-
-    if (!profile) {
+    if (!plan.zeffy_url) {
       return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
+        { error: "This plan has no Zeffy link configured. An admin must set its Zeffy payment link." },
+        { status: 400 }
       );
     }
 
-    /**
-     * If you are no longer using Stripe,
-     * remove everything below this line.
-     */
-
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json(
-        {
-          error: "Stripe is not configured.",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
-    if (!plan.stripe_price_id) {
-      return NextResponse.json(
-        {
-          error: "This plan has no Stripe price configured. An admin must set its Stripe price ID.",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const stripe = getStripe();
-
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL ??
-      req.nextUrl.origin;
-
-    const checkout = await stripe.checkout.sessions.create({
-      mode: "subscription",
-
-      payment_method_types: ["card"],
-
-      customer_email: profile.email,
-
-      line_items: [
-        {
-          price: plan.stripe_price_id,
-          quantity: 1,
-        },
-      ],
-
-      success_url:
-        `${baseUrl}/dashboard/mentee/subscription?success=1`,
-
-      cancel_url:
-        `${baseUrl}/dashboard/mentee/subscription?cancelled=1`,
-
-      metadata: {
-        userId: user.id,
-        planId: plan.id,
-      },
-    });
-
-    return NextResponse.json({
-      provider: "stripe",
-      url: checkout.url,
-    });
+    return NextResponse.json({ provider: "zeffy", zeffyUrl: plan.zeffy_url });
   } catch (error) {
-    console.error(
-      "[subscriptions/checkout POST]",
-      error
-    );
-
-    return NextResponse.json(
-      {
-        error: "Internal server error",
-      },
-      {
-        status: 500,
-      }
-    );
+    console.error("[subscriptions/checkout POST]", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

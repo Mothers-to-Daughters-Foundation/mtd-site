@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  getSubscriptionByUserId,
-  updateSubscription,
-} from "@/lib/supabase/subscriptions";
 import { createClient } from "@/lib/supabase/server";
-import getStripe from "@/lib/stripe";
 
 export async function POST() {
   const supabase = await createClient();
@@ -14,17 +9,13 @@ export async function POST() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    // Get current subscription
     const { data: subscription, error } = await supabase
       .from("subscriptions")
-      .select("*")
+      .select("id")
       .eq("user_id", user.id)
       .eq("is_current", true)
       .maybeSingle();
@@ -38,21 +29,6 @@ export async function POST() {
       );
     }
 
-    // Cancel Stripe subscription if it exists
-    if (subscription.stripe_subscription_id) {
-  const stripe = getStripe();
-
-  await stripe.subscriptions.cancel(
-    subscription.stripe_subscription_id
-  );
-}
-
-await updateSubscription(subscription.id, {
-  status: "cancelled",
-  cancelled_at: new Date().toISOString(),
-});
-
-    // Update Supabase subscription
     const { error: updateError } = await supabase
       .from("subscriptions")
       .update({
@@ -64,18 +40,9 @@ await updateSubscription(subscription.id, {
 
     if (updateError) throw updateError;
 
-    return NextResponse.json({
-      message: "Subscription cancelled successfully",
-    });
+    return NextResponse.json({ message: "Subscription cancelled successfully" });
   } catch (error) {
-    console.error(
-      "[subscriptions/cancel POST]",
-      error
-    );
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("[subscriptions/cancel POST]", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
