@@ -25,8 +25,8 @@ This document tracks planned features and integrations for the MTD site.
 | External course integration — Doltam "Create Your Personal Brand" | 🔲 Planned | Embed/link in dashboard courses section |
 | Admin panel | 🔲 Future | Manage users, content, and events |
 | Mentor availability calendar | 🔲 Launch | Date-time picker; assigned mentee is notified. External calendar/Calendly is post-launch |
-| Automatic mentor–mentee matching | 🔲 Launch | Career areas + expertise. Soft and deterministic match, paid mentees only |
-| Mentee profile setup at signup | 🔲 Launch | Form exists at `/dashboard/onboarding`, but new signup goes to `/login` and never opens it |
+| Automatic mentor–mentee matching | ✅ Done | Career areas + expertise. Soft and deterministic match, paid mentees only |
+| Mentee profile setup at signup | ✅ Done | Signup signs in and opens `/dashboard/onboarding` (interests, goals, tier) |
 | Paid-access gating | ✅ Done | Unpaid mentees see locked chat/resources/sessions; server-enforced 403s |
 | Promo codes | 🔲 Launch | Entered at checkout; Stripe applies the discount to the chosen plan |
 | Top-nav submenus | 🔲 Launch | Group About, Programs, Events, Blog, Our Team, Donate, Volunteer, Partner, and Courses so the header and footer Navigation align |
