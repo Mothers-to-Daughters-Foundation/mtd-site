@@ -8,7 +8,7 @@
 .chip { padding: var(--spacing-2) var(--spacing-4); border: 1px solid var(--border-color); border-radius: 9999px; background: var(--surface-1); color: var(--text-primary); cursor: pointer; font-size: var(--text-sm); }
 .chipOn { background: var(--brand-700); color: #fff; border-color: var(--brand-700); }
 .addRow { display: flex; gap: var(--spacing-2); }
-.addRow input { flex: 1; padding: var(--spacing-3); border: 1px solid var(--border-color); border-radius: var(--radius-md); font: inherit; }
+.addRow input, .addRow select { flex: 1; padding: var(--spacing-3); border: 1px solid var(--border-color); border-radius: var(--radius-md); font: inherit; background: var(--surface-1); }
 .addRow button { padding: var(--spacing-3) var(--spacing-5); border: none; border-radius: var(--radius-md); background: var(--brand-700); color: #fff; font-weight: 600; cursor: pointer; }
 .goalList { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--spacing-2); }
 .goalItem { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-3); background: var(--surface-1); border: 1px solid var(--border-color); border-radius: var(--radius-md); }

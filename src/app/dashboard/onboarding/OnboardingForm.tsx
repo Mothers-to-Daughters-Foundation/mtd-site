@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { INTEREST_CATEGORIES } from '@/lib/onboarding-options';
+import { INTEREST_CATEGORIES, BUSINESS_EXPERIENCE_OPTIONS } from '@/lib/onboarding-options';
 import styles from './onboarding.module.css';
 
 type Plan = {
@@ -18,6 +18,7 @@ export default function OnboardingForm() {
   const [customInterest, setCustomInterest] = useState('');
   const [goals, setGoals] = useState<string[]>([]);
   const [goalInput, setGoalInput] = useState('');
+  const [businessExperience, setBusinessExperience] = useState('');
   const [plans, setPlans] = useState<Plan[]>([]);
   const [planId, setPlanId] = useState<string>('');
   const [error, setError] = useState('');
@@ -55,6 +56,7 @@ export default function OnboardingForm() {
     if (!name.trim()) return setError('Enter your name.');
     if (interests.length === 0) return setError('Pick at least one interest.');
     if (goals.length === 0) return setError('Add at least one career goal.');
+    if (!businessExperience) return setError('Select your years of business experience.');
     if (!planId) return setError('Choose a plan.');
 
     setSaving(true);
@@ -62,7 +64,7 @@ export default function OnboardingForm() {
       const res = await fetch('/api/mentee/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName: name.trim(), interests, careerGoals: goals, planId }),
+        body: JSON.stringify({ fullName: name.trim(), interests, careerGoals: goals, businessExperience, planId }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -179,6 +181,26 @@ export default function OnboardingForm() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Years of business experience</h2>
+        <div className={styles.addRow}>
+          <select
+            value={businessExperience}
+            onChange={(e) => setBusinessExperience(e.target.value)}
+            aria-label="Years of business experience"
+          >
+            <option value="" disabled>
+              Select an option…
+            </option>
+            {BUSINESS_EXPERIENCE_OPTIONS.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
       </section>
 
       <section className={styles.section}>
