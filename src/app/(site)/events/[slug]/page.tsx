@@ -8,6 +8,7 @@ import Markdown from '@/components/ui/Markdown';
 import styles from '@/components/ui/Article.module.css';
 import { getEventBySlug, getAllEvents } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
+import { formatEventWhen } from '@/lib/event-format';
 
 interface EventPageProps {
   params: {
@@ -54,16 +55,7 @@ export default function EventPage({ params }: EventPageProps) {
             <h1 className={styles.title}>{event.frontmatter.title}</h1>
             <div className={styles.meta}>
               <time className={styles.date} dateTime={event.frontmatter.date}>
-                {new Date(event.frontmatter.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-                {event.frontmatter.endDate &&
-                  ` – ${new Date(event.frontmatter.endDate).toLocaleDateString(
-                    'en-US',
-                    { year: 'numeric', month: 'long', day: 'numeric' }
-                  )}`}
+                {formatEventWhen(event.frontmatter.date, event.frontmatter.endDate)}
               </time>
               {event.frontmatter.location && (
                 <p className={styles.location}>📍 {event.frontmatter.location}</p>
@@ -92,7 +84,7 @@ export default function EventPage({ params }: EventPageProps) {
                 variant="primary"
                 size="lg"
               >
-                RSVP on Zeffy
+                View Details ↗
               </Button>
             </div>
           )}
