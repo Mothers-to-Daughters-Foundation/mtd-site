@@ -18,6 +18,49 @@ type HeaderUser = {
   avatarUrl: string | null;
 };
 
+type NavGroup = {
+  label: string;
+  href?: string;
+  children?: { label: string; href: string }[];
+};
+
+// Top-level nav. Groups with children reveal a dropdown on hover (desktop) and
+// render flat/expanded inside the hamburger (mobile). All routes stay reachable.
+const NAV_GROUPS: NavGroup[] = [
+  {
+    label: 'About',
+    href: '/about',
+    children: [
+      { label: 'Our Team', href: '/team' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    label: 'Programs',
+    href: '/programs',
+    children: [{ label: 'Courses', href: '/courses' }],
+  },
+  {
+    label: 'Events',
+    href: '/events',
+    children: [{ label: 'Mentors Mixer', href: '/mentors-mixer' }],
+  },
+  {
+    label: 'Media',
+    children: [
+      { label: 'Blog', href: '/blog' },
+      { label: 'News', href: '/news' },
+    ],
+  },
+  {
+    label: 'Get Involved',
+    children: [
+      { label: 'Partner', href: '/partner' },
+      { label: 'Volunteer', href: '/volunteer' },
+    ],
+  },
+];
+
 function dashboardHref(role: HeaderUser['role']): string {
   if (role === 'admin') return appHref('/dashboard/admin');
   if (role === 'mentor') return appHref('/dashboard/mentor/profile');
@@ -109,28 +152,30 @@ export default function SiteHeader() {
             className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}
             aria-label="Main navigation"
           >
-            <Link href="/about" className={styles.navLink} onClick={closeMenu}>
-              About
-            </Link>
-            <Link
-              href="/programs"
-              className={styles.navLink}
-              onClick={closeMenu}
-            >
-              Programs
-            </Link>
-            <Link href="/events" className={styles.navLink} onClick={closeMenu}>
-              Events
-            </Link>
-            <Link href="/blog" className={styles.navLink} onClick={closeMenu}>
-              Blog
-            </Link>
-            <Link href="/news" className={styles.navLink} onClick={closeMenu}>
-              Media
-            </Link>
-            <Link href="/partner" className={styles.navLink} onClick={closeMenu}>
-              Partner
-            </Link>
+            {NAV_GROUPS.map((group) => (
+              <div key={group.label} className={styles.navItem}>
+                {group.href ? (
+                  <Link href={group.href} className={styles.navLink} onClick={closeMenu}>
+                    {group.label}
+                    {group.children && <span className={styles.caret} aria-hidden> ▾</span>}
+                  </Link>
+                ) : (
+                  <button type="button" className={styles.dropdownTrigger} aria-haspopup="true">
+                    {group.label}
+                    <span className={styles.caret} aria-hidden> ▾</span>
+                  </button>
+                )}
+                {group.children && (
+                  <div className={styles.dropdown}>
+                    {group.children.map((child) => (
+                      <Link key={child.href} href={child.href} onClick={closeMenu}>
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
             <Button
               href="/donate"
               variant="primary"

@@ -124,6 +124,57 @@
   color: var(--brand-700);
 }
 
+/* Grouped nav items + dropdowns.
+   Mobile (default): dropdown is shown flat/expanded under the hamburger.
+   Desktop (>=768px, below): dropdown is an absolute panel revealed on hover/focus. */
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dropdownTrigger {
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  padding: var(--spacing-1) 0;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.dropdownTrigger:hover,
+.dropdownTrigger:focus {
+  color: var(--brand-700);
+}
+
+.caret {
+  font-size: 0.7em;
+  opacity: 0.7;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) 0 var(--spacing-2) var(--spacing-4);
+}
+
+.dropdown a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+
+.dropdown a:hover,
+.dropdown a:focus {
+  color: var(--brand-700);
+}
+
 .signInLink {
   color: var(--text-secondary);
   text-decoration: none;
@@ -238,6 +289,48 @@
 
   .navLink {
     padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .navItem {
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+  }
+
+  .dropdownTrigger {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    flex-direction: column;
+    gap: 0;
+    padding: var(--spacing-2);
+    background-color: var(--surface-1);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    display: none;
+    z-index: 101;
+  }
+
+  .navItem:hover .dropdown,
+  .navItem:focus-within .dropdown {
+    display: flex;
+  }
+
+  .dropdown a {
+    padding: var(--spacing-2) var(--spacing-3);
+    white-space: nowrap;
+    border-radius: var(--radius-sm);
+  }
+
+  .dropdown a:hover,
+  .dropdown a:focus {
+    background-color: var(--surface-0);
   }
 
   .profileName {
