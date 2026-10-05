@@ -322,6 +322,12 @@
     display: flex;
   }
 
+  /* Rightmost group (Get Involved) opens toward the left so it never spills off-screen. */
+  .navItem:last-of-type .dropdown {
+    left: auto;
+    right: 0;
+  }
+
   .dropdown a {
     padding: var(--spacing-2) var(--spacing-3);
     white-space: nowrap;
