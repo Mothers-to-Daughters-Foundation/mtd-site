@@ -13,6 +13,7 @@ export interface BlogFrontmatter {
   category?: string;
   tags?: string[];
   image?: string;
+  author?: string;
 }
 
 export interface EventFrontmatter {
