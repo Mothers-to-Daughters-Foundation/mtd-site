@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import {
   getAllMentorships,
   createMentorship,
   updateMentorship,
 } from "@/lib/supabase/mentorships";
+import { requireAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
 
 const createMatchSchema = z.object({
@@ -27,44 +27,10 @@ const reassignSchema = z.object({
   mentor_id: z.string().uuid(),
 });
 
-async function requireAdmin() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return {
-      error: NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      ),
-    };
-  }
-
-  const { data: profile } = await supabase
-    .from("user_profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile || profile.role !== "admin") {
-    return {
-      error: NextResponse.json(
-        { error: "Forbidden" },
-        { status: 403 }
-      ),
-    };
-  }
-
-  return {};
-}
-
 export async function GET() {
   const auth = await requireAdmin();
 
-  if (auth.error) return auth.error;
+  if (!auth.ok) return auth.response;
 
   try {
     const matches = await getAllMentorships();
@@ -83,7 +49,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
 
-  if (auth.error) return auth.error;
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await req.json();
@@ -119,14 +85,14 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const auth = await requireAdmin();
 
-  if (auth.error) return auth.error;
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await req.json();
 
     const reassign = reassignSchema.safeParse(body);
     if (reassign.success) {
-      const supabase = await createClient();
+      const supabase = auth.supabase;
       const { data, error } = await supabase
         .from('mentorships')
         .update({ mentor_id: reassign.data.mentor_id })

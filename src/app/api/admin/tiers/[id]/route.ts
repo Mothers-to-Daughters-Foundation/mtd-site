@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import {
   getPlanById,
   updatePlan,
   deactivatePlan,
 } from "@/lib/supabase/plans";
+import { requireAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
 
 const updatePlanSchema = z.object({
@@ -21,40 +21,13 @@ const updatePlanSchema = z.object({
   zeffyUrl: z.string().optional(),
 });
 
-async function requireAdmin() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return null;
-
-  const { data: profile } = await supabase
-    .from("user_profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile || profile.role !== "admin") {
-    return null;
-  }
-
-  return user;
-}
-
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const user = await requireAdmin();
+  const auth = await requireAdmin();
 
-  if (!user) {
-    return NextResponse.json(
-      { error: "Forbidden" },
-      { status: 403 }
-    );
-  }
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await req.json();
@@ -97,14 +70,9 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const user = await requireAdmin();
+  const auth = await requireAdmin();
 
-  if (!user) {
-    return NextResponse.json(
-      { error: "Forbidden" },
-      { status: 403 }
-    );
-  }
+  if (!auth.ok) return auth.response;
 
   try {
     const plan = await getPlanById(params.id);

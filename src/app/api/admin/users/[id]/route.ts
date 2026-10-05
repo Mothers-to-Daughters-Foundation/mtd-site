@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
 
 const schema = z.object({
@@ -14,31 +14,9 @@ export async function PATCH(
     params: { id: string };
   }
 ) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  const { data: me } = await supabase
-    .from("user_profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (!me || me.role !== "admin") {
-    return NextResponse.json(
-      { error: "Forbidden" },
-      { status: 403 }
-    );
-  }
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth.response;
+  const supabase = auth.supabase;
 
   const body = await req.json();
 

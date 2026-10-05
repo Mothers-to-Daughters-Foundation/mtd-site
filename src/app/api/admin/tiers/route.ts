@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
 
 const createPlanSchema = z.object({
@@ -15,39 +15,10 @@ const createPlanSchema = z.object({
   zeffy_url: z.string().optional(),
 });
 
-async function requireAdmin() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: "Unauthorized", status: 401 };
-  }
-
-  const { data: profile } = await supabase
-    .from("user_profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile || profile.role !== "admin") {
-    return { error: "Forbidden", status: 403 };
-  }
-
-  return { supabase };
-}
-
 export async function GET() {
   const auth = await requireAdmin();
 
-  if ("error" in auth) {
-    return NextResponse.json(
-      { error: auth.error },
-      { status: auth.status }
-    );
-  }
+  if (!auth.ok) return auth.response;
 
   const { supabase } = auth;
 
@@ -71,12 +42,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
 
-  if ("error" in auth) {
-    return NextResponse.json(
-      { error: auth.error },
-      { status: auth.status }
-    );
-  }
+  if (!auth.ok) return auth.response;
 
   const { supabase } = auth;
 
