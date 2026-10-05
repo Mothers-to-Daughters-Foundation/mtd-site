@@ -81,8 +81,11 @@ export default function OnboardingForm() {
           body: JSON.stringify({ tierId: data.planId }),
         });
         const cd = await c.json().catch(() => ({}));
+        // Checkout returns a Zeffy link ({ zeffyUrl }); fall back to the legacy
+        // `url` field just in case, then to the pending page.
+        const checkoutUrl = c.ok ? (cd.zeffyUrl ?? cd.url) : null;
         window.location.href =
-          c.ok && cd.url ? cd.url : '/dashboard/mentee/subscription?pending=1';
+          checkoutUrl ?? '/dashboard/mentee/subscription?pending=1';
         return;
       }
       window.location.href = '/dashboard/mentee';
