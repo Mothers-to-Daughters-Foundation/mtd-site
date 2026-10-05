@@ -26,8 +26,8 @@ This document tracks planned features and integrations for the MTD site.
 | Admin panel | 🔲 Future | Manage users, content, and events |
 | Mentor availability calendar | 🔲 Launch | Date-time picker; assigned mentee is notified. External calendar/Calendly is post-launch |
 | Automatic mentor–mentee matching | 🔲 Launch | Career areas + expertise. Soft and deterministic match, paid mentees only |
-| Mentee profile setup at signup | 🔲 Launch | Interests, career goals, subscription tier. Stripe Express provisions first |
-| Paid-access gating | 🔲 Launch | Expired subscription blocks chat, resources, and sessions |
+| Mentee profile setup at signup | ✅ Done | Onboarding (interests, career goals, plan); Free activates, paid stub-ready for Stripe price IDs |
+| Paid-access gating | ✅ Done | Unpaid mentees see locked chat/resources/sessions; server-enforced 403s |
 | Mentee–mentor matching | 🔲 Future | See automatic matching above; external calendar sync stays post-launch |
 
 ## Courses Page Roadmap
