@@ -132,6 +132,14 @@ export default function SiteHeader() {
     setIsMenuOpen(false);
   };
 
+  // Close the mobile menu and drop focus from the clicked link, so the desktop
+  // hover dropdown closes once the pointer leaves (otherwise :focus-within keeps
+  // it open after a client-side navigation).
+  const handleNavClick = (e: React.MouseEvent<HTMLElement>) => {
+    closeMenu();
+    e.currentTarget.blur();
+  };
+
   return (
     <header className={styles.header}>
       <Container>
@@ -155,7 +163,7 @@ export default function SiteHeader() {
             {NAV_GROUPS.map((group) => (
               <div key={group.label} className={styles.navItem}>
                 {group.href ? (
-                  <Link href={group.href} className={styles.navLink} onClick={closeMenu}>
+                  <Link href={group.href} className={styles.navLink} onClick={handleNavClick}>
                     {group.label}
                     {group.children && <span className={styles.caret} aria-hidden> ▾</span>}
                   </Link>
@@ -168,7 +176,7 @@ export default function SiteHeader() {
                 {group.children && (
                   <div className={styles.dropdown}>
                     {group.children.map((child) => (
-                      <Link key={child.href} href={child.href} onClick={closeMenu}>
+                      <Link key={child.href} href={child.href} onClick={handleNavClick}>
                         {child.label}
                       </Link>
                     ))}
