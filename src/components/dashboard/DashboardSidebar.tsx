@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
@@ -25,6 +26,7 @@ const mentorNav = [
   { href: '/dashboard/mentor', label: 'Overview', exact: true },
   { href: '/dashboard/mentor/mentees', label: 'My Mentees' },
   { href: '/dashboard/mentor/sessions', label: 'Sessions' },
+  { href: '/dashboard/mentor/availability', label: 'Availability' },
   { href: '/dashboard/mentor/resources', label: 'Resources' },
   { href: "/dashboard/messages", label: "Messages" },
   { href: '/dashboard/mentor/profile', label: 'Profile' },
@@ -35,6 +37,7 @@ const menteeNav = [
   { href: '/dashboard/mentee', label: 'Overview', exact: true },
   { href: '/dashboard/mentee/subscription', label: 'Subscription' },
   { href: '/dashboard/mentee/sessions', label: 'Sessions' },
+  { href: '/dashboard/mentee/availability', label: 'Availability' },
   { href: '/dashboard/mentee/resources', label: 'Resources' },
   { href: '/dashboard/mentee/profile', label: 'Profile' },
   { href: "/dashboard/messages", label: "Messages" },
@@ -136,8 +139,15 @@ export default function DashboardSidebar() {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>
-        <Link href="/" className={styles.brandLink}>
-          MTD
+        <Link href="/" className={styles.brandLink} aria-label="Mothers to Daughters">
+          <Image
+            src="/icons/m2dicon.png"
+            alt=""
+            width={145}
+            height={77}
+            className={styles.brandLogo}
+            priority
+          />
         </Link>
 
         <span className={styles.roleTag}>
