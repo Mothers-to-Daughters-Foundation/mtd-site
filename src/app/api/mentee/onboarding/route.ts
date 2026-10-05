@@ -3,11 +3,15 @@ import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { tierKind } from '@/lib/onboarding';
+import { BUSINESS_EXPERIENCE_OPTIONS } from '@/lib/onboarding-options';
 
 const schema = z.object({
   fullName: z.string().trim().min(1, 'Enter your name.'),
   interests: z.array(z.string().trim().min(1)).min(1, 'Pick at least one interest.'),
   careerGoals: z.array(z.string().trim().min(1)).min(1, 'Add at least one career goal.'),
+  businessExperience: z.enum(BUSINESS_EXPERIENCE_OPTIONS, {
+    error: 'Select your years of business experience.',
+  }),
   planId: z.string().uuid('Choose a plan.'),
 });
 
@@ -56,6 +60,7 @@ export async function POST(request: Request) {
       full_name: body.fullName,
       interests: body.interests,
       career_goals: body.careerGoals,
+      business_experience: body.businessExperience,
       onboarding_completed: true,
     })
     .eq('id', user.id);
