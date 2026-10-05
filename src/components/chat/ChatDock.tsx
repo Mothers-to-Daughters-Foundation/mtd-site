@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CloseIcon from '@mui/icons-material/Close';
-import { createClient } from '@/lib/supabase/client';
+import { tryCreateClient } from '@/lib/supabase/client';
 import styles from './ChatDock.module.css';
 
 type Message = {
@@ -21,8 +21,10 @@ type Thread = {
   otherName: string;
 };
 
+type BrowserClient = NonNullable<ReturnType<typeof tryCreateClient>>;
+
 export default function ChatDock() {
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = useMemo(() => tryCreateClient(), []);
   const pathname = usePathname();
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -39,6 +41,7 @@ export default function ChatDock() {
   // --- load the user's conversations + unread count (graceful on error) ---
   const loadThreads = useCallback(
     async (uid: string) => {
+      if (!supabase) return;
       try {
         const { data: mine, error } = await supabase
           .from('conversation_members')
@@ -99,6 +102,7 @@ export default function ChatDock() {
 
   const loadMessages = useCallback(
     async (uid: string, conversationId: string) => {
+      if (!supabase) return;
       try {
         const { data, error } = await supabase
           .from('messages')
@@ -125,13 +129,15 @@ export default function ChatDock() {
 
   // --- init: user + realtime ---
   useEffect(() => {
+    if (!supabase) return;
+    const db = supabase;
     let active = true;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let channel: ReturnType<BrowserClient['channel']> | null = null;
 
     (async () => {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await db.auth.getUser();
       if (!user || !active) return;
       setUserId(user.id);
       try {
@@ -145,7 +151,7 @@ export default function ChatDock() {
       }
       await loadThreads(user.id);
 
-      channel = supabase
+      channel = db
         .channel(`chatdock-${user.id}`)
         .on(
           'postgres_changes',
@@ -163,7 +169,7 @@ export default function ChatDock() {
 
     return () => {
       active = false;
-      if (channel) supabase.removeChannel(channel);
+      if (channel) db.removeChannel(channel);
     };
   }, [supabase, loadThreads, loadMessages]);
 

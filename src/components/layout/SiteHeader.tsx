@@ -9,7 +9,7 @@ import Container from './Container';
 import Button from '../ui/Button';
 import { getImagePath } from '@/lib/utils';
 import { appHref } from '@/lib/appUrl';
-import { createClient } from '@/lib/supabase/client';
+import { tryCreateClient } from '@/lib/supabase/client';
 import NotificationBell from './NotificationBell';
 
 type HeaderUser = {
@@ -82,20 +82,22 @@ export default function SiteHeader() {
   const [user, setUser] = useState<HeaderUser | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = tryCreateClient();
+    if (!supabase) return;
+    const db = supabase;
     let active = true;
 
     async function loadProfile() {
       const {
         data: { user: authUser },
-      } = await supabase.auth.getUser();
+      } = await db.auth.getUser();
 
       if (!authUser) {
         if (active) setUser(null);
         return;
       }
 
-      const { data: profile } = await supabase
+      const { data: profile } = await db
         .from('user_profiles')
         .select('full_name, role, avatar_url')
         .eq('id', authUser.id)
@@ -114,7 +116,7 @@ export default function SiteHeader() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
+    } = db.auth.onAuthStateChange(() => {
       loadProfile();
     });
 

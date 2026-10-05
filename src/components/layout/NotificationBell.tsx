@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import { createClient } from '@/lib/supabase/client';
+import { tryCreateClient } from '@/lib/supabase/client';
 import { appHref } from '@/lib/appUrl';
 import styles from './NotificationBell.module.css';
 
@@ -43,19 +43,21 @@ export default function NotificationBell() {
   const unread = items.filter((n) => !n.is_read).length;
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = tryCreateClient();
+    if (!supabase) return;
+    const db = supabase;
     let active = true;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let channel: ReturnType<typeof db.channel> | null = null;
 
     async function init() {
       const {
         data: { user },
-      } = await supabase.auth.getUser();
+      } = await db.auth.getUser();
       if (!user || !active) return;
       setUserId(user.id);
 
       const load = async () => {
-        const { data } = await supabase
+        const { data } = await db
           .from('notifications')
           .select('id, type, title, message, related_id, is_read, created_at')
           .eq('user_id', user.id)
@@ -66,7 +68,7 @@ export default function NotificationBell() {
 
       await load();
 
-      channel = supabase
+      channel = db
         .channel(`header-notifications-${user.id}`)
         .on(
           'postgres_changes',
@@ -85,7 +87,7 @@ export default function NotificationBell() {
 
     return () => {
       active = false;
-      if (channel) supabase.removeChannel(channel);
+      if (channel) db.removeChannel(channel);
     };
   }, []);
 
@@ -106,7 +108,8 @@ export default function NotificationBell() {
     // Mark all read when the popover is opened.
     if (next && unread > 0 && userId) {
       setItems((prev) => prev.map((n) => ({ ...n, is_read: true })));
-      const supabase = createClient();
+      const supabase = tryCreateClient();
+      if (!supabase) return;
       await supabase
         .from('notifications')
         .update({ is_read: true, read_at: new Date().toISOString() })
