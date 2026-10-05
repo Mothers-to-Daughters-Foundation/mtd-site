@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { getImagePath } from '@/lib/utils';
+import ProgramCarousel from '@/components/programs/ProgramCarousel';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -39,17 +38,8 @@ export default function ProgramsPage() {
 
       <Section spacing="lg">
         <Container>
-          <div className={styles.programsGrid}>
-            <Card className={styles.featuredCard}>
-              <div className={styles.cardImage}>
-                <Image
-                  src={getImagePath('/images/intergenerational.jpg')}
-                  alt="Women connecting through intergenerational mentorship"
-                  width={600}
-                  height={338}
-                  className={styles.cardImageContent}
-                />
-              </div>
+          <div className={styles.featureRow}>
+            <Card className={styles.featuredCard} variant="static">
               <div className={styles.cardContent}>
                 <h2>M2D Intergenerational Mentoring Program</h2>
                 <p>
@@ -83,6 +73,7 @@ export default function ProgramsPage() {
                 </div>
               </div>
             </Card>
+            <ProgramCarousel />
           </div>
         </Container>
       </Section>

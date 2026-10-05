@@ -95,10 +95,10 @@ export default function SiteHeader() {
         <div className={styles.content}>
           <Link href="/" className={styles.logo} onClick={closeMenu}>
             <Image
-              src={getImagePath("/images/MDLOGO.png")}
+              src={getImagePath("/icons/m2dicon.png")}
               alt="Mothers to Daughters Logo"
-              width={500}
-              height={200}
+              width={145}
+              height={77}
               priority
               className={styles.logoImage}
               unoptimized

@@ -62,6 +62,8 @@ In Progress
 
 Stripe Integration
 
+Promo codes at checkout
+
 Zeffy Integration
 
 Billing History
@@ -110,8 +112,15 @@ Launch
 
 - Mentor availability as a date-time calendar picker that notifies the assigned mentee
 - Automatic matching from mentor career areas and expertise (deterministic and soft), paid mentees only
-- Mentee profile setup immediately after signup: interests, career goals, subscription tier, with Stripe Express provisions in place first
+- After signup, open the profile creation form immediately (today registration goes to `/login` and skips `/dashboard/onboarding`)
 - Expired mentee subscriptions block mentor chat, resources, and sessions
+- Promo codes entered at checkout, with Stripe applying the discount to the selected plan
+- Submenus on top-level nav items so About, Programs, Events, Blog, Our Team, Donate, Volunteer, Partner, and Courses align in the header and footer Navigation
+- Footer socials shown as icons instead of the words Instagram, LinkedIn, Facebook, TikTok, and YouTube
+- Programs intro copied word for word from the live site, on the left of the carousel
+- News page ripped from the live newsroom as HTML
+- Events page ripped from the live event list
+- Blog ripped from the live site, each post a markdown file with its own page and a view counter
 
 Detail is in `docs/ROADMAP.md`.
 
