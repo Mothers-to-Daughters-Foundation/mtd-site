@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import AvatarUpload from '@/components/dashboard/AvatarUpload';
+import { INTEREST_CATEGORIES } from '@/lib/onboarding-options';
 import styles from './page.module.css';
 
 export default function MentorProfilePage() {
@@ -19,6 +20,8 @@ export default function MentorProfilePage() {
     expertise: '',
     availability: '',
   });
+
+  const [careerAreas, setCareerAreas] = useState<string[]>([]);
 
   const [status, setStatus] = useState<
     'idle' | 'saving' | 'saved' | 'error'
@@ -46,6 +49,8 @@ export default function MentorProfilePage() {
 
       setAvatarUrl(data.avatar_url ?? null);
 
+      setCareerAreas(data.career_areas ?? []);
+
       setFormData({
         name: data.full_name ?? '',
         bio: data.bio ?? '',
@@ -60,6 +65,11 @@ export default function MentorProfilePage() {
 
     loadProfile();
   }, [supabase]);
+
+  const toggleCareerArea = (value: string) =>
+    setCareerAreas((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -95,6 +105,7 @@ export default function MentorProfilePage() {
           country: country || null,
           expertise: formData.expertise,
           availability: formData.availability,
+          career_areas: careerAreas,
         })
         .eq('id', userId);
 
@@ -203,6 +214,30 @@ export default function MentorProfilePage() {
             onChange={handleChange}
             placeholder="e.g. Career Development, Leadership, STEM"
           />
+        </div>
+
+        <div className={styles.field}>
+          <label>Career areas (for matching)</label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {INTEREST_CATEGORIES.map((c) => (
+              <button
+                type="button"
+                key={c}
+                onClick={() => toggleCareerArea(c)}
+                aria-pressed={careerAreas.includes(c)}
+                style={{
+                  padding: '0.4rem 0.8rem',
+                  borderRadius: 9999,
+                  border: '1px solid var(--border-color)',
+                  cursor: 'pointer',
+                  background: careerAreas.includes(c) ? 'var(--brand-700)' : 'var(--surface-1)',
+                  color: careerAreas.includes(c) ? '#fff' : 'var(--text-primary)',
+                }}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className={styles.field}>
