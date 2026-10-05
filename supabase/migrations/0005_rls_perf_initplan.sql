@@ -66,8 +66,11 @@ alter policy "Mentors can view active mentee profiles" on public.user_profiles u
    FROM mentorships m
   WHERE ((m.mentor_id = (select auth.uid())) AND (m.mentee_id = user_profiles.id) AND (m.status = 'active'::mentorship_status)))));
 alter policy "Users can insert only themselves" on public.user_profiles with check (((select auth.uid()) = id));
-alter policy "Users can update own profile" on public.user_profiles using (((select auth.uid()) = id)) with check (((select auth.uid()) = id));
-alter policy "Users can view their own profile" on public.user_profiles using (((select auth.uid()) = id));
+-- "Users can update own profile" and "Users can view their own profile" are
+-- intentionally not altered here: they are exact duplicates of
+-- user_updates_own_profile / user_reads_own_profile and are dropped in
+-- 0006_dedupe_redundant_policies.sql. They may not exist in every database,
+-- and ALTER POLICY has no IF EXISTS, so optimizing them here would fail.
 alter policy "user_reads_own_profile" on public.user_profiles using (((select auth.uid()) = id));
 alter policy "user_updates_own_profile" on public.user_profiles using (((select auth.uid()) = id)) with check (((select auth.uid()) = id));
 commit;
