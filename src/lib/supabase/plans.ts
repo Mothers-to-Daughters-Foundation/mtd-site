@@ -18,7 +18,6 @@ export interface Plan {
 
   is_active: boolean;
 
-  stripe_price_id: string |null;
   zeffy_url: string | null;
 
   created_at: string;
@@ -88,6 +87,7 @@ export async function updatePlan(
     pricePerMonth: number;
     isActive: boolean;
     maxMentees: number;
+    zeffyUrl: string;
   }>
 ) {
   const supabase = await createClient();
@@ -111,6 +111,9 @@ export async function updatePlan(
 
   if (updates.maxMentees !== undefined)
     dbUpdates.mentor_limit = updates.maxMentees;
+
+  if (updates.zeffyUrl !== undefined)
+    dbUpdates.zeffy_url = updates.zeffyUrl;
 
   const { data, error } = await supabase
     .from("plans")

@@ -18,6 +18,7 @@ const updatePlanSchema = z.object({
   pricePerMonth: z.number().min(0).optional(),
   isActive: z.boolean().optional(),
   maxMentees: z.number().min(1).optional(),
+  zeffyUrl: z.string().optional(),
 });
 
 async function requireAdmin() {

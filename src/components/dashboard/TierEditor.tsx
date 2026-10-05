@@ -12,7 +12,6 @@ interface Tier {
   features: string[];
   isActive: boolean;
   isDefault?: boolean;
-  stripePriceId?: string;
   zeffyUrl?: string;
 }
 
@@ -28,7 +27,6 @@ const emptyForm = (): Omit<Tier, '_id'> => ({
   features: [],
   isActive: true,
   isDefault: false,
-  stripePriceId: '',
   zeffyUrl: '',
 });
 
@@ -59,7 +57,6 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
       features: tier.features,
       isActive: tier.isActive,
       isDefault: tier.isDefault ?? false,
-      stripePriceId: tier.stripePriceId ?? '',
       zeffyUrl: tier.zeffyUrl ?? '',
     });
     setFeaturesRaw(tier.features.join('\n'));
@@ -267,25 +264,14 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
                   placeholder="Weekly check-ins&#10;Access to resources&#10;Community access"
                 />
               </div>
-              <div className={styles.row}>
-                <div className={styles.field}>
-                  <label>Stripe Price ID</label>
-                  <input
-                    name="stripePriceId"
-                    value={form.stripePriceId}
-                    onChange={handleChange}
-                    placeholder="price_xxxxx"
-                  />
-                </div>
-                <div className={styles.field}>
-                  <label>Zeffy URL (optional)</label>
-                  <input
-                    name="zeffyUrl"
-                    value={form.zeffyUrl}
-                    onChange={handleChange}
-                    placeholder="https://zeffy.com/…"
-                  />
-                </div>
+              <div className={styles.field}>
+                <label>Zeffy payment link</label>
+                <input
+                  name="zeffyUrl"
+                  value={form.zeffyUrl}
+                  onChange={handleChange}
+                  placeholder="https://www.zeffy.com/…"
+                />
               </div>
               <div className={styles.checkboxRow}>
                 <label className={styles.checkboxLabel}>

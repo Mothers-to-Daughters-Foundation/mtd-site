@@ -12,6 +12,7 @@ const createPlanSchema = z.object({
   monthly_price: z.number().min(0),
   mentor_limit: z.number().int().min(1),
   is_active: z.boolean().default(true),
+  zeffy_url: z.string().optional(),
 });
 
 async function requireAdmin() {
