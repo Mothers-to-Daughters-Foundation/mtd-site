@@ -22,6 +22,11 @@ const updateMatchSchema = z.object({
   ]),
 });
 
+const reassignSchema = z.object({
+  id: z.string().uuid(),
+  mentor_id: z.string().uuid(),
+});
+
 async function requireAdmin() {
   const supabase = await createClient();
 
@@ -118,6 +123,21 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
+
+    const reassign = reassignSchema.safeParse(body);
+    if (reassign.success) {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from('mentorships')
+        .update({ mentor_id: reassign.data.mentor_id })
+        .eq('id', reassign.data.id)
+        .select()
+        .single();
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+      return NextResponse.json({ match: data });
+    }
 
     const parsed = updateMatchSchema.safeParse(body);
 
