@@ -285,6 +285,9 @@
     align-items: center;
     gap: var(--spacing-2);
     margin-left: var(--spacing-16);
+    /* Reset the mobile scroll-panel styles so the hover dropdowns aren't clipped. */
+    overflow: visible;
+    max-height: none;
   }
 
   .navLink {
