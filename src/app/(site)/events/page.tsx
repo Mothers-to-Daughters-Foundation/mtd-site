@@ -36,6 +36,12 @@ export default function EventsPage() {
     .map(toCard);
   const past = events
     .filter((e) => new Date(e.frontmatter.date) < now)
+    // Past events in reverse-chronological order (most recent first).
+    .sort(
+      (a, b) =>
+        new Date(b.frontmatter.date).getTime() -
+        new Date(a.frontmatter.date).getTime()
+    )
     .map(toCard);
 
   return (
