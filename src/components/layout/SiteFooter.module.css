@@ -60,19 +60,30 @@
 
 .social {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-3);
 }
 
 .socialLink {
   color: var(--accent-100);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: color var(--transition-fast);
 }
 
 .socialLink:hover,
 .socialLink:focus {
   color: var(--surface-1);
+}
+
+.socialIcon {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 .newsletterDescription {
