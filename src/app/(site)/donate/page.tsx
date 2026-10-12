@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import Button from '@/components/ui/Button';
+import { zeffyPaymentUrl } from '@/lib/zeffy';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function DonatePage() {
-  const zeffyUrl = process.env.NEXT_PUBLIC_ZEFFY_URL || 'https://zeffy.com';
+  const zeffyUrl = zeffyPaymentUrl();
 
   return (
     <Section spacing="lg">
@@ -26,6 +28,15 @@ export default function DonatePage() {
             Mothers to Daughters is a registered 501(c)(3) nonprofit. Every
             contribution, big or small, makes a difference.
           </p>
+          <Button
+            href={zeffyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="primary"
+            size="lg"
+          >
+            Donate on Zeffy
+          </Button>
         </div>
         <div className={styles.zeffyContainer}>
           <iframe

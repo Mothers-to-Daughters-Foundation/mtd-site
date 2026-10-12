@@ -1,4 +1,5 @@
 import { getPublicPlans, type Plan } from '@/lib/supabase/plans';
+import { zeffyPaymentUrl } from '@/lib/zeffy';
 import TierCard from '@/components/membership/TierCard';
 import styles from './page.module.css';
 
@@ -49,7 +50,9 @@ export default async function MembershipPage() {
               description={tier.description ?? ''}
               pricePerMonth={tier.monthly_price}
               features={planFeatures(tier)}
-              zeffyUrl={tier.zeffy_url ?? undefined}
+              zeffyUrl={
+                tier.monthly_price > 0 ? zeffyPaymentUrl(tier.zeffy_url) : undefined
+              }
             />
           ))}
         </section>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getPlanById } from "@/lib/supabase/plans";
+import { zeffyPaymentUrl } from "@/lib/zeffy";
 import { z } from "zod";
 
 const checkoutSchema = z.object({
@@ -36,14 +37,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!plan.zeffy_url) {
+    const zeffyUrl =
+      plan.monthly_price > 0 ? zeffyPaymentUrl(plan.zeffy_url) : plan.zeffy_url;
+    if (!zeffyUrl) {
       return NextResponse.json(
         { error: "This plan has no Zeffy link configured. An admin must set its Zeffy payment link." },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({ provider: "zeffy", zeffyUrl: plan.zeffy_url });
+    return NextResponse.json({ provider: "zeffy", zeffyUrl });
   } catch (error) {
     console.error("[subscriptions/checkout POST]", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
