@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next';
 import './globals.css';
 import Analytics from '@/components/Analytics';
 import AppProvider from '@/components/providers/AppProvider';
@@ -60,6 +61,7 @@ export default function RootLayout({
     </Suspense>
     {children}
     <ChatDock />
+    <VercelAnalytics />
 </AppProvider>
       </body>
     </html>
