@@ -2,6 +2,52 @@ const createMDX = require('@next/mdx');
 const fs = require('fs');
 const path = require('path');
 
+/** Minimal RFC 4180 CSV parser: handles quoted fields, commas and "" escapes. */
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else if (c === '"') {
+        quoted = false;
+      } else {
+        field += c;
+      }
+    } else if (c === '"') {
+      quoted = true;
+    } else if (c === ',') {
+      row.push(field);
+      field = '';
+    } else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(field);
+      if (row.some((v) => v.trim())) rows.push(row);
+      row = [];
+      field = '';
+    } else {
+      field += c;
+    }
+  }
+  row.push(field);
+  if (row.some((v) => v.trim())) rows.push(row);
+  return rows;
+}
+
+/**
+ * Escape characters that path-to-regexp treats as syntax (Wix slugs contain
+ * parentheses). A ":" at the start of a segment stays a named parameter.
+ */
+function toSourcePattern(url) {
+  return url.replace(/[()*+?{}]|(?<!\/):/g, (c) => `\\${c}`);
+}
+
 const isPagesDeployment = process.env.GITHUB_PAGES === 'true';
 const basePath = isPagesDeployment ? '/mtd-site' : '';
 
@@ -16,36 +62,30 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   async redirects() {
     const redirectsPath = path.join(process.cwd(), 'docs', 'migration', 'urls.csv');
-    
+
     try {
       if (!fs.existsSync(redirectsPath)) {
         return [];
       }
 
-      const fileContent = fs.readFileSync(redirectsPath, 'utf-8');
-      const lines = fileContent.split('\n').filter((line) => line.trim());
-      
-      if (lines.length === 0) {
+      const rows = parseCsv(fs.readFileSync(redirectsPath, 'utf-8'));
+      if (rows.length === 0) {
         return [];
       }
 
-      // Parse CSV header
-      const headers = lines[0].split(',').map((h) => h.trim());
+      const headers = rows[0].map((h) => h.trim());
       const redirects = [];
 
-      // Parse CSV rows
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map((v) => v.trim());
+      for (const values of rows.slice(1)) {
         const record = {};
-        
         headers.forEach((header, index) => {
-          record[header] = values[index] || '';
+          record[header] = (values[index] || '').trim();
         });
 
         // Only include entries with both old_url and new_url
-        if (record.old_url && record.new_url && record.new_url.trim() !== '') {
+        if (record.old_url && record.new_url && record.old_url !== record.new_url) {
           redirects.push({
-            source: record.old_url,
+            source: toSourcePattern(record.old_url),
             destination: record.new_url,
             permanent: true,
           });

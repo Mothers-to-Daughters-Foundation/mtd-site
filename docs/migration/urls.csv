@@ -1,4 +1,47 @@
 old_url,type,title,new_url,notes
-/post/example-post,post,Example Post,/blog/example-post,Replace
-/event-details/example-event,event,Example Event,/events/example-event,Replace
-/news/example-news,news,Example News,/news/example-news,Replace
+/our-team,page,Our Team,/team,
+/event-list,page,Events,/events,
+/donation,page,Donate,/donate,
+/success,page,Donation thank-you,/donate,Zeffy shows its own confirmation
+/become-a-partner,page,Become a Partner,/partner,
+/privacy-policy,page,Privacy Policy,/legal/privacy-policy,
+/disclaimer,page,Disclaimer,/legal/disclaimer,
+/mentors-mixer-3-0,page,Mentors Mixer 3.0,/mentors-mixer/3.0,
+/mentors-mixer-4-0,page,Mentors Mixer 4.0,/mentors-mixer/4.0,
+/career,page,Careers,/volunteer,Careers copy moved to Volunteer
+/general-7,page,Ball of Wisdom,/events/ball-of-wisdom-2026,
+/challenges,page,Program List,/programs,Empty Wix template page
+/pricing-plans/list,page,Pricing Plans,/membership,
+/book-online,page,Book Online,/programs,Wix booking page (Empowerment Workshop)
+/service-page/empowerment-workshop,page,Empowerment Workshop,/programs,Wix booking service
+/courses-1,page,Courses (template),/courses,Wix template placeholder
+/courses-1-1,page,Courses 1 (template),/courses,Wix template placeholder
+/courses-1/:slug,page,Course (template),/courses,Wix template placeholder
+/courses-1-1/:slug,page,Course (template),/courses,Wix template placeholder
+/product-page/:slug,page,Auction item,/events/ball-of-wisdom-2026,Ball of Wisdom auction items
+/category/:slug,page,Store category,/events/ball-of-wisdom-2026,Ball of Wisdom auction
+/mentee-signup,page,Mentee Signup,/register,
+/mentee-dashboard,page,Mentee Dashboard,/dashboard,
+/mentee-resources,page,Mentee Resources,/dashboard/mentee/resources,
+/mentee-payments,page,Mentee Payments,/dashboard/mentee/subscription,
+/mentee-chat,page,Mentee Chat,/dashboard/messages,
+/mentee-book-session,page,Mentee Book Session,/dashboard/mentee/sessions,
+/mentee-goals,page,Mentee Goals,/dashboard/mentee/profile,
+/mentee-find-mentors,page,Mentee Find Mentors,/dashboard/mentee,
+/mentee-community,page,Mentee Community,/dashboard,
+/mentee-courses,page,Mentee Courses,/courses,
+/mentee-events,page,Mentee Events,/events,
+/profile/francine16277/profile,page,Francine Mbvoumbo (author profile),/team/francine-mbvoumbo,
+/profile/:id/profile,page,Member profile,/blog,Wix blog author profiles
+/news/pace-toronto-2025%3A-a-youth-led-celebration-of-culture-%26-creativity,news,PACE Toronto 2025,/news/pace-toronto-2025,
+/news/mothers-to-daughters-launches-u.s.-expansion-with-high-impact-initiatives-to-empower-women-entrepreneurs,news,M2D Launches U.S. Expansion with High-Impact Initiatives,/news/m2d-us-expansion-high-impact-initiatives,
+/news/mothers-to-daughters-u.s-launch,news,Mothers to Daughters U.S. Launch,/news/mothers-to-daughters-us-launch,
+/news/francine-mbvoumbo-appointment-as-delegate-for-the-commission-on-the-status-of-women-by-saef-(southern-africa-embrace-foundation),news,Francine Mbvoumbo Appointed CSW Delegate by SAEF,/news/francine-mbvoumbo-csw-delegate-saef,
+/news/m2d-featured-in-bridging-the-generation-gap,news,M2D Featured in Bridging the Generation Gap,/news/m2d-bridging-the-generation-gap,
+/news/-francine-mbvoumbo-featured-on-breaking-brave-with-marilyn-barefoot,news,Francine Mbvoumbo Featured on Breaking Brave,/news/francine-mbvoumbo-breaking-brave,
+/news/m2d-joins-the-united-nations-summit-of-the-future,news,M2D Joins the UN Summit of the Future,/news/m2d-un-summit-of-the-future,
+/news/m2d-joins-international-cooperation-futures,news,M2D Joins International Cooperation Futures,/news/m2d-international-cooperation-futures,
+/news/the-dunamis-palace,news,The Dunamis Palace Community in Action Award,/news/dunamis-palace-community-in-action-award,
+/news/mothers-to-daughters-launches-u.s.-expansion,news,Mothers to Daughters Launches U.S. Expansion,/news/mothers-to-daughters-launches-us-expansion,
+/news/69th-session-of-the-un-commission-on-the-status-of-women,news,69th Session of the UN CSW,/news/69th-session-un-commission-status-of-women,
+/news/photoshoot,news,M2D Takes Center Stage at Dundas Square,/news/m2d-dundas-square-exhibition-place,
