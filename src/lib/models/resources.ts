@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type ResourceType =
@@ -23,6 +22,7 @@ export interface Resource {
 
   type: ResourceType;
 
+  /** Storage path in the `resources` bucket, or the URL for `link` resources. */
   file_url: string;
 
   thumbnail_url: string | null;
@@ -40,21 +40,21 @@ export interface Resource {
   updated_at: string;
 }
 
+/*
+ * Reads use the service role with explicit visibility filters. Callers check
+ * who is asking first, so the result does not depend on how the table's RLS
+ * policies treat `public` rows.
+ */
+
 /* =========================================================
-   Get all resources
-   ---------------------------------------------------------
-   Intended for Admin use.
+   Get all resources (admin)
 ========================================================= */
 
 export async function getAllResources(): Promise<Resource[]> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
+  const { data, error } = await createAdminClient()
     .from("resources")
     .select("*")
-    .order("created_at", {
-      ascending: false,
-    });
+    .order("created_at", { ascending: false });
 
   if (error) {
     throw error;
@@ -63,15 +63,17 @@ export async function getAllResources(): Promise<Resource[]> {
   return (data ?? []) as Resource[];
 }
 
+/* =========================================================
+   Resources available to a user, by role
+   ---------------------------------------------------------
+   Admin: everything. Mentor: public + mentor_only.
+   Mentee: public + mentee_only.
+========================================================= */
 
-/* ----------------------------- */
-/* Get resources available to current user */
-/* ----------------------------- */
+export async function getResourcesForUser(userId: string): Promise<Resource[]> {
+  const admin = createAdminClient();
 
-export async function getResourcesForUser(userId: string) {
-  const supabase = await createClient();
-
-  const { data: profile, error: profileError } = await supabase
+  const { data: profile, error: profileError } = await admin
     .from("user_profiles")
     .select("role")
     .eq("id", userId)
@@ -79,102 +81,34 @@ export async function getResourcesForUser(userId: string) {
 
   if (profileError) throw profileError;
 
-  if (!profile) {
-    throw new Error("User profile not found.");
-  }
-
   if (profile.role === "admin") {
     return getAllResources();
   }
 
-  const visibility =
-    profile.role === "mentor"
-      ? "mentor_only"
-      : "mentee_only";
+  const visibility = profile.role === "mentor" ? "mentor_only" : "mentee_only";
 
-  const { data, error } = await supabase
+  const { data, error } = await admin
     .from("resources")
     .select("*")
-    .or(`visibility.eq.public,visibility.eq.${visibility}`)
+    .in("visibility", ["public", visibility])
     .order("created_at", { ascending: false });
 
   if (error) throw error;
-
-  return data as Resource[];
-}
-
-
-
-
-/* =========================================================
-   Get one resource by ID
-========================================================= */
-
-export async function getResourceById(
-  id: string
-): Promise<Resource | null> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("resources")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as Resource | null;
-}
-
-/* =========================================================
-   Get resources accessible to Mentors
-   ---------------------------------------------------------
-   Mentor visibility:
-   - public
-   - mentor_only
-========================================================= */
-
-export async function getResourcesForMentor(): Promise<
-  Resource[]
-> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("resources")
-    .select("*")
-    .in("visibility", [
-      "public",
-      "mentor_only",
-    ])
-    .order("created_at", {
-      ascending: false,
-    });
-
-  if (error) {
-    throw error;
-  }
 
   return (data ?? []) as Resource[];
 }
 
 /* =========================================================
-   Mentor Resources view (list)
+   Mentor Resources view
    ---------------------------------------------------------
-   What a mentor sees on their Resources page: public +
-   mentor_only resources, PLUS everything they uploaded
+   public + mentor_only, plus everything the mentor uploaded
    themselves (including mentee_only files they shared).
-   Uses the service role so a mentor's own mentee_only
-   uploads are not hidden by row-level security.
 ========================================================= */
 
 export async function getMentorResourceView(
   userId: string
 ): Promise<Resource[]> {
-  const admin = createAdminClient();
-
-  const { data, error } = await admin
+  const { data, error } = await createAdminClient()
     .from("resources")
     .select("*")
     .or(
@@ -190,172 +124,54 @@ export async function getMentorResourceView(
 }
 
 /* =========================================================
-   Get resources accessible to Mentees
-   ---------------------------------------------------------
-   Mentee visibility:
-   - public
-   - mentee_only
+   Get one resource by ID
 ========================================================= */
 
-export async function getResourcesForMentee(): Promise<
-  Resource[]
-> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
+export async function getResourceById(
+  id: string
+): Promise<Resource | null> {
+  const { data, error } = await createAdminClient()
     .from("resources")
     .select("*")
-    .in("visibility", [
-      "public",
-      "mentee_only",
-    ])
-    .order("created_at", {
-      ascending: false,
-    });
-
-  if (error) {
-    throw error;
-  }
-
-  return (data ?? []) as Resource[];
-}
-
-/* =========================================================
-   Get resources by visibility
-   ---------------------------------------------------------
-   Kept for existing Admin functionality and any other
-   existing callers that use the helper.
-========================================================= */
-
-export async function getResourcesByVisibility(
-  visibility: ResourceVisibility
-): Promise<Resource[]> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("resources")
-    .select("*")
-    .eq("visibility", visibility)
-    .order("created_at", {
-      ascending: false,
-    });
-
-  if (error) {
-    throw error;
-  }
-
-  return (data ?? []) as Resource[];
-}
-
-/* =========================================================
-   Create
-========================================================= */
-
-export async function createResource(
-  resource: Omit<
-    Resource,
-    "id" | "created_at" | "updated_at"
-  >
-): Promise<Resource> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("resources")
-    .insert(resource)
-    .select()
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return data as Resource;
-}
-
-/* =========================================================
-   Update
-========================================================= */
-
-export async function updateResource(
-  id: string,
-  updates: Partial<Resource>
-): Promise<Resource> {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("resources")
-    .update(updates)
     .eq("id", id)
-    .select()
-    .single();
+    .maybeSingle();
 
   if (error) {
     throw error;
   }
 
-  return data as Resource;
+  return data as Resource | null;
 }
 
 /* =========================================================
-   Delete
+   Uploader names + roles, for labelling resource lists
 ========================================================= */
 
-export async function deleteResource(
-  id: string
-): Promise<boolean> {
-  const supabase = await createClient();
+export interface Uploader {
+  name: string;
+  role: string;
+}
 
-  const { error } = await supabase
-    .from("resources")
-    .delete()
-    .eq("id", id);
+export async function getUploaders(
+  resources: Pick<Resource, "uploaded_by">[]
+): Promise<Map<string, Uploader>> {
+  const ids = Array.from(new Set(resources.map((r) => r.uploaded_by)));
+  if (ids.length === 0) return new Map();
+
+  const { data, error } = await createAdminClient()
+    .from("user_profiles")
+    .select("id, full_name, role")
+    .in("id", ids);
 
   if (error) {
-    throw error;
+    console.error("[getUploaders]", error);
+    return new Map();
   }
 
-  return true;
-}
-
-/* =========================================================
-   Increment Download Count
-========================================================= */
-
-export async function incrementDownloadCount(
-  id: string
-): Promise<void> {
-  const resource = await getResourceById(id);
-
-  if (!resource) {
-    return;
-  }
-
-  await updateResource(id, {
-    download_count:
-      resource.download_count + 1,
-  });
-}
-
-/* =========================================================
-   Recent Audit Activity
-========================================================= */
-
-export async function getRecentActivity(
-  limit = 10
-) {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from("audit_logs")
-    .select("*")
-    .order("created_at", {
-      ascending: false,
-    })
-    .limit(limit);
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
+  return new Map(
+    (data ?? []).map((u) => [
+      u.id,
+      { name: u.full_name ?? "Unknown", role: u.role },
+    ])
+  );
 }

@@ -36,7 +36,7 @@ This document tracks planned features and integrations for the MTD site.
 | Events page rip | 🔲 Launch | `/events` matches the live event list |
 | Blog rip | 🔲 Launch | Live posts in markdown, with a view counter and a post page |
 | Admin subscription controls | 🔲 Launch | Bug: page crashes. Then gift, waive, or prorate a user’s fee |
-| Remove admin Resources | 🔲 Launch | Bug: page crashes. Drop the admin Resources screen; mentors own uploads |
+| Admin resource sharing | ✅ Done | `/dashboard/admin/resources`: admins drop in files or links for all mentees (or mentors / everyone); shown first on the mentee Resources page |
 | Mentee–mentor matching | 🔲 Future | See automatic matching above; external calendar sync stays post-launch |
 
 ## Courses Page Roadmap
@@ -130,7 +130,7 @@ Checkout accepts a promo code. Stripe applies the discount to the plan the mente
 
 Subscriptions fails because `getAllSubscriptions()` selects `user_profiles.email`, and that column does not exist. Once the page loads, an admin can gift or waive the fee for a specific user, or enter a prorated discount for that user.
 
-Resources should not be an admin screen. Mentors upload; mentees receive. Remove the admin Resources page and its nav link.
+Resources: admins share files or links from `/dashboard/admin/resources` with all mentees (default), all mentors, or everyone; mentors keep sharing with their mentees. Files upload straight from the browser to Supabase Storage through a signed upload URL, so size is not capped by Vercel's request-body limit.
 
 ### Subscription access
 

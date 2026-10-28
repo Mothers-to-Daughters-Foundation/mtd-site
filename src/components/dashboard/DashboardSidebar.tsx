@@ -17,6 +17,7 @@ const adminNav = [
   { href: "/dashboard/admin/users", label: "Users" },
   { href: "/dashboard/admin/tiers", label: "Subscription Tiers" },
   { href: "/dashboard/admin/matches", label: "Matches" },
+  { href: "/dashboard/admin/resources", label: "Resources" },
   { href: "/dashboard/notifications", label: "Notifications" },
 ];
 

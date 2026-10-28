@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getResourceById } from "@/lib/models/resources";
+import { isExternalResource } from "@/lib/resources/files";
 import { createAuditLog } from "@/lib/audit";
 import { getMenteeAccess } from "@/lib/access";
 
@@ -72,18 +74,27 @@ export async function GET(
     );
   }
 
-  const { data, error: signedError } = await supabase.storage
-    .from("resources")
-    .createSignedUrl(resource.file_url, 60);
+  // Access is checked above, so the service role signs the URL and bumps the
+  // count; the private bucket and table RLS would otherwise block mentees.
+  const admin = createAdminClient();
 
-  if (signedError) {
-    return NextResponse.json(
-      { error: signedError.message },
-      { status: 500 }
-    );
+  let target = resource.file_url;
+  if (!isExternalResource(resource)) {
+    const { data, error: signedError } = await admin.storage
+      .from("resources")
+      .createSignedUrl(resource.file_url, 60);
+
+    if (signedError || !data) {
+      console.error("[resources download]", signedError);
+      return NextResponse.json(
+        { error: "Could not open this file." },
+        { status: 500 }
+      );
+    }
+    target = data.signedUrl;
   }
 
-  await supabase
+  await admin
     .from("resources")
     .update({
       download_count: resource.download_count + 1,
@@ -98,5 +109,5 @@ export async function GET(
     description: `Downloaded "${resource.title}"`,
   });
 
-  return NextResponse.redirect(data.signedUrl);
+  return NextResponse.redirect(target);
 }

@@ -1,22 +1,15 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getMenteeAccess } from "@/lib/access";
-import { getResourcesForUser } from "@/lib/models/resources";
+import { getResourcesForUser, getUploaders } from "@/lib/models/resources";
 import LockedFeature from "@/components/dashboard/LockedFeature";
+import ResourceGrid, { ResourceSection } from "@/components/dashboard/ResourceGrid";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Resources | Mentee",
-};
-
-const typeIcons: Record<string, string> = {
-  document: "📄",
-  video: "🎥",
-  audio: "🎵",
-  link: "🔗",
-  other: "📦",
 };
 
 export default async function MenteeResourcesPage() {
@@ -36,6 +29,11 @@ export default async function MenteeResourcesPage() {
   }
 
   const resources = await getResourcesForUser(user.id);
+  const uploaders = await getUploaders(resources);
+  const fromM2D = resources.filter(
+    (r) => uploaders.get(r.uploaded_by)?.role === "admin"
+  );
+  const fromMentors = resources.filter((r) => !fromM2D.includes(r));
 
   return (
     <div>
@@ -49,48 +47,27 @@ export default async function MenteeResourcesPage() {
       </div>
 
       {resources.length === 0 ? (
-        <div className={styles.empty}>
-          No resources are available yet.
-        </div>
+        <ResourceGrid resources={[]} emptyText="No resources are available yet." />
       ) : (
-        <div className={styles.grid}>
-          {resources.map((resource) => (
-            <div key={resource.id} className={styles.card}>
-              <div className={styles.icon}>
-                {typeIcons[resource.type] ?? "📦"}
-              </div>
-
-              <h2 className={styles.resourceTitle}>
-                {resource.title}
-              </h2>
-
-              {resource.description && (
-                <p className={styles.resourceDesc}>
-                  {resource.description}
-                </p>
-              )}
-
-              <div className={styles.meta}>
-                <span>
-                  {typeIcons[resource.type] ?? "📄"}{" "}
-                  {resource.type.charAt(0).toUpperCase() +
-                    resource.type.slice(1)}
-                </span>
-
-                <span>
-                  📂 {resource.category || "General"}
-                </span>
-              </div>
-
-              <a
-                href={`/api/resources/${resource.id}/download`}
-                className={styles.downloadButton}
-              >
-                ⬇ Download
-              </a>
-            </div>
-          ))}
-        </div>
+        <>
+          {fromM2D.length > 0 && (
+            <ResourceSection title="From Mothers to Daughters">
+              <ResourceGrid resources={fromM2D} emptyText="" />
+            </ResourceSection>
+          )}
+          {fromMentors.length > 0 && (
+            <ResourceSection title="From mentors">
+              <ResourceGrid
+                resources={fromMentors}
+                emptyText=""
+                meta={(r) => {
+                  const name = uploaders.get(r.uploaded_by)?.name;
+                  return name ? [`Shared by ${name}`] : [];
+                }}
+              />
+            </ResourceSection>
+          )}
+        </>
       )}
     </div>
   );
