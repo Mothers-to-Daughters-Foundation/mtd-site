@@ -153,6 +153,9 @@ export default function SiteFooter() {
             <Link href="/legal" className={styles.legalLink}>
               Legal
             </Link>
+            <Link href="/legal/terms" className={styles.legalLink}>
+              Terms of Use
+            </Link>
             <Link href="/legal/privacy-policy" className={styles.legalLink}>
               Privacy Policy
             </Link>

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
+import ImpactStories from '@/components/marketing/ImpactStories';
 import styles from './page.module.css';
 
 interface ProgramDetailPageProps {
@@ -17,7 +18,7 @@ const programs: Record<string, any> = {
     title: 'M2D Intergenerational Mentoring Program',
     subtitle: 'A Transformational Six-Month Journey—At No Cost',
     description:
-      'A high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops, participants engage in a transformational six-month journey—at no cost.',
+      'Mothers to Daughters (M2D) offers a high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops.',
     tagline: 'Invest in yourself. Build your legacy. Enroll today.',
     mission:
       'Our Commitment is to support 100,000 business launches by 2035.',
@@ -31,13 +32,7 @@ const programs: Record<string, any> = {
       { value: '100,000', label: 'businesses by 2035' },
       { value: '1,000,000+', label: 'funding required' },
     ],
-    testimonials: [
-      {
-        quote:
-          'The mentorship I received through Mothers to Daughters gave me the clarity and confidence to take the next step in my career. Having someone believe in me changed everything.',
-        author: 'Wan Chung, Daughter, Fall 2024 Cohort',
-      },
-    ],
+    showImpactStories: true,
   },
 };
 
@@ -146,40 +141,24 @@ export default function ProgramDetailPage({ params }: ProgramDetailPageProps) {
         </Section>
       )}
 
-      {program.testimonials && program.testimonials.length > 0 && (
-        <Section spacing="lg" className={styles.storiesSection}>
-          <Container>
-            <div className={styles.content}>
-              <div className={styles.section}>
-                <h2>Impact Stories</h2>
-                <div className={styles.testimonials}>
-                  {program.testimonials.map(
-                    (testimonial: any, index: number) => (
-                      <blockquote key={index} className={styles.testimonial}>
-                        <p>&ldquo;{testimonial.quote}&rdquo;</p>
-                        <cite>— {testimonial.author}</cite>
-                      </blockquote>
-                    )
-                  )}
-                </div>
-              </div>
+      {program.showImpactStories && <ImpactStories />}
 
-              <div className={styles.cta}>
-                <Button
-                  as="a"
-                  href={INTEREST_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="primary"
-                  size="lg"
-                >
-                  Complete the Interest Form ↗
-                </Button>
-              </div>
-            </div>
-          </Container>
-        </Section>
-      )}
+      <Section spacing="lg">
+        <Container>
+          <div className={styles.cta}>
+            <Button
+              as="a"
+              href={INTEREST_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="primary"
+              size="lg"
+            >
+              Complete the Interest Form ↗
+            </Button>
+          </div>
+        </Container>
+      </Section>
     </>
   );
 }

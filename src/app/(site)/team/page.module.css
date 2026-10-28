@@ -127,3 +127,14 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.bioLink {
+  margin-top: auto;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--brand-700);
+}
+
+.teamCard:hover .bioLink {
+  text-decoration: underline;
+}

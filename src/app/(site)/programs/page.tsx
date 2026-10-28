@@ -4,6 +4,7 @@ import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import ProgramCarousel from '@/components/programs/ProgramCarousel';
+import ImpactStories from '@/components/marketing/ImpactStories';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -16,10 +17,15 @@ const INTEREST_FORM_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSfGETNfWrbzLiA4TJUTX5Ki--Zhnj2Mu5UzUxbjceTGTUUspw/viewform';
 
 const impactStats = [
-  { number: '5+', label: 'Years empowering women' },
-  { number: '100+', label: 'Mentorship pairs formed' },
-  { number: '200+', label: 'Hybrid networking events since 2020' },
-  { number: '50,000+', label: 'Online engagements' },
+  { number: '5+', label: 'years of empowering women' },
+  { number: '100+', label: 'mentorship pairs formed' },
+  { number: '200+', label: 'hybrid networking events since 2020' },
+  { number: '50,000+', label: 'online engagements' },
+];
+
+const commitmentStats = [
+  { number: '100,000', label: 'businesses by 2035' },
+  { number: '1,000,000+', label: 'funding required' },
 ];
 
 export default function ProgramsPage() {
@@ -27,11 +33,9 @@ export default function ProgramsPage() {
     <>
       <Section spacing="xl" className={styles.hero}>
         <Container>
-          <h1 className={styles.heroTitle}>Our Programs</h1>
+          <h1 className={styles.heroTitle}>M2D Intergenerational Mentoring Program</h1>
           <p className={styles.heroDescription}>
-            We offer transformative programs that connect women across
-            generations, fostering growth, learning, and meaningful
-            relationships.
+            A Transformational Six-Month Journey—At No Cost
           </p>
         </Container>
       </Section>
@@ -41,13 +45,11 @@ export default function ProgramsPage() {
           <div className={styles.featureRow}>
             <Card className={styles.featuredCard} variant="static">
               <div className={styles.cardContent}>
-                <h2>M2D Intergenerational Mentoring Program</h2>
                 <p>
-                  A high-impact mentorship program designed to equip young women
-                  with the entrepreneurial mindset, strategies, and leadership
-                  skills needed to excel. Through immersive mentorship and
-                  hands-on workshops, participants engage in a transformational
-                  six-month journey—at no cost.
+                  Mothers to Daughters (M2D) offers a high-impact mentorship
+                  program designed to equip young women with the entrepreneurial
+                  mindset, strategies, and leadership skills needed to excel.
+                  Through immersive mentorship and hands-on workshops.
                 </p>
                 <p>
                   <strong>Invest in yourself. Build your legacy. Enroll today.</strong>
@@ -80,35 +82,39 @@ export default function ProgramsPage() {
 
       <Section spacing="lg" className={styles.outcomesSection}>
         <Container>
-          <h2 className={styles.sectionTitle}>Our Impact So Far</h2>
-          <div className={styles.outcomesGrid}>
+          <p className={styles.commitmentStatement}>
+            Our Commitment is to support 100,000 business launches by 2035.
+          </p>
+
+          <h2 className={styles.sectionTitle}>Our Impact</h2>
+          <ul className={styles.outcomesGrid}>
             {impactStats.map((stat) => (
-              <div key={stat.label} className={styles.outcomeCard}>
+              <li key={stat.label} className={styles.outcomeCard}>
                 <div className={styles.outcomeNumber}>{stat.number}</div>
                 <div className={styles.outcomeLabel}>{stat.label}</div>
-              </div>
+              </li>
             ))}
-          </div>
-        </Container>
-      </Section>
+          </ul>
 
-      <Section spacing="lg">
-        <Container>
+          <h2 className={styles.sectionTitle}>Our Commitment:</h2>
+          <ul className={`${styles.outcomesGrid} ${styles.commitmentGrid}`}>
+            {commitmentStats.map((stat) => (
+              <li key={stat.label} className={styles.outcomeCard}>
+                <div className={styles.outcomeNumber}>{stat.number}</div>
+                <div className={styles.outcomeLabel}>{stat.label}</div>
+              </li>
+            ))}
+          </ul>
+
           <div className={styles.commitment}>
-            <h2>Our Commitment</h2>
-            <p>
-              We&apos;re working to support{' '}
-              <strong>100,000 business launches by 2035</strong>—equipping the
-              next generation of women to build economic independence and lasting
-              legacies. Your partnership and support help make that future
-              possible.
-            </p>
             <Button href="/donate" variant="primary" size="lg">
               Support the Mission
             </Button>
           </div>
         </Container>
       </Section>
+
+      <ImpactStories limit={1} />
     </>
   );
 }

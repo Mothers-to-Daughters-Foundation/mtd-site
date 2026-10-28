@@ -6,6 +6,15 @@
   margin-right: auto;
 }
 
+.eyebrow {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-700);
+  margin: 0 0 var(--spacing-2);
+}
+
 .header h1 {
   font-size: var(--text-5xl);
   color: var(--text-primary);
@@ -38,20 +47,15 @@
 }
 
 .infoBlock h2 {
-  font-size: var(--text-2xl);
-  color: var(--brand-700);
-  margin-bottom: var(--spacing-2);
-}
-
-.infoBlock h3 {
   font-size: var(--text-xl);
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-2);
+  color: var(--brand-700);
+  margin: 0;
 }
 
 .infoBlock p {
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
+  margin: 0;
 }
 
 .socialLinks {

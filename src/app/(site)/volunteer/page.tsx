@@ -49,12 +49,23 @@ export default function VolunteerPage() {
       <Section spacing="lg">
         <Container>
           <div className={styles.intro}>
-            <h2>Why Volunteer</h2>
+            <h2>Why Join Mothers to Daughters?</h2>
             <p>
-              Volunteering with Mothers to Daughters is a chance to build real
-              relationships, grow your skills, and be part of a global community
-              driving meaningful change. Whether you have an hour a month or a
-              few hours a week, there&apos;s a place for you.
+              At Mothers to Daughters (M2D), we’re more than an
+              organization—we’re a movement dedicated to empowering young women
+              through mentorship, leadership, and lifelong connections. We
+              strive to create a nurturing, inclusive and safe space where women
+              across generations grow, lead, and uplift one another.
+            </p>
+            <p>
+              Joining M2D as a volunteer, means becoming part of a passionate,
+              purpose-driven team that fosters impactful change. Here, your
+              efforts will translate into a chance to build meaningful programs,
+              drive lasting partnerships, shape a better tomorrow, and leave a
+              lasting impact on women and society as a whole.
+            </p>
+            <p>
+              <strong>Be part of something bigger. Be part of M2D.</strong>
             </p>
           </div>
 

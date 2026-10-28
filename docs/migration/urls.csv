@@ -1,4 +1,127 @@
 old_url,type,title,new_url,notes
-/post/example-post,post,Example Post,/blog/example-post,Replace
-/event-details/example-event,event,Example Event,/events/example-event,Replace
-/news/example-news,news,Example News,/news/example-news,Replace
+/our-team,page,Our Team,/team,
+/event-list,page,Events,/events,
+/donation,page,Donate,/donate,
+/success,page,Donation thank-you,/donate,Zeffy shows its own confirmation
+/become-a-partner,page,Become a Partner,/partner,
+/privacy-policy,page,Privacy Policy,/legal/privacy-policy,
+/disclaimer,page,Disclaimer,/legal/disclaimer,
+/mentors-mixer-3-0,page,Mentors Mixer 3.0,/mentors-mixer/3.0,
+/mentors-mixer-4-0,page,Mentors Mixer 4.0,/mentors-mixer/4.0,
+/career,page,Careers,/volunteer,Careers copy moved to Volunteer
+/general-7,page,Ball of Wisdom,/events/ball-of-wisdom-2026,
+/challenges,page,Program List,/programs,Empty Wix template page
+/pricing-plans/list,page,Pricing Plans,/membership,
+/book-online,page,Book Online,/programs,Wix booking page (Empowerment Workshop)
+/service-page/empowerment-workshop,page,Empowerment Workshop,/programs,Wix booking service
+/courses-1,page,Courses (template),/courses,Wix template placeholder
+/courses-1-1,page,Courses 1 (template),/courses,Wix template placeholder
+/courses-1/:slug,page,Course (template),/courses,Wix template placeholder
+/courses-1-1/:slug,page,Course (template),/courses,Wix template placeholder
+/product-page/:slug,page,Auction item,/events/ball-of-wisdom-2026,Ball of Wisdom auction items
+/category/:slug,page,Store category,/events/ball-of-wisdom-2026,Ball of Wisdom auction
+/mentee-signup,page,Mentee Signup,/register,
+/mentee-dashboard,page,Mentee Dashboard,/dashboard,
+/mentee-resources,page,Mentee Resources,/dashboard/mentee/resources,
+/mentee-payments,page,Mentee Payments,/dashboard/mentee/subscription,
+/mentee-chat,page,Mentee Chat,/dashboard/messages,
+/mentee-book-session,page,Mentee Book Session,/dashboard/mentee/sessions,
+/mentee-goals,page,Mentee Goals,/dashboard/mentee/profile,
+/mentee-find-mentors,page,Mentee Find Mentors,/dashboard/mentee,
+/mentee-community,page,Mentee Community,/dashboard,
+/mentee-courses,page,Mentee Courses,/courses,
+/mentee-events,page,Mentee Events,/events,
+/profile/francine16277/profile,page,Francine Mbvoumbo (author profile),/team/francine-mbvoumbo,
+/profile/:id/profile,page,Member profile,/blog,Wix blog author profiles
+/news/pace-toronto-2025%3A-a-youth-led-celebration-of-culture-%26-creativity,news,PACE Toronto 2025,/news/pace-toronto-2025,
+/news/mothers-to-daughters-launches-u.s.-expansion-with-high-impact-initiatives-to-empower-women-entrepreneurs,news,M2D Launches U.S. Expansion with High-Impact Initiatives,/news/m2d-us-expansion-high-impact-initiatives,
+/news/mothers-to-daughters-u.s-launch,news,Mothers to Daughters U.S. Launch,/news/mothers-to-daughters-us-launch,
+/news/francine-mbvoumbo-appointment-as-delegate-for-the-commission-on-the-status-of-women-by-saef-(southern-africa-embrace-foundation),news,Francine Mbvoumbo Appointed CSW Delegate by SAEF,/news/francine-mbvoumbo-csw-delegate-saef,
+/news/m2d-featured-in-bridging-the-generation-gap,news,M2D Featured in Bridging the Generation Gap,/news/m2d-bridging-the-generation-gap,
+/news/-francine-mbvoumbo-featured-on-breaking-brave-with-marilyn-barefoot,news,Francine Mbvoumbo Featured on Breaking Brave,/news/francine-mbvoumbo-breaking-brave,
+/news/m2d-joins-the-united-nations-summit-of-the-future,news,M2D Joins the UN Summit of the Future,/news/m2d-un-summit-of-the-future,
+/news/m2d-joins-international-cooperation-futures,news,M2D Joins International Cooperation Futures,/news/m2d-international-cooperation-futures,
+/news/the-dunamis-palace,news,The Dunamis Palace Community in Action Award,/news/dunamis-palace-community-in-action-award,
+/news/mothers-to-daughters-launches-u.s.-expansion,news,Mothers to Daughters Launches U.S. Expansion,/news/mothers-to-daughters-launches-us-expansion,
+/news/69th-session-of-the-un-commission-on-the-status-of-women,news,69th Session of the UN CSW,/news/69th-session-un-commission-status-of-women,
+/news/photoshoot,news,M2D Takes Center Stage at Dundas Square,/news/m2d-dundas-square-exhibition-place,
+/post/community-partnerships-a-catalyst-for-growth,post,Community Partnerships: A Catalyst for Growth,/blog/community-partnerships-catalyst-for-growth,
+/post/international-day-of-zero-tolerance-to-female-genital-mutilation,post,International Day of Zero Tolerance to Female Genital Mutilation,/blog/zero-tolerance-female-genital-mutilation,
+/post/the-spirit-of-christmas,post,The Spirit of Christmas,/blog/the-spirit-of-christmas,
+/post/mothers-influence-on-women-in-leadership-a-legacy-building-journey,post,Mothers Influence on Women in Leadership: A Legacy Building Journey,/blog/mothers-influence-on-women-in-leadership,
+/post/happy-black-history-month,post,Happy Black History Month!,/blog/happy-black-history-month,
+/post/collaboration-over-competition-how-6ix-academy-and-mothers-to-daughters-joined-forces,post,Collaboration Over Competition: How 6ix Academy and Mothers to Daughters Joined Forces,/blog/collaboration-over-competition-6ix-academy,
+/post/daughters-to-mothers-mothers-day-celebration2020,post,Daughters to Mothers: A 2020 Mother's Day Celebration,/blog/daughters-to-mothers-mothers-day-2020,
+/post/being-intentional-with-summer-events-a-guide-for-mothers-and-daughters,post,Being Intentional with Summer Events: A Guide for Mothers and Daughters,/blog/being-intentional-with-summer-events,
+/post/my-indifference-towards-international-women-s-day,post,My Indifference towards International Women’s Day,/blog/my-indifference-towards-international-womens-day,
+/post/the-heartbreak-of-job-hunting,post,The Heartbreak of Job-Hunting,/blog/the-heartbreak-of-job-hunting,
+/post/women-as-a-powerful-force,post,Women as a Powerful Force,/blog/women-as-a-powerful-force,
+/post/an-interview-with-my-mom-emily-a-life-story-of-strength-resilience-independence,post,"An Interview with My Mom, Emily: A Life Story of Strength, Resilience, Independence",/blog/interview-with-my-mom-emily,
+/post/how-ai-and-technology-affect-women-has-been-a-story-that-has-changed-over-time,post,How AI and Technology Affect Women Has Changed Over Time,/blog/how-ai-and-technology-affect-women,
+/post/holiday-reflections-and-excitement-for-2025,post,Holiday Reflections and Excitement for 2025,/blog/holiday-reflections-2025,
+/post/mother-wound-why-can-you-feel-horrible-before-mother-s-day-and-what-can-you-do-about-it,post,Mother Wound: Why Can You Feel Horrible Before Mother’s Day and What Can You Do About It,/blog/mother-wound-before-mothers-day,
+/post/what-does-it-mean-to-be-a-daughter,post,What Does It Mean to Be a Daughter?,/blog/what-does-it-mean-to-be-a-daughter,
+/post/copy-of-thinking-about-finding-a-mentor-read-this-first,post,Thinking About Finding a Mentor? Read This First,/blog/thinking-about-finding-a-mentor,
+/post/the-power-of-mentorship,post,The Power of Mentorship,/blog/the-power-of-mentorship,
+/post/christmas-the-season-to-be-jolly-spend-time-with-family-and-create-memories,post,"Christmas: The Season to Be Jolly, Spend Time with Family and Create Memories",/blog/christmas-season-to-be-jolly,
+/post/live-conversation-1,post,Mothers to Daughters: Live Conversation #1 Event Recap,/blog/live-conversation-1-recap,
+/post/thinking-of-people-who-don-t-have-certain-privileges-during-the-holiday-and-how-supporting-them-can,post,Thinking of People Deprived of Certain Privileges During the Holiday and Ways to Support Them,/blog/thinking-of-people-deprived-of-privileges-holiday,
+/post/baking-a-generational-activity-to-build-cherished-memories,post,Mom's Recipe - Hello Dollies,/blog/moms-recipe-hello-dollies,
+/post/time-management-underrated-or-hard-to-achieve,post,Time Management: Underrated or Hard to Achieve?,/blog/time-management-underrated-or-hard-to-achieve,
+/post/letter-to-the-best-mother-in-the-world,post,Letter to the Best Mother in the World,/blog/letter-to-the-best-mother-in-the-world,
+/post/why-are-women-reluctant-to-bear-children-nowadays,post,Why Are Women Reluctant to Bear Children Nowadays,/blog/why-are-women-reluctant-to-bear-children,
+/post/panel-interviews-a-special-mother-s-day-tribute,post,Panel Interviews: A Special Mother's Day Tribute,/blog/panel-interviews-mothers-day-tribute,
+/post/iwd-2025-article-how-policy-and-legislation-can-accelerate-action-toward-gender-equality,post,IWD 2025 Article: How Policy and Legislation Can Accelerate Action toward Gender Equality,/blog/iwd-2025-policy-gender-equality,
+/post/the-dysfunctional-biological-mother-daughter-relationship,post,The Dysfunctional Biological Mother-Daughter Relationship,/blog/dysfunctional-mother-daughter-relationship,
+/event-details/building-a-foundation-in-todays-reality/form,event,Building a Foundation in Today’s Reality,/events/building-a-foundation-in-todays-reality,registration form page
+/event-details/the-mothers-to-daughters-m2d-legacy-walk,event,The Mothers to Daughters (M2D) Legacy Walk,/events/m2d-legacy-walk,existing MDX
+/event-details/the-art-of-balance,event,The Art of Balance,/events/the-art-of-balance,
+/event-details/the-impact-of-intergenerational-mentoring-for-women-1-2/form,event,Harness Your Image and Boost Your Confidence,/events/harness-your-image-and-boost-your-confidence,Wix slug misleading: page is Harness Your Image; registration form page
+/event-details/black-history-month-social-justice-keynote-speaker/form,event,Black History Month Social Justice Keynote Speaker,/events/black-history-month-social-justice-keynote,registration form page
+/event-details/date-with-daughters-launch-women-only,event,Date With Daughters Launch (Women Only),/events/date-with-daughters-launch,existing MDX
+/event-details/say-yes-to-your-yes,event,Say Yes to Your Yes,/events/say-yes-to-your-yes,
+/event-details/womens-sport-watch-party-1,event,Women’s Sport Watch Party,/events/womens-sport-watch-party-2025-09,
+/event-details/careers-are-assets-negotiating-pivotal-moments-with-strategy-confidence,event,Careers Are Assets: Negotiating Pivotal Moments with Strategy & Confidence,/events/careers-are-assets,existing MDX
+/event-details/m2d-workshop-healthy-mind-healthy-woman,event,"M2D Workshop: Healthy Mind, Healthy Woman",/events/healthy-mind-healthy-woman-2025-10,duplicate of m2d-workshop-healthy-mind-healthy-woman-1 (same date; this copy cancelled on Wix)
+/event-details/networking-soiree-1,event,Networking Soirée,/events/networking-soiree,
+/event-details/how-to-play-with-the-unknown-be-a-master-innovator,event,How to Play with the Unknown & Be a Master Innovator,/events/how-to-play-with-the-unknown,
+/event-details/m2d-workshop-building-people-first-startups-with-alexis,event,M2D Workshop: Building People-First Startups with Alexis,/events/building-people-first-startups,
+/event-details/womens-sport-watch-party,event,Women’s Sport Watch Party,/events/womens-sport-watch-party-2025-07,
+/event-details/pace-2025/form,event,PACE 2025,/events/pace-2025,registration form page
+/event-details/pace-2025-1-1/form,event,Mothers’ Day Celebration,/events/mothers-day-celebration-2025,Wix slug misleading: page is the Mothers' Day Celebration; registration form page
+/event-details/m2d-powerhouse-panel-from-sketch-to-scale-building-fashion-empires-1,event,M2D Powerhouse Panel: From Sketch to Scale – Building Fashion Empires,/events/from-sketch-to-scale-building-fashion-empires,
+/event-details/daily-habits-for-a-healthy-mind,event,Daily Habits for a Healthy Mind,/events/daily-habits-for-a-healthy-mind,
+/event-details/money-conversations-mentorship-the-future-of-wealth,event,Money Conversations: Mentorship & the Future of Wealth,/events/money-conversations-future-of-wealth,existing MDX
+/event-details/harness-your-image-and-boost-your-confidence-1-1/form,event,Unlock Inner Joy: A Workshop on Self-Love & Happiness,/events/unlock-inner-joy,Wix slug misleading: page is Unlock Inner Joy; registration form page
+/event-details/rsvp-to-sports-tech-demo-showcase-partiful,event,Sports Tech Demo Showcase,/events/sports-tech-demo-showcase,
+/event-details/m2d-powerhouse-panel-from-sketch-to-scale-building-fashion-empires,event,M2D Powerhouse Panel: From Sketch to Scale – Building Fashion Empires,/events/from-sketch-to-scale-building-fashion-empires,duplicate of ...-fashion-empires-1 (cancelled Zoom-only copy)
+/event-details/the-impact-of-intergenerational-mentoring-for-women/form,event,The Impact of Intergenerational Mentoring for Women,/events/the-impact-of-intergenerational-mentoring-for-women,registration form page
+/event-details/the-impact-of-intergenerational-mentoring-for-women-1-1/form,event,Her Power,/events/her-power,Wix slug misleading: page is Her Power; registration form page
+/event-details/ball-of-wisdom-a-leadership-legacy-gathering-by-m2d,event,Ball of Wisdom – A Leadership & Legacy Gathering by M2D,/events/ball-of-wisdom-2026,existing MDX
+/event-details/m2d-workshop-healthy-mind-healthy-woman-1,event,"M2D Workshop: Healthy Mind, Healthy Woman",/events/healthy-mind-healthy-woman-2025-10,
+/event-details/m2d-workshop-reset-reflect-realign-a-3-step-yogic-journey-to-your-ideal-self,event,"M2D Workshop: Reset, Reflect, Realign: A 3-Step Yogic Journey to Your Ideal Self",/events/reset-reflect-realign,
+/event-details/healthy-mind-healthy-woman,event,"Healthy Mind, Healthy Woman",/events/healthy-mind-healthy-woman-2025-06,
+/event-details/m2d-charity-launch/form,event,M2D Charity Launch,/events/m2d-charity-launch,registration form page
+/event-details/m2d-workshop-heart-centered-care-in-reproductive-health,event,M2D Workshop: Heart-Centered Care in Reproductive Health,/events/heart-centered-care-in-reproductive-health,
+/francine-mbvoumbo,team,Francine Mbvoumbo,/team/francine-mbvoumbo,
+/cara-lee-lewis,team,Cara-Lee Lewis,/team/cara-lee-lewis,
+/michelle-cooper,team,Michelle Cooper,/team/michelle-cooper,
+/peter-frank,team,Peter Frank,/team/peter-frank,
+/alexis-prieto,team,Alexis Prieto,/team/alexis-prieto,
+/copy-of-kinya-baker,team,Sandra Banuett,/team/sandra-banuett,Wix page is a renamed copy of kinya-baker but holds Sandra Banuett's bio
+/sindy-zemura,team,Dr. Sindy Zemura,/team/sindy-zemura,
+/mel-romolo,team,Mel Romolo,/team/mel-romolo,
+/shefa-rezbana,team,Shefa Rezbana,/team/shefa-rezbana,
+/moureen-ambalwa,team,Moureen Ambalwa,/team/moureen-ambalwa,
+/pornpiseth-semson,team,Pornpiseth Semson,/team/pornpiseth-semson,
+/favoured-joy-oghenekome,team,Favoured-Joy Oghenekome,/team/favoured-joy-oghenekome,
+/vitalina-shevchenko,team,Vitalina Shevchenko,/team/vitalina-shevchenko,
+/rida,team,Rida,/team/rida,
+/iliana-mejia,team,Iliana Mejia,/team/iliana-mejia,
+/maya-nasiriahmadabadi,team,Maya Nasiriahmadabadi,/team/maya-nasiriahmadabadi,
+/lan-nguyen,team,Lan Nguyen,/team/lan-nguyen,
+/adeola-adesoba,team,Adeola Adesoba,/team/adeola-adesoba,
+/solomon-umoh,team,Solomon Umoh,/team/solomon-umoh,
+/ayo-ogunrinde,team,Ayo Ogunrinde,/team/ayo-ogunrinde,
+/kinya-baker,team,Kinya Baker,/team/kinya-baker,"Not listed on live /our-team; bio page kept, no card"
+/hanna-stepanova,team,Hanna Stepanova,/team/hanna-stepanova,"Not listed on live /our-team; bio page kept, no card"

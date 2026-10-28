@@ -5,8 +5,8 @@ import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import { appHref } from '@/lib/appUrl';
 import NewsletterFormInline from '@/components/forms/NewsletterFormInline';
+import ImpactStories from '@/components/marketing/ImpactStories';
 import { getAllPosts } from '@/lib/mdx';
 import { getAllEvents } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
@@ -15,8 +15,38 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Home',
   description:
-    'Bridging Generations. Empowering Women. Mothers to Daughters connects women across generations through mentorship and support.',
+    'Bridging the Generational Gap. We envision a world where women of all generations thrive through intergenerational wisdom.',
 };
+
+const founderStatement =
+  '“Intergenerational mentoring is more than guidance—it’s a catalyst for change. It has guided me through challenges, and I am committed to sharing its benefits. At Mothers to Daughters, we cultivate powerful relationships where Mothers (Mentors) equip Daughters (Mentees) with the tools to thrive socially and economically. In turn, Daughters honor this wisdom by applying it, ensuring its impact extends beyond today. Together, we don’t just share knowledge—we build a lasting legacy of growth, transformation, and empowered women shaping the future.”';
+
+const areasOfFocus = [
+  {
+    title: 'Equip Mothers & Daughters:',
+    description: 'Empower women entrepreneurs through cross-generational mentorship.',
+  },
+  {
+    title: 'Invite and Engage Male Allies to seat at our table:',
+    description: 'Mobilize men to champion women’s entrepreneurial ambitions.',
+  },
+  {
+    title: 'Highlight Impact Stories:',
+    description: 'Share real experiences that inspire and drive change.',
+  },
+  {
+    title: 'Curate Transformative Experiences:',
+    description: 'Host workshops and gatherings that spark growth and connection.',
+  },
+  {
+    title: 'Create Engaging Resources:',
+    description: 'Develop eBooks, toolkits, and a partner portal for ongoing learning.',
+  },
+  {
+    title: 'Activate Strategic Partnerships:',
+    description: 'Build alliances to amplify reach and impact.',
+  },
+];
 
 export default function HomePage() {
   const recentPosts = getAllPosts().slice(0, 2);
@@ -53,20 +83,17 @@ export default function HomePage() {
         <Container>
           <div className={styles.heroGrid}>
             <div className={styles.heroText}>
-              <h1 className={styles.heroTitle}>
-                Bridging Generations. Empowering Women.
-              </h1>
+              <h1 className={styles.heroTitle}>Bridging the Generational Gap</h1>
               <p className={styles.heroSubhead}>
-                We connect young women with experienced mentors to foster
-                personal growth, professional development, and meaningful
-                intergenerational relationships.
+                We envision a world where women of all generations thrive through
+                intergenerational wisdom
               </p>
               <div className={styles.heroActions}>
                 <Button href="/donate" variant="primary" size="lg">
-                  Support Our Mission
+                  Donate
                 </Button>
-                <Button as="a" href={appHref('/register')} variant="secondary" size="lg">
-                  Join the Community
+                <Button href="/contact" variant="secondary" size="lg">
+                  Contact Us
                 </Button>
               </div>
             </div>
@@ -84,24 +111,50 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* Empowering Young Women */}
-      <Section spacing="sm" className={styles.empowerSection}>
+      <ImpactStories />
+
+      {/* Vision & Mission */}
+      <Section spacing="lg" className={styles.visionSection}>
         <Container>
-          <div className={styles.empowerContent}>
-            <div className={styles.empowerImage}>
-              <Image
-                src={getImagePath("/images/empowering.jpg")}
-                alt="Two women engaged in mentorship, looking at a book together"
-                width={600}
-                height={450}
-                className={styles.empowerImageContent}
-              />
+          <div className={styles.visionGrid}>
+            <div className={styles.visionCard}>
+              <div className={styles.visionText}>
+                <h2 className={styles.visionTitle}>Vision</h2>
+                <p>
+                  We envision a world where women of all generations thrive
+                  through intergenerational wisdom, driving inclusivity and gender
+                  equity for lasting global economic and social impact.
+                </p>
+              </div>
+              <div className={styles.visionImage}>
+                <Image
+                  src={getImagePath('/images/home/vision.webp')}
+                  alt="Woman exploring new possibilities with a virtual reality headset"
+                  width={900}
+                  height={600}
+                  className={styles.visionImageContent}
+                />
+              </div>
             </div>
-            <div className={styles.empowerText}>
-              <h2 className={styles.empowerTitle}>Empowering Young Women to Become Leaders</h2>
-              <p className={styles.empowerDescription}>
-                We connect young women with experienced leaders to mentor them, imparting wisdom that fuels economic independence and inspires them to mentor the next generation.
-              </p>
+            <div className={`${styles.visionCard} ${styles.visionCardReversed}`}>
+              <div className={styles.visionText}>
+                <h2 className={styles.visionTitle}>Mission</h2>
+                <p>
+                  We empower young women by connecting them with the wisdom and
+                  insights of successful women, fostering economic independence,
+                  resilience, and transformative leadership through innovation and
+                  mentorship.
+                </p>
+              </div>
+              <div className={styles.visionImage}>
+                <Image
+                  src={getImagePath('/images/cheerful-young-female-camper-dressed-ora.avif')}
+                  alt="Cheerful young woman with a backpack ready for an adventure"
+                  width={594}
+                  height={770}
+                  className={styles.visionImageContent}
+                />
+              </div>
             </div>
           </div>
         </Container>
@@ -111,49 +164,46 @@ export default function HomePage() {
       <Section spacing="lg">
         <Container>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Embark on a New Chapter</h2>
-            <p className={styles.sectionSubheading}>
-              There are a couple of meaningful ways to participate in our community.
-            </p>
+            <h2 className={styles.sectionTitle}>Programs</h2>
           </div>
           <div className={styles.programsGrid}>
             <div className={styles.programCard}>
               <div className={styles.programImage}>
                 <Image
-                  src={getImagePath("/images/intergenerational.jpg")}
-                  alt="Diverse group of women representing intergenerational mentorship"
-                  width={600}
-                  height={450}
+                  src={getImagePath('/images/home/program-mentoring.jpg')}
+                  alt="Two women of different generations stand facing each other in a stylish, modern room with white shelves and a large mirror"
+                  width={800}
+                  height={1200}
                   className={styles.programImageContent}
                 />
               </div>
               <div className={styles.programContent}>
-                <h3>Intergenerational Mentoring Cohort Program</h3>
+                <h3>Intergenerational Mentoring Program</h3>
                 <p>
                   Mothers to Daughters (M2D) offers a high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops.
                 </p>
                 <Link href="/programs" className={styles.learnMoreLink}>
-                  Learn more →
+                  View Details →
                 </Link>
               </div>
             </div>
             <div className={`${styles.programCard} ${styles.programCardReversed}`}>
               <div className={styles.programImage}>
                 <Image
-                  src={getImagePath("/images/slackcommunity.avif")}
-                  alt="Slack community workspace showing collaboration and connection"
-                  width={600}
-                  height={450}
+                  src={getImagePath('/images/home/program-partner.jpg')}
+                  alt="A group of eight diverse women from M2D gather in a modern, minimalist room with white shelves adorned with decorative objects"
+                  width={1200}
+                  height={800}
                   className={styles.programImageContent}
                 />
               </div>
               <div className={styles.programContent}>
-                <h3>Join Our Free Slack Community</h3>
+                <h3>Partner With Us</h3>
                 <p>
-                  Here you will have an opportunity to connect, find support and ask questions.
+                  Whether you give your time, expertise, or financial support, you are shaping futures and changing lives. Your generosity, alongside our community of supporters, fuels our mission and brings us closer to empowering the next generation.
                 </p>
-                <Link href="/programs" className={styles.learnMoreLink}>
-                  Learn more →
+                <Link href="/partner" className={styles.learnMoreLink}>
+                  View Details →
                 </Link>
               </div>
             </div>
@@ -189,51 +239,11 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* Donate CTA */}
-      <Section spacing="lg" className={styles.donateCTASection}>
-        <Container>
-          <div className={styles.donateCTAContent}>
-            <h2 className={styles.donateCTATitle}>
-              She Could Be Your Daughter. Your Sister. Your Future Leader.
-            </h2>
-            <Button href="/donate" variant="primary" size="lg">
-              Donate Now
-            </Button>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Impact Stories (Condensed) */}
-      <Section spacing="md" className={styles.donateCTASection}>
-        <Container>
-          <div className={styles.storiesContent}>
-            <blockquote className={styles.featuredQuote}>
-              <span className={styles.quoteMark}>&ldquo;</span>
-              <p className={styles.quoteText}>
-                This program changed my perspective on what I could achieve. My
-                mentor helped me see possibilities I never imagined.
-              </p>
-              <cite className={styles.quoteAuthor}>
-                — Program Participant, Mentee
-              </cite>
-            </blockquote>
-            <div className={styles.storiesLink}>
-              <a href="/blog" className={styles.readMoreLink}>
-                Read more stories →
-              </a>
-            </div>
-          </div>
-        </Container>
-      </Section>
-
       {/* Partners */}
       <Section spacing="lg" className={styles.partnersSection}>
         <Container>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Our Amazing Partners</h2>
-            <p className={styles.sectionDescription}>
-              We&apos;re so grateful for the support of these organizations and individuals
-            </p>
+            <h2 className={styles.sectionTitle}>Brands that have partnered with us</h2>
           </div>
           <div className={styles.partnersGrid}>
             <div className={styles.partnerLogo}>
@@ -420,6 +430,20 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      {/* Donate CTA */}
+      <Section spacing="lg" className={styles.donateCTASection}>
+        <Container>
+          <div className={styles.donateCTAContent}>
+            <h2 className={styles.donateCTATitle}>
+              She Could Be Your Daughter. Your Sister. Your Future Leader.
+            </h2>
+            <Button href="/donate" variant="primary" size="lg">
+              Donate Now
+            </Button>
+          </div>
+        </Container>
+      </Section>
+
       {/* Founder Statement */}
       <Section spacing="lg" className={styles.founderSection}>
         <Container>
@@ -427,20 +451,19 @@ export default function HomePage() {
             <div className={styles.founderImage}>
               <Image
                 src={getImagePath("/images/francine.jpg")}
-                alt="Founder of Mothers to Daughters"
+                alt="Francine Mbvoumbo, Chair & President of Mothers to Daughters"
                 width={500}
                 height={600}
                 className={styles.founderImageContent}
               />
             </div>
             <div className={styles.founderText}>
-              <h2 className={styles.founderTitle}>A Message from Our Founder</h2>
-              <p className={styles.founderStatement}>
-                At Mothers to Daughters, we cultivate powerful relationships where Mothers (Mentors) equip Daughters (Mentees) with the tools to thrive socially and economically. In turn, Daughters honor this wisdom by applying it in their lives and to future generations, ensuring its impact extends beyond today. Intergenerational mentoring is more than guidance; it&apos;s a mindset that sparks real change. Having a support system has guided me through challenges, and I am committed to sharing its benefits.
-              </p>
+              <blockquote className={styles.founderQuote}>
+                <p className={styles.founderStatement}>{founderStatement}</p>
+              </blockquote>
               <div className={styles.founderSignature}>
-                <div className={styles.founderName}>Francine Mbvoumbo</div>
-                <div className={styles.founderRole}>Chair & President</div>
+                <h2 className={styles.founderName}>Francine Mbvoumbo</h2>
+                <p className={styles.founderRole}>Chair &amp; President</p>
               </div>
             </div>
           </div>
@@ -451,9 +474,13 @@ export default function HomePage() {
       <Section spacing="xl" className={styles.joinSection}>
         <Container>
           <div className={styles.joinContent}>
-            <h2 className={styles.joinTitle}>Stay Connected</h2>
+            <h2 className={styles.joinTitle}>Join Our Community</h2>
             <p className={styles.joinDescription}>
-              Get updates on programs, events, and stories from our community.
+              Sign up for our mailing list to get updates and information about
+              Mothers to Daughters.
+            </p>
+            <p className={styles.joinPrompt}>
+              Subscribe to our newsletter • Don&apos;t miss out!
             </p>
             <NewsletterFormInline />
           </div>
@@ -464,7 +491,8 @@ export default function HomePage() {
       <Section spacing="lg" className={styles.contentFeedSection}>
         <Container>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>We&apos;re Making Waves</h2>
+            <h2 className={styles.sectionTitle}>Watch Us Go</h2>
+            <p className={styles.sectionSubheading}>Wisdom-Filled Voices &amp; Moments</p>
           </div>
           {allContent.length > 0 ? (
             <div className={styles.contentGrid}>
@@ -510,6 +538,23 @@ export default function HomePage() {
               View all stories
             </Button>
           </div>
+        </Container>
+      </Section>
+
+      {/* Areas of Focus */}
+      <Section spacing="lg" className={styles.focusSection}>
+        <Container>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Our Areas of Focus</h2>
+          </div>
+          <ul className={styles.focusGrid}>
+            {areasOfFocus.map((area) => (
+              <li key={area.title} className={styles.focusItem}>
+                <h3>{area.title}</h3>
+                <p>{area.description}</p>
+              </li>
+            ))}
+          </ul>
         </Container>
       </Section>
     </>

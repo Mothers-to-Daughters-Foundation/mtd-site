@@ -11,6 +11,12 @@ export const metadata: Metadata = {
 
 const documents = [
   {
+    href: '/legal/terms',
+    title: 'Terms of Use',
+    description:
+      'The terms that apply when you access or use motherstodaughters.org.',
+  },
+  {
     href: '/legal/privacy-policy',
     title: 'Privacy Policy',
     description:
