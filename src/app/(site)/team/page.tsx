@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
+import { getTeamBioSlugs } from '@/lib/team';
 import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 type Member = {
+  /** Matches content/team/<slug>.md; the card links to /team/<slug> when that file exists. */
+  slug?: string;
   name: string;
   role: string;
   location?: string;
@@ -28,46 +31,46 @@ const groups: TeamGroup[] = [
   {
     title: 'Executive Governance Board',
     members: [
-      { name: 'Francine Mbvoumbo', role: 'Chair & President', image: '/images/team/francine-mbvoumbo.jpg' },
-      { name: 'Cara-Lee Lewis', role: 'Vice-Chair', image: '/images/team/cara-lee-lewis.png' },
-      { name: 'Michelle Cooper', role: 'Treasurer', image: '/images/team/michelle-cooper.webp' },
-      { name: 'Peter Frank', role: 'Senior Advisor, U.S. Affairs', image: '/images/team/peter-frank.png' },
+      { slug: 'francine-mbvoumbo', name: 'Francine Mbvoumbo', role: 'Chair & President', image: '/images/team/francine-mbvoumbo.jpg' },
+      { slug: 'cara-lee-lewis', name: 'Cara-Lee Lewis', role: 'Vice-Chair', image: '/images/team/cara-lee-lewis.png' },
+      { slug: 'michelle-cooper', name: 'Michelle Cooper', role: 'Treasurer', image: '/images/team/michelle-cooper.webp' },
+      { slug: 'peter-frank', name: 'Peter Frank', role: 'Senior Advisor, U.S. Affairs', image: '/images/team/peter-frank.png' },
     ],
   },
   {
     title: 'Executive Team',
     members: [
-      { name: 'Alexis Prieto', role: 'HR Strategy & Member Experience', image: '/images/team/alexis-prieto.png' },
-      { name: 'Sandra Banuett', role: 'Director, Program Delivery & Impact', image: '/images/team/sandra-banuett.jpg' },
+      { slug: 'alexis-prieto', name: 'Alexis Prieto', role: 'HR Strategy & Member Experience', image: '/images/team/alexis-prieto.png' },
+      { slug: 'sandra-banuett', name: 'Sandra Banuett', role: 'Director, Program Delivery & Impact', image: '/images/team/sandra-banuett.jpg' },
     ],
   },
   {
     title: 'Advisory Council',
     members: [
-      { name: 'Dr. Sindy Zemura', role: 'Special Advisor, Global Affairs', image: '/images/team/sindy-zemura.jpg' },
-      { name: 'Mel Romolo', role: 'Advisor to the Chair', image: '/images/team/mel-romolo.jpg' },
-      { name: 'Shefa Rezbana', role: 'Strategic Communications & Impact Advisor', image: '/images/team/shefa-rezbana.jpg' },
-      { name: 'Moureen Ambalwa', role: 'Consultant, Global Expansion', image: '/images/team/moureen-ambalwa.png' },
+      { slug: 'sindy-zemura', name: 'Dr. Sindy Zemura', role: 'Special Advisor, Global Affairs', image: '/images/team/sindy-zemura.jpg' },
+      { slug: 'mel-romolo', name: 'Mel Romolo', role: 'Advisor to the Chair', image: '/images/team/mel-romolo.jpg' },
+      { slug: 'shefa-rezbana', name: 'Shefa Rezbana', role: 'Strategic Communications & Impact Advisor', image: '/images/team/shefa-rezbana.jpg' },
+      { slug: 'moureen-ambalwa', name: 'Moureen Ambalwa', role: 'Consultant, Global Expansion', image: '/images/team/moureen-ambalwa.png' },
     ],
   },
   {
     title: 'Youth Leadership Council',
     members: [
-      { name: 'Pornpiseth Semson', role: 'Youth Leader', location: 'Thailand', image: '/images/team/pornpiseth-semson.jpg' },
-      { name: 'Favoured-Joy Oghenekome', role: 'Youth Leader', location: 'Nigeria', image: '/images/team/favoured-joy-oghenekome.png' },
-      { name: 'Vitalina Shevchenko', role: 'Youth Leader', location: 'Ukraine', image: '/images/team/vitalina-shevchenko.jpg' },
-      { name: 'Rida', role: 'Youth Leader', location: 'Pakistan', image: '/images/team/rida.jpg' },
-      { name: 'Iliana Mejia', role: 'Youth Leader', location: 'Dominican Republic', image: '/images/team/iliana-mejia.jpg' },
-      { name: 'Maya Nasiriahmadabadi', role: 'Youth Leader', location: 'Iran', image: '/images/team/maya-nasiriahmadabadi.jpg' },
+      { slug: 'pornpiseth-semson', name: 'Pornpiseth Semson', role: 'Youth Leader', location: 'Thailand', image: '/images/team/pornpiseth-semson.jpg' },
+      { slug: 'favoured-joy-oghenekome', name: 'Favoured-Joy Oghenekome', role: 'Youth Leader', location: 'Nigeria', image: '/images/team/favoured-joy-oghenekome.png' },
+      { slug: 'vitalina-shevchenko', name: 'Vitalina Shevchenko', role: 'Youth Leader', location: 'Ukraine', image: '/images/team/vitalina-shevchenko.jpg' },
+      { slug: 'rida', name: 'Rida', role: 'Youth Leader', location: 'Pakistan', image: '/images/team/rida.jpg' },
+      { slug: 'iliana-mejia', name: 'Iliana Mejia', role: 'Youth Leader', location: 'Dominican Republic', image: '/images/team/iliana-mejia.jpg' },
+      { slug: 'maya-nasiriahmadabadi', name: 'Maya Nasiriahmadabadi', role: 'Youth Leader', location: 'Iran', image: '/images/team/maya-nasiriahmadabadi.jpg' },
     ],
   },
   {
     title: 'Core Team',
     members: [
-      { name: 'Lan Nguyen', role: 'Digital Marketing & Social Media Specialist', image: '/images/team/lan-nguyen.jpg' },
-      { name: 'Adeola Adesoba', role: 'Events & Social Impact Leader', image: '/images/team/adeola-adesoba.jpg' },
-      { name: 'Solomon Umoh', role: 'Web Developer & SEO Expert', image: '/images/team/solomon-umoh.png' },
-      { name: 'Ayo Ogunrinde', role: 'Content Creator', image: '/images/team/ayo-ogunrinde.jpg' },
+      { slug: 'lan-nguyen', name: 'Lan Nguyen', role: 'Digital Marketing & Social Media Specialist', image: '/images/team/lan-nguyen.jpg' },
+      { slug: 'adeola-adesoba', name: 'Adeola Adesoba', role: 'Events & Social Impact Leader', image: '/images/team/adeola-adesoba.jpg' },
+      { slug: 'solomon-umoh', name: 'Solomon Umoh', role: 'Web Developer & SEO Expert', image: '/images/team/solomon-umoh.png' },
+      { slug: 'ayo-ogunrinde', name: 'Ayo Ogunrinde', role: 'Content Creator', image: '/images/team/ayo-ogunrinde.jpg' },
       { name: 'Leena Jorgenson', role: 'Content Creator', image: '/images/team/leena-jorgenson.jpg' },
     ],
   },
@@ -96,6 +99,8 @@ function initials(name: string): string {
 }
 
 export default function TeamPage() {
+  const bioSlugs = new Set(getTeamBioSlugs());
+
   return (
     <Section spacing="lg">
       <Container>
@@ -112,32 +117,48 @@ export default function TeamPage() {
           <div key={group.title} className={styles.group}>
             <h2 className={styles.groupTitle}>{group.title}</h2>
             <div className={styles.teamGrid}>
-              {group.members.map((member) => (
-                <Card key={member.name} className={styles.teamCard}>
-                  <div className={styles.imageContainer}>
-                    {member.image ? (
-                      <Image
-                        src={getImagePath(member.image)}
-                        alt={member.name}
-                        width={400}
-                        height={400}
-                        className={styles.memberImage}
-                      />
-                    ) : (
-                      <div className={styles.imagePlaceholder}>
-                        <span>{initials(member.name)}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.cardContent}>
-                    <h3>{member.name}</h3>
-                    <p className={styles.role}>{member.role}</p>
-                    {member.location && (
-                      <p className={styles.location}>{member.location}</p>
-                    )}
-                  </div>
-                </Card>
-              ))}
+              {group.members.map((member) => {
+                const bioHref =
+                  member.slug && bioSlugs.has(member.slug)
+                    ? `/team/${member.slug}`
+                    : undefined;
+                return (
+                  <Card
+                    key={member.name}
+                    className={styles.teamCard}
+                    href={bioHref}
+                    variant={bioHref ? 'interactive' : 'static'}
+                  >
+                    <div className={styles.imageContainer}>
+                      {member.image ? (
+                        <Image
+                          src={getImagePath(member.image)}
+                          alt={member.name}
+                          width={400}
+                          height={400}
+                          className={styles.memberImage}
+                        />
+                      ) : (
+                        <div className={styles.imagePlaceholder}>
+                          <span>{initials(member.name)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className={styles.cardContent}>
+                      <h3>{member.name}</h3>
+                      <p className={styles.role}>{member.role}</p>
+                      {member.location && (
+                        <p className={styles.location}>{member.location}</p>
+                      )}
+                      {bioHref && (
+                        <span className={styles.bioLink}>
+                          Read bio <span aria-hidden="true">→</span>
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         ))}
