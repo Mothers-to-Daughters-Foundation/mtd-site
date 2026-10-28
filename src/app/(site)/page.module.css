@@ -65,49 +65,58 @@
   font-weight: var(--font-medium);
 }
 
-/* Empowering Young Women Section */
-.empowerSection {
-  background-color: var(--surface-1);
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+/* Vision & Mission */
+.visionSection {
+  background-color: var(--accent-100);
 }
 
-.empowerContent {
+.visionGrid {
+  display: grid;
+  gap: var(--spacing-8);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.visionCard {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-6);
   align-items: center;
+  background-color: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-8) var(--spacing-6);
 }
 
-.empowerImage {
-  width: 100%;
-}
-
-.empowerImageContent {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  object-fit: cover;
-}
-
-.empowerText {
+.visionText {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
 }
 
-.empowerTitle {
-  font-size: var(--text-2xl);
+.visionTitle {
+  font-size: var(--text-4xl);
   color: var(--text-primary);
   margin: 0;
-  font-weight: var(--font-semibold);
 }
 
-.empowerDescription {
+.visionText p {
   font-size: var(--text-lg);
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
   margin: 0;
+}
+
+.visionImage {
+  display: flex;
+  justify-content: center;
+}
+
+.visionImageContent {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  object-fit: contain;
 }
 
 /* Section Headers */
@@ -160,8 +169,10 @@
 .programImageContent {
   width: 100%;
   height: auto;
+  aspect-ratio: 4 / 3;
   border-radius: var(--radius-lg);
   object-fit: cover;
+  object-position: center 30%;
 }
 
 .programImage .imagePlaceholder {
@@ -284,61 +295,6 @@
   line-height: var(--leading-tight);
 }
 
-/* Impact Stories */
-.storiesContent {
-  max-width: 700px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.featuredQuote {
-  margin: 0 0 var(--spacing-6) 0;
-  padding: 0;
-  border: none;
-}
-
-.quoteMark {
-  font-size: var(--text-6xl);
-  color: var(--accent-500);
-  line-height: 1;
-  display: block;
-  margin-bottom: var(--spacing-2);
-}
-
-.quoteText {
-  font-size: var(--text-xl);
-  color: var(--text-primary);
-  line-height: var(--leading-relaxed);
-  margin: 0 0 var(--spacing-4) 0;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.quoteAuthor {
-  font-size: var(--text-base);
-  color: var(--text-secondary);
-  font-style: normal;
-  display: block;
-}
-
-.storiesLink {
-  margin-top: var(--spacing-6);
-}
-
-.readMoreLink {
-  color: var(--brand-700);
-  text-decoration: none;
-  font-weight: var(--font-medium);
-  transition: color var(--transition-fast);
-}
-
-.readMoreLink:hover,
-.readMoreLink:focus {
-  color: var(--brand-600);
-  text-decoration: underline;
-}
-
 /* Partners */
 .partnersSection {
   background-color: var(--surface-0);
@@ -426,10 +382,10 @@
   gap: var(--spacing-4);
 }
 
-.founderTitle {
-  font-size: var(--text-3xl);
-  color: var(--brand-700);
-  margin-bottom: var(--spacing-3);
+.founderQuote {
+  margin: 0;
+  padding: 0;
+  border: none;
 }
 
 .founderStatement {
@@ -448,13 +404,14 @@
   font-size: var(--text-2xl);
   font-weight: var(--font-bold);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-1);
+  margin: 0 0 var(--spacing-1);
 }
 
 .founderRole {
   font-size: var(--text-base);
   font-weight: var(--font-normal);
   color: var(--brand-700);
+  margin: 0;
 }
 
 /* Join the Community */
@@ -482,6 +439,12 @@
   margin-bottom: var(--spacing-6);
 }
 
+.joinPrompt {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--surface-1);
+  margin: 0 0 var(--spacing-4);
+}
 
 /* Content Feed */
 .contentFeedSection {
@@ -547,6 +510,39 @@
   text-align: center;
 }
 
+/* Areas of Focus */
+.focusSection {
+  background-color: var(--surface-1);
+}
+
+.focusGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+.focusItem {
+  text-align: center;
+  padding: var(--spacing-6);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-0);
+}
+
+.focusItem h3 {
+  font-size: var(--text-xl);
+  color: var(--brand-700);
+  margin: 0 0 var(--spacing-2);
+}
+
+.focusItem p {
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
 /* Responsive */
 @media (min-width: 768px) {
   .heroGrid {
@@ -557,16 +553,21 @@
     font-size: var(--text-6xl);
   }
 
-  .empowerContent {
-    grid-template-columns: 1fr 1fr;
+  .visionCard {
+    grid-template-columns: 3fr 2fr;
+    padding: var(--spacing-10) var(--spacing-12);
   }
 
-  .empowerContent {
-    grid-template-columns: 1fr 1fr;
+  .visionCardReversed {
+    grid-template-columns: 2fr 3fr;
   }
 
-  .empowerTitle {
-    font-size: var(--text-3xl);
+  .visionCardReversed .visionText {
+    order: 2;
+  }
+
+  .visionImageContent {
+    max-width: 360px;
   }
 
   .programsGrid {
@@ -620,10 +621,6 @@
     font-size: var(--text-4xl);
   }
 
-  .storiesGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .focusGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -649,3 +646,8 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .focusGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

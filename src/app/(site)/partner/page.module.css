@@ -19,15 +19,47 @@
 }
 
 .intro {
-  max-width: 800px;
-  margin: 0 auto var(--spacing-10);
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+  align-items: center;
+  margin-bottom: var(--spacing-16);
 }
 
-.intro p {
+.introText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.introText p {
   font-size: var(--text-xl);
   line-height: var(--leading-relaxed);
   color: var(--text-secondary);
+  margin: 0;
+}
+
+.introText .introCallout {
+  font-weight: var(--font-semibold);
+  color: var(--brand-700);
+}
+
+.introImageContent {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+.sectionTitle {
+  font-size: var(--text-4xl);
+  color: var(--text-primary);
+  text-align: center;
+  margin: 0 0 var(--spacing-8);
+}
+
+.engagementSection,
+.formSection {
+  background-color: var(--surface-0);
 }
 
 .partnershipTypes {
@@ -59,30 +91,42 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   border-top: 4px solid var(--brand-700);
-  transition: box-shadow var(--transition-base), transform var(--transition-base);
-}
-
-.tierCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
-}
-
-.tierAmount {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-bold);
-  color: var(--brand-700);
-  margin-bottom: var(--spacing-2);
 }
 
 .tierCard h3 {
   font-size: var(--text-xl);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-3);
+  margin: 0;
 }
 
-.tierCard p {
+.tierAmount {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--brand-700);
+  margin: var(--spacing-1) 0 var(--spacing-3);
+}
+
+.tierAudience {
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-2);
+}
+
+.tierBenefits {
+  list-style: disc;
+  margin: 0;
+  padding-left: var(--spacing-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
+}
+
+.inKindGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
 }
 
 .typeCard {
@@ -92,56 +136,27 @@
   box-shadow: var(--shadow-md);
 }
 
-.typeCard h3 {
-  font-size: var(--text-2xl);
+.typeLabel {
+  display: inline-block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
   color: var(--brand-700);
+  background-color: var(--accent-100);
+  border-radius: 9999px;
+  padding: var(--spacing-1) var(--spacing-3);
   margin-bottom: var(--spacing-3);
+}
+
+.typeCard h3 {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-3);
 }
 
 .typeCard p {
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
-}
-
-.benefits {
-  margin-bottom: var(--spacing-12);
-  background-color: var(--surface-0);
-  padding: var(--spacing-10);
-  border-radius: var(--radius-lg);
-}
-
-.benefits h2 {
-  font-size: var(--text-4xl);
-  color: var(--text-primary);
-  text-align: center;
-  margin-bottom: var(--spacing-6);
-}
-
-.benefitsList {
-  list-style: none;
-  padding: 0;
-  max-width: 700px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
-
-.benefitsList li {
-  padding-left: var(--spacing-6);
-  position: relative;
-  font-size: var(--text-lg);
-  line-height: var(--leading-relaxed);
-  color: var(--text-secondary);
-}
-
-.benefitsList li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: var(--brand-700);
-  font-weight: var(--font-bold);
-  font-size: var(--text-xl);
+  margin: 0;
 }
 
 .partners {
@@ -188,11 +203,6 @@
   opacity: 1;
 }
 
-.placeholder {
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
 .ctaSection {
   text-align: center;
   max-width: 700px;
@@ -205,25 +215,8 @@
   margin-bottom: var(--spacing-4);
 }
 
-.ctaSection > p {
-  font-size: var(--text-lg);
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-8);
-}
-
 .formContainer {
-  margin-bottom: var(--spacing-8);
-}
-
-.alternative {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-  align-items: center;
-}
-
-.alternative p {
-  color: var(--text-secondary);
+  text-align: left;
 }
 
 @media (min-width: 768px) {
@@ -235,6 +228,15 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .inKindGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .intro {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-12);
+  }
+
   .tierGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -242,6 +244,10 @@
 
 @media (min-width: 1024px) {
   .tierGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .typesGrid {
     grid-template-columns: repeat(3, 1fr);
   }
 }

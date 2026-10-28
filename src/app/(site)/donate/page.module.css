@@ -24,6 +24,43 @@
   font-style: italic;
 }
 
+.plans {
+  max-width: 800px;
+  margin: var(--spacing-12) auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+}
+
+.plans h2 {
+  font-size: var(--text-3xl);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.planList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+}
+
+.planButton {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .planList {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 .zeffyContainer {
   width: 100%;
   max-width: 800px;

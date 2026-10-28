@@ -6,7 +6,8 @@ import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch with Mothers to Daughters.',
+  description:
+    'Have any question or need help in anyway? Kindly send a message or call Mothers to Daughters.',
 };
 
 export default function ContactPage() {
@@ -14,57 +15,43 @@ export default function ContactPage() {
     <Section spacing="lg">
       <Container>
         <div className={styles.header}>
-          <h1>Contact Us</h1>
+          <p className={styles.eyebrow}>Let&apos;s Connect</p>
+          <h1>Get in Touch</h1>
           <p className={styles.intro}>
-            Have any questions or need help in any way? Kindly send a message or
-            give us a call—we&apos;d love to hear from you.
+            Have any question or need help in anyway? Kindly send a message or
+            call.
           </p>
         </div>
 
         <div className={styles.twoColumn}>
           <div className={styles.contactInfo}>
             <div className={styles.infoBlock}>
-              <h2>Get in Touch</h2>
-              <p>
-                Whether you&apos;re interested in becoming a mentor, joining as a
-                mentee, partnering with us, or simply want to learn more, we&apos;re
-                here to help.
-              </p>
+              <h2>Address</h2>
+              <p>1001 6th Ave, New York, NY 10018</p>
             </div>
 
             <div className={styles.infoBlock}>
-              <h3>Email</h3>
+              <h2>Email</h2>
               <p>
-                <a href="mailto:connect@motherstodaughters.org">
-                  connect@motherstodaughters.org
-                </a>
-                <br />
                 <a href="mailto:francine@motherstodaughters.org">
                   francine@motherstodaughters.org
                 </a>
+                <br />
+                <a href="mailto:connect@motherstodaughters.org">
+                  connect@motherstodaughters.org
+                </a>
               </p>
             </div>
 
             <div className={styles.infoBlock}>
-              <h3>Phone</h3>
+              <h2>Phone</h2>
               <p>
                 <a href="tel:+16463026676">+1 (646) 302-6676</a>
               </p>
             </div>
 
             <div className={styles.infoBlock}>
-              <h3>Mailing Address</h3>
-              <p>
-                Mothers to Daughters
-                <br />
-                1001 6th Ave
-                <br />
-                New York, NY 10018
-              </p>
-            </div>
-
-            <div className={styles.infoBlock}>
-              <h3>Connect With Us</h3>
+              <h2>Social Media</h2>
               <div className={styles.socialLinks}>
                 <a
                   href="https://www.instagram.com/mothers_to_daughters/"
@@ -116,7 +103,7 @@ export default function ContactPage() {
           </div>
 
           <div className={styles.formContainer}>
-            <ContactForm />
+            <ContactForm submitLabel="Send" successMessage="Thanks for submitting!" />
           </div>
         </div>
       </Container>

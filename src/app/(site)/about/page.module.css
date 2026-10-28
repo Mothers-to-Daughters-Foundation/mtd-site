@@ -121,16 +121,37 @@
   gap: var(--spacing-4);
 }
 
-.textBlock h2 {
-  font-size: var(--text-3xl);
-  color: var(--brand-700);
-  margin-bottom: var(--spacing-3);
-}
-
 .textBlock p {
   font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
   color: var(--text-secondary);
+  margin: 0;
+}
+
+.textBlock .belief {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  color: var(--brand-700);
+  line-height: var(--leading-snug);
+}
+
+.note {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-6);
+}
+
+.note h2 {
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-2);
+}
+
+.note p {
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  margin: 0;
 }
 
 .valuesSection {
@@ -162,6 +183,19 @@
   box-shadow: var(--shadow-lg);
 }
 
+.valueNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: var(--brand-700);
+  color: var(--surface-1);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--spacing-3);
+}
+
 .valueCard h3 {
   font-size: var(--text-2xl);
   color: var(--brand-700);
@@ -171,31 +205,6 @@
 .valueCard p {
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
-}
-
-.testimonial {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
-  padding: var(--spacing-10);
-  background-color: var(--surface-0);
-  border-radius: var(--radius-lg);
-  border-left: 4px solid var(--brand-700);
-}
-
-.testimonialQuote {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-relaxed);
-  color: var(--text-primary);
-  font-style: italic;
-  margin-bottom: var(--spacing-6);
-}
-
-.testimonialAuthor {
-  font-size: var(--text-base);
-  color: var(--brand-700);
-  font-weight: var(--font-semibold);
-  font-style: normal;
 }
 
 @media (min-width: 768px) {

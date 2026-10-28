@@ -2,35 +2,40 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import ImpactStories from '@/components/marketing/ImpactStories';
 import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Mothers to Daughters is a global movement forging deep connections across generations, amplifying women’s voices, and driving meaningful action.',
+    'Mothers to Daughters is a global movement dedicated to forging deep connections, amplifying voices, and driving meaningful action.',
 };
 
 const values = [
   {
+    number: '01',
     title: 'Radical Inclusion & Trust',
     description:
-      'We create spaces where every woman is seen, heard, and valued, and where trust is the foundation of everything we build together.',
+      'We create spaces where every woman is seen, heard, and valued. By embracing diverse voices and building authentic connections, we cultivate mentorship that drives real change.',
   },
   {
+    number: '02',
     title: 'Excellence & Impact',
     description:
-      'We hold ourselves to the highest standard, ensuring our work leaves a lasting legacy through strategic, intentional mentorship.',
+      'We hold ourselves to the highest standards, ensuring that our work leaves a lasting legacy. Through strategic mentorship and leadership development, we create ripples of change that uplift entire communities.',
   },
   {
+    number: '03',
     title: 'Collective Empowerment',
     description:
-      'We connect generations through shared wisdom and mutual support, because when one woman rises, we all rise.',
+      'We thrive together. By connecting generations through shared wisdom and mutual support, we create opportunities for every woman to grow, lead, and rise.',
   },
   {
+    number: '04',
     title: 'Fearless Innovation',
     description:
-      'We challenge the status quo with bold ideas and creative solutions that move women and communities forward.',
+      "We challenge the status quo with bold ideas and creative solutions. Progress happens where courage meets action—breaking barriers and redefining what's possible for women everywhere.",
   },
 ];
 
@@ -66,10 +71,13 @@ export default function AboutPage() {
     <>
       <Section spacing="xl" className={styles.hero}>
         <Container>
-          <h1 className={styles.heroTitle}>About Us</h1>
+          <h1 className={styles.heroTitle}>About Us.</h1>
           <p className={styles.heroDescription}>
-            We envision a society that thrives when women lead, innovate, and
-            shape the future through mentorship and collective empowerment.
+            Mothers to Daughters is a global movement dedicated to forging deep
+            connections, amplifying voices, and driving meaningful action. By
+            cultivating relationships that transcend generations, cultures, and
+            communities, we create a powerful network of women uplifting one
+            another.
           </p>
         </Container>
       </Section>
@@ -79,45 +87,41 @@ export default function AboutPage() {
           <div className={styles.lead}>
             <div className={styles.leadText}>
               <div className={styles.textBlock}>
-                <h2>Our Mission</h2>
+                <p className={styles.belief}>
+                  We believe that society thrives when women are elevated to the
+                  heights they&rsquo;ve always deserved—leading, innovating, and
+                  shaping the future.
+                </p>
                 <p>
-                  Mothers to Daughters is a global movement dedicated to forging
-                  deep connections, amplifying voices, and driving meaningful
-                  action. We empower young women by connecting them with the
-                  wisdom and insights of experienced mentors, fostering personal
-                  growth, professional development, and meaningful
-                  intergenerational relationships.
+                  Strengthened by resilience, creativity, and collective wisdom,
+                  women are essential to building a more inclusive and equitable
+                  world. Through mentorship, leadership, and shared insights, we
+                  empower them to break barriers, drive change, and leave a
+                  lasting impact. Yet every day, the brilliance and potential of
+                  women remain overlooked—held back by systemic inequities and
+                  societal pressures. When women are excluded from opportunities
+                  to lead, innovate, and create, we all miss out on the
+                  sustainable solutions and transformative ideas they bring to the
+                  table. It&rsquo;s time to unlock their power, honor their
+                  contributions, and ensure their voices shape the future.
                 </p>
               </div>
 
-              <div className={styles.textBlock}>
-                <h2>Our Vision</h2>
+              <aside className={styles.note}>
+                <h2>Please Note:</h2>
                 <p>
-                  We envision a world where women of all generations thrive
-                  through intergenerational wisdom, driving inclusivity and
-                  gender equity for lasting global economic and social impact.
-                  Society thrives when women lead, innovate, and shape the
-                  future.
+                  Mothers to Daughters is a non-profit organization recognized as
+                  tax-exempt under Section 501(c)(3) of the Internal Revenue Code.
+                  Contributions to Mothers to Daughters are tax-deductible to the
+                  fullest extent allowed by law.
                 </p>
-              </div>
-
-              <div className={styles.textBlock}>
-                <h2>Who We Are</h2>
-                <p>
-                  Mothers to Daughters is a 501(c)(3) tax-exempt nonprofit
-                  working to address the systemic inequities that hold women back
-                  from leadership and innovation opportunities. We bridge the
-                  generational gap and create meaningful connections between
-                  women of all ages—because when wisdom is shared across
-                  generations, everyone benefits.
-                </p>
-              </div>
+              </aside>
             </div>
 
             <div className={styles.leadImage}>
               <Image
                 src={getImagePath('/images/about/about-hero.png')}
-                alt="Three women from different generations sitting together"
+                alt="Generational mentorship and connection"
                 width={600}
                 height={1067}
                 className={styles.leadImageContent}
@@ -129,10 +133,11 @@ export default function AboutPage() {
 
       <Section spacing="lg" className={styles.valuesSection}>
         <Container>
-          <h2 className={styles.sectionTitle}>Our Core Values</h2>
+          <h2 className={styles.sectionTitle}>Our Values</h2>
           <div className={styles.valuesGrid}>
             {values.map((value) => (
               <div key={value.title} className={styles.valueCard}>
+                <span className={styles.valueNumber}>{value.number}</span>
                 <h3>{value.title}</h3>
                 <p>{value.description}</p>
               </div>
@@ -143,7 +148,9 @@ export default function AboutPage() {
 
       <Section spacing="lg" className={styles.timelineSection}>
         <Container>
-          <h2 className={styles.sectionTitle}>Our Journey</h2>
+          <h2 className={styles.sectionTitle}>
+            Our Journey: Empowering Women, One Milestone at a Time
+          </h2>
           <ol className={styles.timeline}>
             {milestones.map((milestone) => (
               <li key={milestone.date} className={styles.milestone}>
@@ -158,20 +165,7 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      <Section spacing="lg">
-        <Container>
-          <blockquote className={styles.testimonial}>
-            <p className={styles.testimonialQuote}>
-              &ldquo;The mentorship I received through Mothers to Daughters gave
-              me the clarity and confidence to take the next step in my career.
-              Having someone believe in me changed everything.&rdquo;
-            </p>
-            <cite className={styles.testimonialAuthor}>
-              Wan Chung &mdash; Daughter, Fall 2024 Cohort
-            </cite>
-          </blockquote>
-        </Container>
-      </Section>
+      <ImpactStories />
     </>
   );
 }
