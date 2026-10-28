@@ -29,22 +29,14 @@ export default async function AdminDashboardPage() {
     redirect("/dashboard");
   }
 
-  const recentActivity = await getRecentAuditLogs(8);
-
-const users = await getUserLookup();
-
-const userMap = new Map(
-  users.map((user) => [
-    user.id,
-    user.full_name ?? "Unknown User",
-  ])
-);
-
   const [
+    recentActivity,
     usersResult,
     mentorsResult,
     menteesResult,
   ] = await Promise.all([
+    getRecentAuditLogs(8),
+
     supabase.from("user_profiles").select("*", { count: "exact", head: true }),
 
     supabase
@@ -57,6 +49,20 @@ const userMap = new Map(
       .select("*", { count: "exact", head: true })
       .eq("role", "mentee"),
   ]);
+
+  const actorIds = Array.from(
+    new Set(
+      recentActivity
+        .map((activity) => activity.user_id)
+        .filter((id): id is string => Boolean(id))
+    )
+  );
+  const userMap = new Map(
+    (await getUserLookup(actorIds)).map((u) => [
+      u.id,
+      u.full_name ?? "Unknown User",
+    ])
+  );
 
   return (
     <div className={styles.page}>
@@ -138,6 +144,10 @@ const userMap = new Map(
 
             <Link href="/dashboard/admin/matches">
               Manage Matches
+            </Link>
+
+            <Link href="/dashboard/admin/resources">
+              Share Resources
             </Link>
           </div>
         </div>

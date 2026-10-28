@@ -10,6 +10,7 @@ import {
 
 import {
   getUserById,
+  getUsersByIds,
 } from "@/lib/supabase/users";
 
 import StatCard from "@/components/dashboard/StatCard";
@@ -43,8 +44,8 @@ export default async function MentorDashboard() {
     (m) => m.status === "active"
   );
 
-  const mentees = await Promise.all(
-    activeMentees.map((m) => getUserById(m.mentee_id))
+  const mentees = await getUsersByIds(
+    activeMentees.map((m) => m.mentee_id)
   );
 
   return (

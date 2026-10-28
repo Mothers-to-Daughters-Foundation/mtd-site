@@ -33,13 +33,10 @@ export default async function MenteeDashboard() {
     getMentorshipByMentee(user.id),
   ]);
 
-  const mentor =
-    mentorship &&
-    (await getUserById(mentorship.mentor_id));
-
-  const plan =
-    subscription &&
-    (await getPlanById(subscription.plan_id));
+  const [mentor, plan] = await Promise.all([
+    mentorship ? getUserById(mentorship.mentor_id) : null,
+    subscription ? getPlanById(subscription.plan_id) : null,
+  ]);
 
   return (
     <div>

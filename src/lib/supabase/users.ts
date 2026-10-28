@@ -50,6 +50,20 @@ export async function getAllUsers(): Promise<AdminUser[]> {
 /**
  * Get a single user by ID
  */
+/** Several users in one query; missing ids are skipped. */
+export async function getUsersByIds(ids: string[]): Promise<AdminUser[]> {
+  if (ids.length === 0) return [];
+
+  const { data, error } = await createAdminClient()
+    .from("admin_users")
+    .select("*")
+    .in("id", ids);
+
+  if (error) return [];
+
+  return (data ?? []) as AdminUser[];
+}
+
 export async function getUserById(id: string): Promise<AdminUser | null> {
   // admin_users exposes email (auth.users) and is locked to the service role.
   const supabase = createAdminClient();

@@ -1,77 +1,93 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import {
-  getAllResources,
-  createResource,
-} from "@/lib/models/resources";
+import { z } from "zod";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { resourceTypeFromMime, uploadPrefix } from "@/lib/resources/files";
+import { notifyAudience, requireSharer } from "@/lib/resources/share";
 
-export async function GET() {
-  try {
-    const resources = await getAllResources();
+const schema = z
+  .object({
+    title: z.string().trim().min(1, "A title is required.").max(200),
+    description: z.string().trim().max(2000).optional(),
+    audience: z.enum(["mentee_only", "mentor_only", "public"]).optional(),
+    // Either a file already uploaded via /api/resources/upload-url …
+    path: z.string().min(1).optional(),
+    contentType: z.string().max(200).optional(),
+    // … or an external link (video, doc, course page).
+    url: z.string().trim().url().refine((u) => /^https?:\/\//i.test(u), "Links must start with http(s)://").optional(),
+  })
+  .refine((b) => Boolean(b.path) !== Boolean(b.url), {
+    message: "Share either a file or a link.",
+  });
 
-    return NextResponse.json({
-      resources,
-    });
-  } catch (error) {
-    console.error("[Resources GET]", error);
-
-    return NextResponse.json(
-      { error: "Failed to load resources." },
-      { status: 500 }
-    );
-  }
-}
-
+/**
+ * Share a resource. Admins choose the audience (default: all mentees);
+ * mentors always share with mentees. Everyone in the audience is notified.
+ * Writes use the service role, so no extra table/storage policies are needed.
+ */
 export async function POST(request: Request) {
-  try {
-    const supabase = await createClient();
+  const sharer = await requireSharer();
+  if (!sharer.ok) return sharer.response;
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const { data: profile } = await supabase
-      .from("user_profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (!profile || profile.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden" },
-        { status: 403 }
-      );
-    }
-
-    const body = await request.json();
-
-    const resource = await createResource({
-      uploaded_by: user.id,
-      title: body.title,
-      description: body.description,
-      type: body.type,
-      file_url: body.file_url,
-      thumbnail_url: body.thumbnail_url ?? null,
-      visibility: body.visibility,
-      category: body.category ?? null,
-      tags: body.tags ?? null,
-      download_count: 0,
-    });
-
-    return NextResponse.json(resource);
-  } catch (error) {
-    console.error("[Resources POST]", error);
-
+  const parsed = schema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json(
-      { error: "Failed to create resource." },
-      { status: 500 }
+      { error: parsed.error.issues[0]?.message ?? "Invalid resource." },
+      { status: 400 }
     );
   }
+
+  const body = parsed.data;
+  const audience = sharer.role === "admin" ? body.audience ?? "mentee_only" : "mentee_only";
+  const admin = createAdminClient();
+
+  if (body.path) {
+    if (!body.path.startsWith(uploadPrefix(sharer.role, sharer.userId))) {
+      return NextResponse.json({ error: "Invalid file." }, { status: 400 });
+    }
+    // Confirm the upload actually landed before saving a row that points at it.
+    const { error: missing } = await admin.storage
+      .from("resources")
+      .createSignedUrl(body.path, 10);
+    if (missing) {
+      return NextResponse.json({ error: "The upload did not finish. Please try again." }, { status: 400 });
+    }
+  }
+
+  const row = {
+    uploaded_by: sharer.userId,
+    title: body.title,
+    description: body.description || null,
+    type: body.url ? "link" : resourceTypeFromMime(body.contentType ?? ""),
+    file_url: body.url ?? body.path,
+    thumbnail_url: null,
+    visibility: audience,
+    category: null,
+    tags: null,
+    download_count: 0,
+  };
+
+  let { data: resource, error } = await admin
+    .from("resources")
+    .insert(row)
+    .select()
+    .single();
+
+  // If the database's type enum predates "link", store it as "other";
+  // links are recognised by their http(s) URL either way.
+  if (error?.code === "22P02" && row.type === "link") {
+    ({ data: resource, error } = await admin
+      .from("resources")
+      .insert({ ...row, type: "other" })
+      .select()
+      .single());
+  }
+
+  if (error || !resource) {
+    console.error("[resources POST]", error);
+    return NextResponse.json({ error: "Failed to save resource." }, { status: 500 });
+  }
+
+  await notifyAudience(admin, audience, resource, sharer.role);
+
+  return NextResponse.json(resource);
 }
