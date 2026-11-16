@@ -168,3 +168,113 @@
   font-size: 0.8rem;
   color: var(--text-secondary);
 }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.rowDeactivated td {
+  color: var(--text-secondary);
+}
+
+.actionsCell {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.youLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.actionBtn {
+  padding: 4px 10px;
+  margin-left: var(--spacing-2);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actionBtn:hover:not(:disabled) {
+  border-color: var(--brand-700);
+}
+
+.actionBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.dangerBtn {
+  color: #991b1b;
+}
+
+.dangerBtn:hover:not(:disabled) {
+  border-color: #991b1b;
+}
+
+.dangerSolid {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--spacing-4);
+  background: rgba(20, 10, 20, 0.45);
+}
+
+.dialog {
+  width: min(100%, 480px);
+  padding: var(--spacing-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-lg);
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.dialogTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.dialogText,
+.dialogLabel {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.dialogLabel strong {
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.dialogError {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #991b1b;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+}

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { getAllUsers } from "@/lib/supabase/users";
 import { getAllPlans } from "@/lib/supabase/plans";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 import UserTable from "@/components/dashboard/UserTable";
 import CreateMentorForm from "@/components/dashboard/CreateMentorForm";
@@ -39,9 +40,15 @@ export default async function AdminUsersPage() {
     redirect("/dashboard");
   }
 
-  const [users, plans] = await Promise.all([
+  const [users, plans, deactivated] = await Promise.all([
     getAllUsers(),
     getAllPlans(),
+    // Empty until migration 0017 adds the column; the query just errors.
+    createAdminClient()
+      .from("user_profiles")
+      .select("id")
+      .not("deactivated_at", "is", null)
+      .then(({ data }) => new Set((data ?? []).map((r) => r.id as string))),
   ]);
 
   const serializedUsers = users.map((u) => ({
@@ -52,6 +59,8 @@ export default async function AdminUsersPage() {
     email: u.email ?? "",
 
     role: u.role,
+
+    deactivated: deactivated.has(u.id),
 
     createdAt: u.created_at,
 
@@ -104,6 +113,7 @@ export default async function AdminUsersPage() {
       <UserTable
         users={serializedUsers}
         tiers={serializedPlans}
+        currentUserId={user.id}
       />
     </div>
   );
