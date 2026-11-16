@@ -27,6 +27,13 @@
   border-color: var(--brand-600);
 }
 
+/* Keep the label white: the global a:hover / a:focus color would otherwise win. */
+.variant-primary:hover,
+.variant-primary:focus,
+.variant-primary:active {
+  color: var(--surface-1);
+}
+
 .variant-primary:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
@@ -41,6 +48,10 @@
 .variant-secondary:hover:not(:disabled) {
   background-color: var(--brand-700);
   color: var(--surface-1);
+}
+
+.variant-secondary:focus:not(:hover) {
+  color: var(--brand-700);
 }
 
 .variant-ghost {

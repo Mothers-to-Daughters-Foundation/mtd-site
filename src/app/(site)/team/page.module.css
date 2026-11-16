@@ -36,10 +36,17 @@
   margin-bottom: var(--spacing-8);
 }
 
+/* A centered, wrapping row so a short last row sits in the middle. */
 .teamGrid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--spacing-8);
+}
+
+.teamGrid > * {
+  flex: 0 1 100%;
+  max-width: 360px;
 }
 
 .teamCard {
@@ -79,9 +86,12 @@
 }
 
 .cardContent {
+  flex: 1;
   padding: var(--spacing-6);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: var(--spacing-3);
 }
 
@@ -117,14 +127,14 @@
 }
 
 @media (min-width: 768px) {
-  .teamGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .teamGrid > * {
+    flex-basis: calc((100% - var(--spacing-8)) / 2);
   }
 }
 
 @media (min-width: 1024px) {
-  .teamGrid {
-    grid-template-columns: repeat(3, 1fr);
+  .teamGrid > * {
+    flex-basis: calc((100% - 2 * var(--spacing-8)) / 3);
   }
 }
 
