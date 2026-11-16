@@ -73,92 +73,6 @@
   margin-bottom: var(--spacing-8);
 }
 
-.typesGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-6);
-}
-
-.tierGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-6);
-}
-
-.tierCard {
-  background-color: var(--surface-1);
-  padding: var(--spacing-6);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border-top: 4px solid var(--brand-700);
-}
-
-.tierCard h3 {
-  font-size: var(--text-xl);
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.tierAmount {
-  font-size: var(--text-lg);
-  font-weight: var(--font-bold);
-  color: var(--brand-700);
-  margin: var(--spacing-1) 0 var(--spacing-3);
-}
-
-.tierAudience {
-  font-weight: var(--font-semibold);
-  color: var(--text-primary);
-  margin: 0 0 var(--spacing-2);
-}
-
-.tierBenefits {
-  list-style: disc;
-  margin: 0;
-  padding-left: var(--spacing-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  color: var(--text-secondary);
-  line-height: var(--leading-relaxed);
-}
-
-.inKindGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-6);
-}
-
-.typeCard {
-  background-color: var(--surface-1);
-  padding: var(--spacing-6);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
-
-.typeLabel {
-  display: inline-block;
-  font-size: var(--text-sm);
-  font-weight: var(--font-semibold);
-  color: var(--brand-700);
-  background-color: var(--accent-100);
-  border-radius: 9999px;
-  padding: var(--spacing-1) var(--spacing-3);
-  margin-bottom: var(--spacing-3);
-}
-
-.typeCard h3 {
-  font-size: var(--text-xl);
-  color: var(--text-primary);
-  margin: 0 0 var(--spacing-3);
-}
-
-.typeCard p {
-  color: var(--text-secondary);
-  line-height: var(--leading-relaxed);
-  margin: 0;
-}
-
 .partners {
   margin-bottom: var(--spacing-12);
 }
@@ -168,39 +82,6 @@
   color: var(--text-primary);
   text-align: center;
   margin-bottom: var(--spacing-6);
-}
-
-.partnerLogos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-8);
-  padding: var(--spacing-8);
-  background-color: var(--surface-1);
-  border-radius: var(--radius-lg);
-}
-
-.partnerLogo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.partnerImage {
-  width: auto;
-  height: auto;
-  max-width: 160px;
-  max-height: 72px;
-  object-fit: contain;
-  filter: grayscale(100%);
-  opacity: 0.75;
-  transition: filter var(--transition-base), opacity var(--transition-base);
-}
-
-.partnerImage:hover {
-  filter: grayscale(0%);
-  opacity: 1;
 }
 
 .ctaSection {
@@ -224,30 +105,29 @@
     font-size: var(--text-6xl);
   }
 
-  .typesGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .inKindGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .intro {
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-12);
   }
-
-  .tierGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
-@media (min-width: 1024px) {
-  .tierGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.ctaSection {
+  scroll-margin-top: calc(var(--spacing-16) * 2);
+}
 
-  .typesGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.engagementDetail {
+  display: grid;
+  gap: var(--spacing-3);
+}
+
+.engagementDetail h3 {
+  font-size: var(--text-2xl);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.engagementDetail p {
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin: 0;
 }

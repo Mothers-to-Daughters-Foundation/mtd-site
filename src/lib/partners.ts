@@ -1,0 +1,23 @@
+/** Partner and sponsor logos, shown on the home and partner pages. */
+export const PARTNER_LOGOS = [
+  { src: '/images/partner_6ix.avif', alt: '6ix' },
+  { src: '/images/partner_arianamarquis.avif', alt: 'Ariana Marquis' },
+  { src: '/images/partner_brandedcities.avif', alt: 'Branded Cities' },
+  { src: '/images/partner_elevateher.avif', alt: 'Elevate Her' },
+  { src: '/images/partner_flounleashed.avif', alt: 'FLO Unleashed' },
+  { src: '/images/partner_fredas.avif', alt: "Freda's" },
+  { src: '/images/partner_immigrantwomen.avif', alt: 'Immigrant Women' },
+  { src: '/images/partner_indeed.avif', alt: 'Indeed' },
+  { src: '/images/partner_jute.avif', alt: 'Jute' },
+  { src: '/images/partner_lux.avif', alt: 'Lux' },
+  { src: '/images/partner_mave.avif', alt: 'Mave' },
+  { src: '/images/partner_microsoft.avif', alt: 'Microsoft' },
+  { src: '/images/partner_mintroom.avif', alt: 'Mint Room' },
+  { src: '/images/partner_pressthebest.avif', alt: 'Press The Best' },
+  { src: '/images/partner_rondyce.avif', alt: 'Rondyce' },
+  { src: '/images/partner_spartancafe.avif', alt: 'Spartan Cafe' },
+  { src: '/images/partner_timeschange.avif', alt: 'Times Change' },
+  { src: '/images/partner_uef.avif', alt: 'UEF' },
+  { src: '/images/partner_vision2reality.avif', alt: 'Vision 2 Reality' },
+  { src: '/images/partner_zestylifestyle.avif', alt: 'Zesty Lifestyle' },
+];

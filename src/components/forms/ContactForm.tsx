@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import styles from './ContactForm.module.css';
 import Button from '../ui/Button';
 
@@ -22,6 +22,8 @@ interface ContactFormProps {
   includeCompany?: boolean;
   /** Optional multi-select checkbox list (e.g. partnership tiers). */
   checkboxGroup?: CheckboxGroup;
+  /** Window event whose `detail` is a checkbox option to tick (e.g. from a "choose this tier" button). */
+  selectEvent?: string;
   /** Sent as Formspree's `_subject` so submissions are easy to tell apart. */
   formSubject?: string;
   submitLabel?: string;
@@ -36,12 +38,23 @@ export default function ContactForm({
   includeMessage = true,
   includeCompany = false,
   checkboxGroup,
+  selectEvent,
   formSubject,
   submitLabel = 'Send Message',
   successMessage = 'Your message has been sent. We’ll get back to you soon.',
 }: ContactFormProps) {
   const [formData, setFormData] = useState(emptyForm);
   const [checked, setChecked] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!selectEvent) return;
+    const onSelect = (e: Event) => {
+      const option = (e as CustomEvent<string>).detail;
+      setChecked((prev) => (prev.includes(option) ? prev : [...prev, option]));
+    };
+    window.addEventListener(selectEvent, onSelect);
+    return () => window.removeEventListener(selectEvent, onSelect);
+  }, [selectEvent]);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 

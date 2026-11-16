@@ -2,6 +2,11 @@
   width: 100%;
 }
 
+/* The section's padding is the gap; the last block inside adds none of its own. */
+.section > * > :last-child {
+  margin-bottom: 0;
+}
+
 .spacing-none {
   padding-top: 0;
   padding-bottom: 0;
@@ -18,13 +23,13 @@
 }
 
 .spacing-lg {
-  padding-top: var(--spacing-12);
-  padding-bottom: var(--spacing-12);
+  padding-top: var(--spacing-10);
+  padding-bottom: var(--spacing-10);
 }
 
 .spacing-xl {
-  padding-top: var(--spacing-16);
-  padding-bottom: var(--spacing-16);
+  padding-top: var(--spacing-12);
+  padding-bottom: var(--spacing-12);
 }
 
 @media (min-width: 768px) {
@@ -34,17 +39,17 @@
   }
 
   .spacing-md {
-    padding-top: var(--spacing-12);
-    padding-bottom: var(--spacing-12);
+    padding-top: var(--spacing-10);
+    padding-bottom: var(--spacing-10);
   }
 
   .spacing-lg {
-    padding-top: var(--spacing-16);
-    padding-bottom: var(--spacing-16);
+    padding-top: calc(var(--spacing-12) + var(--spacing-2));
+    padding-bottom: calc(var(--spacing-12) + var(--spacing-2));
   }
 
   .spacing-xl {
-    padding-top: calc(var(--spacing-16) * 1.5);
-    padding-bottom: calc(var(--spacing-16) * 1.5);
+    padding-top: calc(var(--spacing-16) + var(--spacing-2));
+    padding-bottom: calc(var(--spacing-16) + var(--spacing-2));
   }
 }
