@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { rollbackNewUser, saveNewUserProfile } from '@/lib/supabase/new-user';
 import { rateLimit } from '@/lib/rateLimit';
 
 const registerSchema = z.object({
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (authError) {
-      if (authError.message.toLowerCase().includes('already registered')) {
+      if (authError.code === 'email_exists' || /already/i.test(authError.message)) {
         return NextResponse.json(
           { error: 'An account with this email already exists' },
           { status: 409 }
@@ -59,17 +60,17 @@ export async function POST(req: NextRequest) {
 
     const user = authData.user;
 
-    // Insert the user profile row so the dashboard can find the role
-    const { error: profileError } = await supabase.from('user_profiles').insert({
+    // Save the user profile row so the dashboard can find the role
+    const { error: profileError } = await saveNewUserProfile(supabase, {
       id: user.id,
       full_name: name,
       role,
     });
 
     if (profileError) {
-      // Roll back the auth user so the state stays consistent
-      await supabase.auth.admin.deleteUser(user.id);
+      // Roll back so the email can be used to register again
       console.error('[register] profile insert error', profileError);
+      await rollbackNewUser(supabase, user.id);
       return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 });
     }
 
