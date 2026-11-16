@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { tierKind } from '@/lib/onboarding';
+import { checkAge } from '@/lib/age';
 import {
   BUSINESS_EXPERIENCE_OPTIONS,
   CAREER_GOAL_OPTIONS,
@@ -19,6 +20,8 @@ const otherText = z.string().trim().max(500).default('');
 const schema = z
   .object({
     fullName: z.string().trim().min(1, 'Enter your name.').max(120),
+    // Checked below; only the birth year is stored.
+    dateOfBirth: z.string().trim(),
     // Option values plus any the mentee typed in themselves.
     interests: z
       .array(z.string().trim().min(1).max(60))
@@ -80,6 +83,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
+  const age = checkAge(body.dateOfBirth);
+  if (!age.ok) {
+    return NextResponse.json(
+      { error: age.message, reason: age.reason },
+      { status: age.reason === 'too_young' ? 403 : 400 }
+    );
+  }
+
   const { data: plan } = await admin
     .from('plans')
     .select('id, monthly_price, is_active')
@@ -94,6 +105,8 @@ export async function POST(request: Request) {
     .from('user_profiles')
     .update({
       full_name: body.fullName,
+      birth_year: age.birthYear,
+      age_confirmed_at: new Date().toISOString(),
       interests: body.interests,
       motivations: body.motivations,
       career_goals: body.careerGoals,

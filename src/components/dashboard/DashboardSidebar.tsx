@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useNotifications } from "@/providers/NotificationProvider";
 
+import BugReportButton from "@/components/BugReportButton";
 import styles from "./DashboardSidebar.module.css";
 
 const supabase = createClient();
@@ -18,6 +19,7 @@ const adminNav = [
   { href: "/dashboard/admin/tiers", label: "Subscription Tiers" },
   { href: "/dashboard/admin/matches", label: "Matches" },
   { href: "/dashboard/admin/resources", label: "Resources" },
+  { href: "/dashboard/admin/bug-reports", label: "Bug Reports" },
   { href: "/dashboard/notifications", label: "Notifications" },
 ];
 
@@ -193,6 +195,8 @@ export default function DashboardSidebar() {
         >
           Sign Out
         </button>
+
+        <BugReportButton />
       </div>
     </aside>
   );

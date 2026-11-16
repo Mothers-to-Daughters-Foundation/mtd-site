@@ -149,13 +149,13 @@ What has to change as membership grows. Ordered by when it starts to hurt. Items
 | Area | Today | Why it matters | Recommendation |
 |---|---|---|---|
 | Paid activation | The Zeffy activation webhook is a stub; Zeffy doesn't call it on its own | Paid members aren't marked paid automatically, so they never get matched or unlocked | Decide how a Zeffy payment becomes an active subscription: an integration (e.g. Zapier from Zeffy), or an admin "mark as paid" button as a stopgap |
-| Password reset | No "Forgot password?" flow | Members who forget their password are locked out; admins can't help without the service key | Add Supabase password reset (email link and a set-new-password page) |
+| Password reset | ✅ Done: "Forgot password?" on sign-in, `/forgot-password` and `/reset-password` | — | Add `/reset-password` to Supabase redirect URLs. Optional: switch the reset email template to `token_hash` links so they work in any browser |
 | Transactional email | Only Supabase's built-in sender, which is rate-limited and meant for testing | Sign-up, reset and match emails stop arriving once a few people sign up | Connect a custom SMTP provider (Resend, Postmark or Amazon SES) in Supabase; add "you've been matched" emails |
 | Supabase plan | Production project on the Free plan | Free projects pause after a period of inactivity and have limited backups | Move production to Pro before launch, turn on backups, and keep a separate staging project |
 | Database schema | Migrations only cover recent changes; the original tables were made by hand | A new environment (staging, disaster recovery) can't be rebuilt from the repo | Export the current schema into `supabase/migrations/0000_baseline.sql` |
 | Safeguarding | No vetting step, report button or message moderation | A mentoring program carries duty-of-care risk; funders and partners will ask about it | Mentor background checks and agreements, a "report a concern" path, a code of conduct, and an admin view of reported conversations |
-| Age and consent | Sign-up doesn't ask for age | Members under 18 need parental consent and stricter data handling | Ask for date of birth or confirm 18+; if minors are in scope, add consent and limit what's collected |
-| Privacy | Privacy policy predates AI matching and the new onboarding questions | Members should know what's collected, why, and which vendors process it | Update the policy (Gemini/Anthropic, Supabase, Vercel, Zeffy); add data export and deletion on request |
+| Age and consent | ✅ Age check in onboarding (default 18+, `NEXT_PUBLIC_MIN_MEMBER_AGE`); only the birth year is stored | Members under 18 need parental consent and stricter data handling | Council to confirm the minimum age; if minors are in scope, add consent |
+| Privacy | Draft policy written for council review; live page still dated October 2, 2026 | Members should know what's collected, why, and which vendors process it | Council decisions in the draft's appendix, legal review, then publish to `/legal/privacy-policy` |
 
 ### Hundreds of members
 

@@ -4,8 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { rollbackNewUser, saveNewUserProfile } from '@/lib/supabase/new-user';
 import { rateLimit } from '@/lib/rateLimit';
 
+// Name and age are collected during onboarding, not at sign-up.
 const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, password } = parsed.data;
+    const { email, password } = parsed.data;
 
     const supabase = createAdminClient();
 
@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
       email,
       password,
       email_confirm: true,
-      user_metadata: { full_name: name },
     });
 
     if (authError) {
@@ -63,7 +62,6 @@ export async function POST(req: NextRequest) {
     // Save the user profile row so the dashboard can find the role
     const { error: profileError } = await saveNewUserProfile(supabase, {
       id: user.id,
-      full_name: name,
       role,
     });
 
@@ -77,7 +75,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         message: 'Account created successfully',
-        user: { id: user.id, name, email, role },
+        user: { id: user.id, email, role },
       },
       { status: 201 }
     );
