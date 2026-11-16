@@ -1,95 +1,91 @@
 import { Metadata } from 'next';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
-import styles from './page.module.css';
+import styles from '../terms/page.module.css';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Privacy Policy for Mothers to Daughters.',
 };
 
+// Carried over word for word from motherstodaughters.org/privacy-policy.
+// A revised policy covering onboarding answers and AI-assisted matching is
+// with the council for review; replace this text once it is approved.
 export default function PrivacyPolicyPage() {
   return (
     <Section spacing="lg">
       <Container>
         <article className={styles.content}>
           <h1>Privacy Policy</h1>
-          <div className={styles.lastUpdated}>Last updated: October 2, 2026</div>
+          <div className={styles.lastUpdated}>Last updated: June 20, 2025</div>
           <div className={styles.textContent}>
             <p>
-              Mothers to Daughters (&ldquo;M2D,&rdquo; &ldquo;we,&rdquo;
-              &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is a registered 501(c)(3)
-              nonprofit organization. We respect your privacy and are committed
-              to protecting the personal information you share with us. This
-              policy explains what we collect, how we use it, and the choices you
-              have.
+              At Mothers to Daughters, we prioritize your privacy. This Privacy Policy outlines how
+              we collect, use, and protect your personal information when you visit our website,
+              motherstodaughters.org.
             </p>
 
-            <h2>Information We Collect</h2>
+            <h2>1. Information We Collect</h2>
+            <p>We may collect the following types of information:</p>
+            <ul>
+              <li>
+                <strong>Personal Identification Information:</strong> Name, email address, etc.
+              </li>
+              <li>
+                <strong>Technical Data:</strong> IP address, browser type, operating system,
+                referring URLs, and browsing behavior.
+              </li>
+            </ul>
+
+            <h2>2. How We Use Your Information</h2>
+            <p>Your information may be used to:</p>
+            <ul>
+              <li>Provide and improve our services.</li>
+              <li>Respond to inquiries and support requests.</li>
+              <li>Send newsletters and promotional materials (with your consent).</li>
+            </ul>
+
+            <h2>3. Data Sharing and Disclosure</h2>
             <p>
-              We collect information you provide directly—such as your name,
-              email address, and phone number when you sign up, contact us,
-              register for a program or event, volunteer, or subscribe to our
-              newsletter. When you make a donation or purchase a membership, our
-              payment processors collect the billing details needed to complete
-              your transaction. We also collect limited technical information
-              (such as device and usage data) automatically when you visit our
-              website.
+              We do not sell or rent your personal information. We may share data with trusted third
+              parties who assist in operating our website, conducting our business, or servicing
+              you, provided they agree to keep this information confidential.
             </p>
 
-            <h2>How We Use Your Information</h2>
+            <h2>4. Your Data Protection Rights</h2>
+            <p>Depending on your location, you may have the right to:</p>
+            <ul>
+              <li>Access, correct, or delete your personal data.</li>
+              <li>Object to or restrict processing.</li>
+              <li>Withdraw consent at any time.</li>
+            </ul>
             <p>
-              We use your information to operate our mentorship programs and
-              events, match mentors and mentees, process donations and
-              memberships, respond to your inquiries, send updates you&apos;ve
-              requested, and improve our services. We do not sell your personal
+              To exercise these rights, please contact us at{' '}
+              <a href="mailto:connect@motherstodaughters.org">connect@motherstodaughters.org</a>.
+            </p>
+
+            <h2>5. Data Security</h2>
+            <p>
+              We implement a variety of security measures to maintain the safety of your personal
               information.
             </p>
 
-            <h2>Third-Party Services</h2>
+            <h2>6. Cookies</h2>
             <p>
-              We rely on trusted third parties to run our programs, including
-              Zeffy for payment processing and Supabase for data
-              storage. These providers process your information only as needed to
-              deliver their services and under their own privacy and security
-              commitments.
+              Our website uses cookies to enhance user experience. You can control cookie settings
+              through your browser.
             </p>
 
-            <h2>Data Security &amp; Retention</h2>
+            <h2>7. Third-Party Links</h2>
             <p>
-              We take reasonable administrative and technical measures to protect
-              your information and retain it only as long as necessary for the
-              purposes described here or as required by law.
+              Our site may contain links to external websites. We are not responsible for the
+              content or privacy practices of these sites.
             </p>
 
-            <h2>Your Rights &amp; Choices</h2>
+            <h2>8. Changes to This Policy</h2>
             <p>
-              You may request access to, correction of, or deletion of your
-              personal information, and you can unsubscribe from our emails at any
-              time using the link in any message or by contacting us. We will
-              respond to reasonable requests consistent with applicable law.
-            </p>
-
-            <h2>Children&apos;s Privacy</h2>
-            <p>
-              Our services are not directed to children under 13, and we do not
-              knowingly collect personal information from them.
-            </p>
-
-            <h2>Changes to This Policy</h2>
-            <p>
-              We may update this policy from time to time. Material changes will
-              be posted on this page with a revised &ldquo;Last updated&rdquo;
-              date.
-            </p>
-
-            <h2>Contact Us</h2>
-            <p>
-              Questions about this policy? Email us at{' '}
-              <a href="mailto:connect@motherstodaughters.org">
-                connect@motherstodaughters.org
-              </a>{' '}
-              or write to us at 1001 6th Ave, New York, NY 10018.
+              We may update this Privacy Policy periodically. Any changes will be posted on this
+              page with an updated revision date.
             </p>
           </div>
         </article>

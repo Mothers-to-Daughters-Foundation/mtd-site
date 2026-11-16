@@ -1,5 +1,6 @@
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
+import StoryCarousel from './StoryCarousel';
 import styles from './ImpactStories.module.css';
 
 interface Story {
@@ -45,6 +46,23 @@ interface ImpactStoriesProps {
   className?: string;
 }
 
+function renderStory(story: Story) {
+  return (
+    <blockquote key={story.name} className={styles.story}>
+      <span className={styles.quoteMark} aria-hidden="true">
+        &ldquo;
+      </span>
+      {story.label && <p className={styles.label}>{story.label}</p>}
+      {story.paragraphs.map((paragraph) => (
+        <p key={paragraph.slice(0, 24)} className={styles.text}>
+          {paragraph}
+        </p>
+      ))}
+      <cite className={styles.author}>— {story.name}</cite>
+    </blockquote>
+  );
+}
+
 export default function ImpactStories({ limit, className }: ImpactStoriesProps) {
   const stories = limit ? impactStories.slice(0, limit) : impactStories;
 
@@ -52,22 +70,11 @@ export default function ImpactStories({ limit, className }: ImpactStoriesProps) 
     <Section spacing="lg" className={`${styles.section} ${className || ''}`}>
       <Container>
         <h2 className={styles.title}>Impact Stories</h2>
-        <div className={`${styles.grid} ${stories.length === 1 ? styles.single : ''}`}>
-          {stories.map((story) => (
-            <blockquote key={story.name} className={styles.story}>
-              <span className={styles.quoteMark} aria-hidden="true">
-                &ldquo;
-              </span>
-              {story.label && <p className={styles.label}>{story.label}</p>}
-              {story.paragraphs.map((paragraph) => (
-                <p key={paragraph.slice(0, 24)} className={styles.text}>
-                  {paragraph}
-                </p>
-              ))}
-              <cite className={styles.author}>— {story.name}</cite>
-            </blockquote>
-          ))}
-        </div>
+        {stories.length === 1 ? (
+          <div className={`${styles.grid} ${styles.single}`}>{stories.map(renderStory)}</div>
+        ) : (
+          <StoryCarousel slides={stories.map(renderStory)} labels={stories.map((s) => s.name)} />
+        )}
       </Container>
     </Section>
   );

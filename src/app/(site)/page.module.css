@@ -597,3 +597,65 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.contentExcerpt {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin: var(--spacing-2) 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.connectSection {
+  background-color: var(--surface-0);
+  text-align: center;
+}
+
+.connectTitle {
+  font-size: var(--text-2xl);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-5);
+}
+
+.connectLinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-3);
+}
+
+.connectLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.connectLink:hover {
+  border-color: var(--brand-700);
+  color: var(--brand-700);
+  transform: translateY(-2px);
+}
+
+.connectIcon {
+  width: 20px;
+  height: 20px;
+}

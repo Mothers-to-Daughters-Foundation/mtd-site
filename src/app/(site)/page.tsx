@@ -8,7 +8,9 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import NewsletterFormInline from '@/components/forms/NewsletterFormInline';
 import ImpactStories from '@/components/marketing/ImpactStories';
-import { getAllPosts } from '@/lib/mdx';
+import { getAllPosts, getPostBySlug } from '@/lib/mdx';
+import HeroSlideshow from '@/components/marketing/HeroSlideshow';
+import { SOCIAL_LINKS } from '@/components/SocialLinks';
 import { getAllEvents } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
@@ -49,8 +51,15 @@ const areasOfFocus = [
   },
 ];
 
+const FEATURED_STORY_SLUGS = ['iwd-2025-policy-gender-equality', 'interview-with-my-mom-emily'];
+
 export default function HomePage() {
-  const recentPosts = getAllPosts().slice(0, 2);
+  // The two stories the live home page features under "Watch Us Go"; falls back
+  // to the latest posts if either is missing.
+  const featured = FEATURED_STORY_SLUGS.map(getPostBySlug).filter(
+    (post): post is NonNullable<typeof post> => post !== null
+  );
+  const recentPosts = featured.length === FEATURED_STORY_SLUGS.length ? featured : getAllPosts().slice(0, 2);
   const recentEvents = getAllEvents()
     .filter((event) => new Date(event.frontmatter.date) >= new Date())
     .slice(0, 1);
@@ -74,6 +83,8 @@ export default function HomePage() {
       image: event.frontmatter.image,
     })),
   ]
+    // With the featured stories found, show just those two, as the live page does.
+    .filter((item) => featured.length !== FEATURED_STORY_SLUGS.length || item.type === 'blog')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
 
@@ -99,14 +110,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className={styles.heroImage}>
-              <Image
-                src={getImagePath("/images/Heroimage.jpg")}
-                alt="Diverse group of women representing intergenerational mentorship and empowerment"
-                width={800}
-                height={600}
-                className={styles.heroImageContent}
-                priority
-              />
+              <HeroSlideshow alt="Women of different generations at Mothers to Daughters events" />
             </div>
           </div>
         </Container>
@@ -339,6 +343,7 @@ export default function HomePage() {
                   </div>
                   <div className={styles.contentCardBody}>
                     <h3>{item.title}</h3>
+                    {item.excerpt && <p className={styles.contentExcerpt}>{item.excerpt}</p>}
                     <time dateTime={item.date} className={styles.contentDate}>
                       {new Date(item.date).toLocaleDateString('en-US', {
                         month: 'long',
@@ -359,6 +364,23 @@ export default function HomePage() {
               View all stories
             </Button>
           </div>
+        </Container>
+      </Section>
+
+      {/* Stay Connected */}
+      <Section spacing="md" className={styles.connectSection}>
+        <Container>
+          <h2 className={styles.connectTitle}>Stay Connected</h2>
+          <ul className={styles.connectLinks}>
+            {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+              <li key={label}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className={styles.connectLink}>
+                  <Icon className={styles.connectIcon} aria-hidden />
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </Container>
       </Section>
 
