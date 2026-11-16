@@ -219,7 +219,7 @@ export default function MatchManager({
                   <td>
                     {match.start_date
                       ? new Date(match.start_date).toLocaleDateString()
-                      : "—"}
+                      : "-"}
                   </td>
 
                   <td>

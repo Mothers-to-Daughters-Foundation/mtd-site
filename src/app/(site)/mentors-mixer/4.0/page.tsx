@@ -7,9 +7,9 @@ import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Mentors Mixer 4.0 — Rebels with a Cause',
+  title: 'Mentors Mixer 4.0: Rebels with a Cause',
   description:
-    'Mentors Mixer 4.0: "Rebels with a Cause" — May 30th, 2024 at Gotstyle Distillery.',
+    'Mentors Mixer 4.0: "Rebels with a Cause", May 30th, 2024 at Gotstyle Distillery.',
 };
 
 const speakers = [
@@ -67,7 +67,7 @@ export default function MentorsMixer40Page() {
           <div className={styles.heroImage}>
             <Image
               src={getImagePath('/images/mixers/mixer-4-0-hero.png')}
-              alt="Mentors Mixer 4.0 — Rebels with a Cause"
+              alt="Mentors Mixer 4.0: Rebels with a Cause"
               width={1234}
               height={556}
               className={styles.heroImageContent}

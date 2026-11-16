@@ -182,7 +182,7 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
                     {tier.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </td>
-                <td>{tier.isDefault ? <span className={styles.defaultMark}>✓</span> : '—'}</td>
+                <td>{tier.isDefault ? <span className={styles.defaultMark}>✓</span> : '-'}</td>
                 <td className={styles.actions}>
                   <button
                     onClick={() => openEdit(tier)}

@@ -7,7 +7,7 @@ import AppProvider from '@/components/providers/AppProvider';
 import ChatDock from '@/components/chat/ChatDock';
 
 const SITE_DESCRIPTION =
-  'Mothers to Daughters is a 501(c)(3) nonprofit connecting women across generations through mentorship—bridging the generational gap and empowering young women to lead.';
+  'Mothers to Daughters is a 501(c)(3) nonprofit connecting women across generations through mentorship, bridging the generational gap and empowering young women to lead.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.motherstodaughters.org'),
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         url: '/images/Heroimage.jpg',
         width: 1200,
         height: 630,
-        alt: 'Mothers to Daughters — women connecting across generations',
+        alt: 'Mothers to Daughters: women connecting across generations',
       },
     ],
   },

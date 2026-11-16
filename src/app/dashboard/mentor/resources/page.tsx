@@ -31,7 +31,7 @@ export default async function MentorResourcesPage() {
 
         <p className={styles.subtitle}>
           Guides, templates, and materials to help you be an effective
-          mentor — and share your own with your mentees.
+          mentor, and share your own with your mentees.
         </p>
       </div>
 

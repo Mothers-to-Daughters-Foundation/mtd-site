@@ -214,7 +214,7 @@ export default function SiteHeader() {
                   href={dashboardHref(user.role)}
                   className={styles.profileLink}
                   onClick={closeMenu}
-                  aria-label={`${user.name} — go to your dashboard`}
+                  aria-label={`${user.name}: go to your dashboard`}
                 >
                   <span className={styles.avatar}>
                     {user.avatarUrl ? (

@@ -108,7 +108,7 @@ export default function TeamPage() {
           <h1>Our Team</h1>
           <p className={styles.intro}>
             United by purpose, driven by impact. Our team brings together diverse
-            backgrounds, experiences, and expertise—but what unites us is a
+            backgrounds, experiences, and expertise, but what unites us is a
             shared commitment to empowering women across generations.
           </p>
         </div>

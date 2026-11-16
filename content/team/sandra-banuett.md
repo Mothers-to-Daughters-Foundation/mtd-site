@@ -15,4 +15,4 @@ Based in the Arizona desert, Sandra Banuett brings expertise in marketing, busin
 
 She currently manages marketing campaigns at Ellucian, mentors emerging professionals, and supports special initiatives through Wepa!, an employee resource group dedicated to building and connecting Latinos and their allies in the workplace. Previously, she honed her leadership skills in sales, customer service, and operations at Sixt, and served as a high school educator, reinforcing her dedication to mentorship.
 
-As a purpose-driven entrepreneur, Sandra founded People’s Purpose, Noah Not Rated, and Saint and Sound—organizations that highlight music, creativity, art, and growth. She also serves as the Alumnae Engagement Officer for Lambda Theta Alpha Latin Sorority, Inc., advancing community impact through engagement.
+As a purpose-driven entrepreneur, Sandra founded People’s Purpose, Noah Not Rated, and Saint and Sound, organizations that highlight music, creativity, art, and growth. She also serves as the Alumnae Engagement Officer for Lambda Theta Alpha Latin Sorority, Inc., advancing community impact through engagement.

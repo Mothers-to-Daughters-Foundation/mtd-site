@@ -14,7 +14,7 @@ const opportunities = [
   {
     title: 'Mentorship Support',
     description:
-      'Help facilitate our intergenerational mentoring cohorts—matching pairs, checking in, and keeping the experience meaningful for everyone.',
+      'Help facilitate our intergenerational mentoring cohorts, matching pairs, checking in, and keeping the experience meaningful for everyone.',
   },
   {
     title: 'Events & Mixers',
@@ -52,7 +52,7 @@ export default function VolunteerPage() {
             <h2>Why Join Mothers to Daughters?</h2>
             <p>
               At Mothers to Daughters (M2D), we’re more than an
-              organization—we’re a movement dedicated to empowering young women
+              organization; we’re a movement dedicated to empowering young women
               through mentorship, leadership, and lifelong connections. We
               strive to create a nurturing, inclusive and safe space where women
               across generations grow, lead, and uplift one another.

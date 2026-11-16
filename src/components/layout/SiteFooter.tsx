@@ -17,7 +17,7 @@ export default function SiteFooter() {
             <h3 className={styles.heading}>About</h3>
             <p className={styles.mission}>
               A global movement dedicated to forging deep connections,
-              amplifying voices, and driving meaningful action—empowering women
+              amplifying voices, and driving meaningful action, empowering women
               to thrive across generations.
             </p>
           </div>

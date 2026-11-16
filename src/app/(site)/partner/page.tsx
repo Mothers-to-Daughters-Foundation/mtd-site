@@ -21,7 +21,7 @@ const engagementAreas = [
     label: 'M2D Live Events',
     title: 'M2D Live Events: Moments That Inspire, Connections That Last',
     description:
-      'Held bi-annually, these dynamic events spotlight the powerful journeys of mothers and daughters in our community. We invite mission-aligned partners to sponsor these impactful conversations—creating meaningful dialogue, fostering deep connections, and amplifying shared values.',
+      'Held bi-annually, these dynamic events spotlight the powerful journeys of mothers and daughters in our community. We invite mission-aligned partners to sponsor these impactful conversations, creating meaningful dialogue, fostering deep connections, and amplifying shared values.',
   },
   {
     label: 'Strategic Partnerships',
@@ -39,7 +39,7 @@ const engagementAreas = [
     label: 'Bridging Generations',
     title: 'Bridging Generations, Transforming Lives',
     description:
-      'Mothers to Daughters partners with schools to help young girls discover the power of intergenerational wisdom. We also collaborate with retirement homes and hospitals, creating spaces where women can share their knowledge, stories, and experiences—building connections that transcend generations.',
+      'Mothers to Daughters partners with schools to help young girls discover the power of intergenerational wisdom. We also collaborate with retirement homes and hospitals, creating spaces where women can share their knowledge, stories, and experiences, building connections that transcend generations.',
   },
   {
     label: 'Elevating Local Voices',
@@ -157,7 +157,7 @@ export default function PartnerPage() {
         <Container>
           <h1 className={styles.heroTitle}>Support our Mission</h1>
           <p className={styles.heroDescription}>
-            Intentional actions create impact—big or small, it matters.
+            Intentional actions create impact. Big or small, it matters.
           </p>
         </Container>
       </Section>
