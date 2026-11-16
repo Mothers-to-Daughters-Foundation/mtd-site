@@ -4,76 +4,99 @@ import {
   rankMentors,
   hasCapacity,
   assessConfidence,
+  keywordSet,
+  type MenteeForMatch,
   type MentorForMatch,
 } from './matching';
 
+const empty = {
+  interests: [],
+  careerGoals: [],
+  motivations: [],
+  opportunityValues: [],
+  successValues: [],
+  freeText: [],
+};
+
+const mentee = (over: Partial<MenteeForMatch>): MenteeForMatch => ({ ...empty, ...over });
 const mentor = (over: Partial<MentorForMatch>): MentorForMatch => ({
-  id: 'm', careerAreas: [], expertise: null, activeMenteeCount: 0, maxMentees: null, ...over,
+  ...empty,
+  id: 'm',
+  activeMenteeCount: 0,
+  maxMentees: null,
+  ...over,
 });
 
+const full = {
+  interests: ['Finance', 'Leadership'],
+  careerGoals: ['start_business'],
+  motivations: ['community', 'learn_from_leaders'],
+  opportunityValues: ['growth', 'mission'],
+  successValues: ['impact'],
+};
+
 describe('scoreMentor', () => {
-  it('deterministic: exact interest<->career_area overlap, score = count', () => {
-    const r = scoreMentor(
-      { interests: ['Finance', 'Leadership'], careerGoals: [] },
-      mentor({ id: 'a', careerAreas: ['Finance', 'Leadership', 'Education'] })
-    );
-    expect(r).toEqual({
-      mentorId: 'a',
-      score: 2,
-      kind: 'deterministic',
-      matched: ['Finance', 'Leadership'],
-    });
-  });
-  it('is case/whitespace-insensitive for deterministic', () => {
-    const r = scoreMentor(
-      { interests: [' finance '], careerGoals: [] },
-      mentor({ id: 'a', careerAreas: ['Finance'] })
-    );
-    expect(r.kind).toBe('deterministic');
+  it('scores 100% when the mentor covers every answer', () => {
+    const r = scoreMentor(mentee(full), mentor({ id: 'a', ...full }));
     expect(r.score).toBe(1);
+    expect(r.kind).toBe('strong');
+    expect(r.completeness).toBe(1);
   });
-  it('soft: token overlap when no career-area match', () => {
+
+  it('weights each question and scores the share of the mentee answers covered', () => {
+    // interests 1/2 (0.3 weight), goals 1/1 (0.25); other questions skipped by the mentee
     const r = scoreMentor(
-      { interests: ['Something'], careerGoals: ['launch a startup'] },
-      mentor({ id: 'a', careerAreas: [], expertise: 'Startup coaching and growth' })
+      mentee({ interests: ['Finance', 'Leadership'], careerGoals: ['start_business'] }),
+      mentor({ id: 'a', interests: ['finance'], careerGoals: ['start_business'] })
     );
-    expect(r.kind).toBe('soft');
-    expect(r.score).toBeGreaterThanOrEqual(1);
+    expect(r.score).toBeCloseTo((0.3 * 0.5 + 0.25 * 1) / 0.55, 3);
+    expect(r.breakdown.interests).toEqual({ overlap: 0.5, matched: ['finance'] });
   });
-  it('none: no overlap at all', () => {
-    const r = scoreMentor(
-      { interests: ['Finance'], careerGoals: ['buy a house'] },
-      mentor({ id: 'a', careerAreas: ['Healthcare'], expertise: 'nursing' })
+
+  it('weights success lightly compared with interests', () => {
+    const onlySuccess = scoreMentor(
+      mentee({ interests: ['Finance'], successValues: ['impact'] }),
+      mentor({ successValues: ['impact'], interests: ['Healthcare'] })
     );
-    expect(r).toEqual({ mentorId: 'a', score: 0, kind: 'none', matched: [] });
+    const onlyInterest = scoreMentor(
+      mentee({ interests: ['Finance'], successValues: ['impact'] }),
+      mentor({ interests: ['Finance'], successValues: ['security'] })
+    );
+    expect(onlyInterest.score).toBeGreaterThan(onlySuccess.score * 2);
   });
-  it('handles empty arrays and null expertise without crashing', () => {
-    const r = scoreMentor({ interests: [], careerGoals: [] }, mentor({ id: 'a' }));
-    expect(r.kind).toBe('none');
+
+  it('adds a small, capped bonus for shared keywords in free text', () => {
+    const base = mentee({ interests: ['Finance'], freeText: ['I want to open a bakery and catering company'] });
+    const plain = scoreMentor(base, mentor({ interests: ['Healthcare'] }));
+    const words = scoreMentor(
+      base,
+      mentor({ interests: ['Healthcare'], freeText: ['Ran a bakery and catering company for 20 years'] })
+    );
+    expect(plain.score).toBe(0);
+    expect(words.keywords).toEqual(expect.arrayContaining(['bakery', 'catering', 'company']));
+    expect(words.score).toBeGreaterThan(0);
+    expect(words.score).toBeLessThanOrEqual(0.05);
+  });
+
+  it('lowers completeness when the mentor skipped questions', () => {
+    const r = scoreMentor(mentee(full), mentor({ interests: full.interests }));
+    expect(r.completeness).toBeCloseTo(0.3, 3);
+  });
+
+  it('handles an empty mentee without crashing', () => {
+    const r = scoreMentor(mentee({}), mentor({ ...full }));
+    expect(r).toMatchObject({ score: 0, kind: 'none' });
   });
 });
 
 describe('rankMentors', () => {
-  it('ranks deterministic above soft above none', () => {
-    const ranked = rankMentors(
-      { interests: ['Finance'], careerGoals: ['startup'] },
-      [
-        mentor({ id: 'none', careerAreas: ['Healthcare'], expertise: 'nursing' }),
-        mentor({ id: 'soft', careerAreas: [], expertise: 'startup advisor' }),
-        mentor({ id: 'det', careerAreas: ['Finance'] }),
-      ]
-    );
-    expect(ranked.map((r) => r.mentorId)).toEqual(['det', 'soft', 'none']);
-  });
-  it('tiebreaks equal scores by fewer active mentees', () => {
-    const ranked = rankMentors(
-      { interests: ['Finance'], careerGoals: [] },
-      [
-        mentor({ id: 'busy', careerAreas: ['Finance'], activeMenteeCount: 5 }),
-        mentor({ id: 'free', careerAreas: ['Finance'], activeMenteeCount: 0 }),
-      ]
-    );
-    expect(ranked[0].mentorId).toBe('free');
+  it('orders by score, then fewer active mentees', () => {
+    const ranked = rankMentors(mentee(full), [
+      mentor({ id: 'weak', interests: ['Finance'] }),
+      mentor({ id: 'busy', ...full, activeMenteeCount: 3 }),
+      mentor({ id: 'free', ...full, activeMenteeCount: 1 }),
+    ]);
+    expect(ranked.map((r) => r.mentorId)).toEqual(['free', 'busy', 'weak']);
   });
 });
 
@@ -88,23 +111,41 @@ describe('hasCapacity', () => {
 });
 
 describe('assessConfidence', () => {
-  it('is high when the top mentor shares a career area', () => {
-    const ranked = rankMentors({ interests: ['Finance'], careerGoals: [] }, [
-      mentor({ id: 'a', careerAreas: ['Finance'] }),
+  it('is high for a strong, complete, clear winner', () => {
+    const ranked = rankMentors(mentee(full), [
+      mentor({ id: 'a', ...full }),
+      mentor({ id: 'b', interests: ['Finance'] }),
     ]);
-    expect(assessConfidence(ranked)).toBe('high');
+    expect(assessConfidence(ranked)).toMatchObject({ level: 'high', reasons: [] });
   });
-  it('is low when only free-text words overlap', () => {
-    const ranked = rankMentors({ interests: [], careerGoals: ['startup'] }, [
-      mentor({ id: 'a', expertise: 'startup advisor' }),
+
+  it('is low when two mentors are almost tied', () => {
+    const ranked = rankMentors(mentee(full), [mentor({ id: 'a', ...full }), mentor({ id: 'b', ...full })]);
+    const c = assessConfidence(ranked);
+    expect(c.level).toBe('low');
+    expect(c.reasons.join(' ')).toMatch(/almost equally/);
+  });
+
+  it('is low when the mentor profile is too thin to be sure', () => {
+    const ranked = rankMentors(mentee({ interests: ['Finance'] }), [
+      mentor({ id: 'a', interests: ['Finance'] }),
     ]);
-    expect(assessConfidence(ranked)).toBe('low');
+    const c = assessConfidence(ranked);
+    expect(c.score).toBe(1);
+    expect(c.level).toBe('low');
   });
+
   it('is none with no overlap or no mentors', () => {
-    expect(assessConfidence([])).toBe('none');
-    const ranked = rankMentors({ interests: ['Finance'], careerGoals: [] }, [
-      mentor({ id: 'a', careerAreas: ['Healthcare'] }),
+    expect(assessConfidence([]).level).toBe('none');
+    const ranked = rankMentors(mentee({ interests: ['Finance'] }), [
+      mentor({ id: 'a', interests: ['Healthcare'] }),
     ]);
-    expect(assessConfidence(ranked)).toBe('none');
+    expect(assessConfidence(ranked).level).toBe('none');
+  });
+});
+
+describe('keywordSet', () => {
+  it('drops short words and stopwords', () => {
+    expect([...keywordSet(['I want to grow my Bakery, and help others'])]).toEqual(['grow', 'bakery', 'others']);
   });
 });

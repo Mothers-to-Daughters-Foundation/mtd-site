@@ -5,9 +5,10 @@ import {
   hasCapacity,
   assessConfidence,
   type MatchConfidence,
-  type MatchKind,
   type MentorForMatch,
+  type MentorScore,
 } from './matching';
+import { MATCH_PROFILE_COLUMNS, toMatchProfile, type MatchProfileRow } from './match-profile';
 import { aiRankMentors, getAiConfig, type AiRankResult, type AiStatus } from './ai-matching';
 
 /** How many ranked candidates an admin sees in the review queue. */
@@ -15,11 +16,10 @@ const REVIEW_CANDIDATES = 3;
 /** How many eligible mentors the AI step may choose between. */
 const AI_CANDIDATES = 8;
 
-export type SuggestionCandidate = {
-  mentorId: string;
-  score: number;
-  kind: MatchKind;
-  matched: string[];
+export type SuggestionCandidate = Pick<
+  MentorScore,
+  'mentorId' | 'score' | 'kind' | 'matched' | 'breakdown' | 'keywords' | 'completeness'
+> & {
   activeMenteeCount: number;
   maxMentees: number | null;
 };
@@ -27,7 +27,6 @@ export type SuggestionCandidate = {
 export type AutoMatchResult = {
   matched: boolean;
   mentorId?: string;
-  kind?: MatchKind;
   confidence?: MatchConfidence;
   aiStatus?: AiStatus;
   reason?: 'not_mentee' | 'not_paid' | 'already_matched' | 'queued' | 'error';
@@ -52,11 +51,12 @@ export async function getActiveMenteeCounts(admin: AdminClient) {
 
 /**
  * Pair a paid mentee with a mentor. Only mentors with spare capacity are considered.
- *   1. Rule-based score. A shared career area is assigned immediately.
- *   2. Otherwise the optional AI step ranks the eligible mentors; its pick is
- *      assigned only at or above the configured confidence.
- *   3. Everything else (including any AI fallback: no key, budget used up,
- *      API down) is queued in match_suggestions for an admin.
+ *   1. Weighted rule-based score (see matching.ts). A strong, complete, clear
+ *      winner is assigned immediately.
+ *   2. A partial fit goes to the optional AI step, but only when enough mentors
+ *      have room; its pick is assigned only at or above the configured confidence.
+ *   3. Everything else (no fit, small pool, or any AI fallback) is queued in
+ *      match_suggestions for an admin, with the reasons.
  * Every decision is logged there so auto-resolution and override rates can be measured.
  */
 export async function autoMatchMentee(
@@ -68,9 +68,9 @@ export async function autoMatchMentee(
 
     const { data: mentee } = await admin
       .from('user_profiles')
-      .select('role, interests, career_goals, business_experience')
+      .select(`role, business_experience, ${MATCH_PROFILE_COLUMNS}`)
       .eq('id', menteeId)
-      .single();
+      .single<MatchProfileRow & { role: string; business_experience: string | null }>();
 
     if (!mentee || mentee.role !== 'mentee') {
       return { matched: false, reason: 'not_mentee' };
@@ -94,26 +94,25 @@ export async function autoMatchMentee(
     const [{ data: mentorRows }, counts] = await Promise.all([
       admin
         .from('user_profiles')
-        .select('id, career_areas, expertise, bio, max_mentees')
-        .eq('role', 'mentor'),
+        .select(`id, max_mentees, ${MATCH_PROFILE_COLUMNS}`)
+        .eq('role', 'mentor')
+        .returns<(MatchProfileRow & { id: string; max_mentees: number | null })[]>(),
       getActiveMenteeCounts(admin),
     ]);
 
     const mentors: MentorForMatch[] = (mentorRows ?? []).map((m) => ({
+      ...toMatchProfile(m, 'mentor'),
       id: m.id,
-      careerAreas: m.career_areas ?? [],
-      expertise: m.expertise ?? null,
       activeMenteeCount: counts[m.id] ?? 0,
       maxMentees: m.max_mentees ?? null,
     }));
     const byId = new Map(mentors.map((m) => [m.id, m]));
-    const bios = new Map((mentorRows ?? []).map((m) => [m.id, m.bio ?? null]));
+    const eligible = mentors.filter(hasCapacity);
 
-    const ranked = rankMentors(
-      { interests: mentee.interests ?? [], careerGoals: mentee.career_goals ?? [] },
-      mentors.filter(hasCapacity)
-    );
-    const confidence = assessConfidence(ranked);
+    const menteeProfile = toMatchProfile(mentee, 'mentee');
+    const ranked = rankMentors(menteeProfile, eligible);
+    const assessment = assessConfidence(ranked);
+    const confidence = assessment.level;
     const top = ranked[0];
 
     const { data: pending } = await admin
@@ -123,8 +122,9 @@ export async function autoMatchMentee(
       .eq('status', 'pending')
       .maybeSingle();
 
+    // AI only helps with a partial fit; with no fit at all a person decides.
     let ai: AiRankResult = { status: 'not_needed' };
-    if (confidence !== 'high' && ranked.length > 0 && pending?.ai_status === 'used') {
+    if (confidence === 'low' && pending?.ai_status === 'used') {
       // The AI already gave its opinion on this open review; don't pay for it again.
       ai = {
         status: 'used',
@@ -138,20 +138,13 @@ export async function autoMatchMentee(
             ? pending.suggested_mentor_id
             : undefined,
       };
-    } else if (confidence !== 'high' && ranked.length > 0 && !allowAi) {
+    } else if (confidence === 'low' && !allowAi) {
       ai = { status: 'skipped' };
-    } else if (confidence !== 'high' && ranked.length > 0) {
+    } else if (confidence === 'low') {
       ai = await aiRankMentors(
         admin,
-        {
-          interests: mentee.interests ?? [],
-          careerGoals: mentee.career_goals ?? [],
-          businessExperience: mentee.business_experience ?? null,
-        },
-        ranked.slice(0, AI_CANDIDATES).map((r) => ({
-          ...byId.get(r.mentorId)!,
-          bio: bios.get(r.mentorId) ?? null,
-        }))
+        { ...menteeProfile, businessExperience: mentee.business_experience ?? null },
+        ranked.slice(0, AI_CANDIDATES).map((r) => byId.get(r.mentorId)!)
       );
     }
     const aiPick = ai.status === 'used' ? ai.mentorId : undefined;
@@ -169,10 +162,20 @@ export async function autoMatchMentee(
     const aiRanked = aiPick ? ranked.find((r) => r.mentorId === aiPick) : undefined;
     if (aiRanked && !shown.includes(aiRanked)) shown.unshift(aiRanked);
     const candidates: SuggestionCandidate[] = shown.map((r) => ({
-      ...r,
+      mentorId: r.mentorId,
+      score: r.score,
+      kind: r.kind,
+      matched: r.matched,
+      breakdown: r.breakdown,
+      keywords: r.keywords,
+      completeness: r.completeness,
       activeMenteeCount: byId.get(r.mentorId)?.activeMenteeCount ?? 0,
       maxMentees: byId.get(r.mentorId)?.maxMentees ?? null,
     }));
+    const scoreFields = {
+      match_score: assessment.score,
+      confidence_reasons: assessment.reasons,
+    };
 
     const assignTo =
       confidence === 'high' && top ? top.mentorId : aiConfident ? aiPick : undefined;
@@ -200,30 +203,26 @@ export async function autoMatchMentee(
         mentee_id: menteeId,
         candidates,
         confidence,
+        ...scoreFields,
         ...aiFields,
         suggested_mentor_id: assignTo,
         chosen_mentor_id: assignTo,
         mentorship_id: mentorship.id,
-        status: assignTo === aiPick && confidence !== 'high' ? 'ai_assigned' : 'auto_assigned',
+        status: confidence === 'high' ? 'auto_assigned' : 'ai_assigned',
         decided_at: now,
       });
       if (closeError || logError) {
         console.error('[autoMatchMentee] log', closeError ?? logError);
       }
 
-      return {
-        matched: true,
-        mentorId: assignTo,
-        kind: ranked.find((r) => r.mentorId === assignTo)?.kind,
-        confidence,
-        aiStatus: ai.status,
-      };
+      return { matched: true, mentorId: assignTo, confidence, aiStatus: ai.status };
     }
 
     // Not confident enough to assign: queue (or refresh) a review for an admin.
     const suggestion = {
       candidates,
       confidence,
+      ...scoreFields,
       ...aiFields,
       suggested_mentor_id: aiPick ?? (top && top.kind !== 'none' ? top.mentorId : null),
       updated_at: new Date().toISOString(),

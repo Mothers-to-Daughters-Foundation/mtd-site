@@ -2,7 +2,10 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { INTEREST_CATEGORIES } from '@/lib/onboarding-options';
+import MatchProfileFields, {
+  EMPTY_MENTOR_ANSWERS,
+  type MentorMatchAnswers,
+} from './MatchProfileFields';
 import styles from './CreateMentorForm.module.css';
 
 function temporaryPassword() {
@@ -11,25 +14,20 @@ function temporaryPassword() {
   return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join('');
 }
 
-const EMPTY = { name: '', email: '', password: '', expertise: '', maxMentees: '' };
+const EMPTY = { name: '', email: '', password: '', expertise: '', bio: '', maxMentees: '' };
 
 /** Admin-only: create a mentor's login and matching profile in one step. */
 export default function CreateMentorForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
-  const [careerAreas, setCareerAreas] = useState<string[]>([]);
+  const [matching, setMatching] = useState<MentorMatchAnswers>(EMPTY_MENTOR_ANSWERS);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [created, setCreated] = useState<{ email: string; password: string } | null>(null);
 
-  const update = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const update = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-
-  const toggle = (area: string) =>
-    setCareerAreas((prev) =>
-      prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area]
-    );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,8 +41,9 @@ export default function CreateMentorForm() {
         name: form.name,
         email: form.email,
         password: form.password,
-        careerAreas,
+        ...matching,
         expertise: form.expertise || undefined,
+        bio: form.bio || undefined,
         maxMentees: form.maxMentees ? Number(form.maxMentees) : null,
       }),
     });
@@ -58,7 +57,7 @@ export default function CreateMentorForm() {
 
     setCreated({ email: form.email, password: form.password });
     setForm(EMPTY);
-    setCareerAreas([]);
+    setMatching(EMPTY_MENTOR_ANSWERS);
     router.refresh();
   };
 
@@ -117,7 +116,7 @@ export default function CreateMentorForm() {
           </span>
         </label>
         <label className={styles.field}>
-          Maximum mentees at a time
+          Mentees they&apos;d like at a time
           <input
             name="maxMentees"
             type="number"
@@ -139,22 +138,19 @@ export default function CreateMentorForm() {
         />
       </label>
 
-      <fieldset className={styles.field}>
-        <legend>Career areas (used for matching)</legend>
-        <div className={styles.chips}>
-          {INTEREST_CATEGORIES.map((c) => (
-            <button
-              type="button"
-              key={c}
-              onClick={() => toggle(c)}
-              aria-pressed={careerAreas.includes(c)}
-              className={`${styles.chip} ${careerAreas.includes(c) ? styles.chipOn : ''}`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      <label className={styles.field}>
+        Short bio
+        <textarea
+          name="bio"
+          value={form.bio}
+          onChange={update}
+          rows={3}
+          maxLength={2000}
+          placeholder="Background, industries, and the kind of mentee they work best with"
+        />
+      </label>
+
+      <MatchProfileFields value={matching} onChange={setMatching} />
 
       {error && (
         <div className={styles.error} role="alert">

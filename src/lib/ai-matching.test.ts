@@ -17,13 +17,26 @@ const ENABLED: AiConfig = {
   model: 'gemini-3.5-flash-lite',
   monthlyBudgetUsd: 5,
   minConfidence: 0.8,
+  minMentors: 1,
 };
-const mentee = { interests: ['Finance'], careerGoals: [], businessExperience: null };
+const profile = {
+  interests: [] as string[],
+  careerGoals: [] as string[],
+  motivations: [] as string[],
+  opportunityValues: [] as string[],
+  successValues: [] as string[],
+  freeText: [] as string[],
+};
+const mentee = {
+  ...profile,
+  interests: ['Finance'],
+  careerGoals: ['start_business'],
+  freeText: ['Open a bakery'],
+  businessExperience: null,
+};
 const mentor = {
+  ...profile,
   id: 'm1',
-  careerAreas: [],
-  expertise: null,
-  bio: null,
   activeMenteeCount: 0,
   maxMentees: null,
 };
@@ -168,6 +181,10 @@ describe('aiRankMentors fallbacks (no API call)', () => {
     const result = await aiRankMentors(fakeAdmin(0), mentee, [mentor], { ...ENABLED, enabled: false });
     expect(result.status).toBe('disabled');
   });
+  it('leaves a small pool of mentors to a person', async () => {
+    const result = await aiRankMentors(fakeAdmin(0), mentee, [mentor], { ...ENABLED, minMentors: 5 });
+    expect(result.status).toBe('small_pool');
+  });
   it('skips when nobody is eligible', async () => {
     expect((await aiRankMentors(fakeAdmin(0), mentee, [], ENABLED)).status).toBe('not_needed');
   });
@@ -230,7 +247,9 @@ describe('aiRankMentors with Gemini (stubbed network)', () => {
     expect(body.generationConfig.responseMimeType).toBe('application/json');
     expect(body.generationConfig.responseJsonSchema.properties.choice).toBeDefined();
     expect(body.systemInstruction).toBeDefined();
-    expect(JSON.stringify(body.contents)).not.toContain('m2'); // ids never leave the server
+    const sent = JSON.stringify(body.contents);
+    expect(sent).not.toContain('m2'); // ids never leave the server
+    expect(sent).toContain('Start my own business'); // option values are sent as readable text
     expect(admin.rpc).toHaveBeenCalledWith(
       'record_ai_usage',
       expect.objectContaining({ p_input: 1000, p_output: 250 })

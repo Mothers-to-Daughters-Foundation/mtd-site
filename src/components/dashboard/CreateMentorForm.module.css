@@ -81,7 +81,8 @@
   margin-bottom: var(--spacing-2);
 }
 
-.field input {
+.field input,
+.field textarea {
   padding: var(--spacing-2) var(--spacing-3);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-md);

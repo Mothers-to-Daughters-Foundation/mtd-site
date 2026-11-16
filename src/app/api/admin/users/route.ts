@@ -6,7 +6,14 @@ import {
 import { requireAdmin } from "@/lib/auth-guards";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { rollbackNewUser, saveNewUserProfile } from "@/lib/supabase/new-user";
-import { INTEREST_CATEGORIES } from "@/lib/onboarding-options";
+import {
+  CAREER_GOAL_OPTIONS,
+  INTEREST_CATEGORIES,
+  MOTIVATION_OPTIONS,
+  OPPORTUNITY_OPTIONS,
+  SUCCESS_OPTIONS,
+  optionValues,
+} from "@/lib/onboarding-options";
 import { z } from "zod";
 
 const createMentorSchema = z.object({
@@ -14,7 +21,12 @@ const createMentorSchema = z.object({
   email: z.string().trim().email("Invalid email address"),
   password: z.string().min(8, "Temporary password must be at least 8 characters"),
   careerAreas: z.array(z.enum(INTEREST_CATEGORIES)).default([]),
+  motivations: z.array(z.enum(optionValues(MOTIVATION_OPTIONS))).default([]),
+  careerGoals: z.array(z.enum(optionValues(CAREER_GOAL_OPTIONS))).default([]),
+  successValues: z.array(z.enum(optionValues(SUCCESS_OPTIONS))).default([]),
+  opportunityValues: z.array(z.enum(optionValues(OPPORTUNITY_OPTIONS))).default([]),
   expertise: z.string().trim().max(500).optional(),
+  bio: z.string().trim().max(2000).optional(),
   maxMentees: z.number().int().positive().nullable().default(null),
 });
 
@@ -62,7 +74,19 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const { name, email, password, careerAreas, expertise, maxMentees } = parsed.data;
+    const {
+      name,
+      email,
+      password,
+      careerAreas,
+      motivations,
+      careerGoals,
+      successValues,
+      opportunityValues,
+      expertise,
+      bio,
+      maxMentees,
+    } = parsed.data;
 
     const admin = createAdminClient();
     const { data: authData, error: authError } = await admin.auth.admin.createUser({
@@ -90,7 +114,12 @@ export async function POST(req: NextRequest) {
       full_name: name,
       role: "mentor",
       career_areas: careerAreas,
+      motivations,
+      career_goals: careerGoals,
+      success_values: successValues,
+      opportunity_values: opportunityValues,
       expertise: expertise || null,
+      bio: bio || null,
       max_mentees: maxMentees,
     });
 

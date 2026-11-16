@@ -15,7 +15,7 @@ export default async function OnboardingPage() {
 
   const { data: profile } = await supabase
     .from('user_profiles')
-    .select('role, onboarding_completed')
+    .select('role, onboarding_completed, full_name')
     .eq('id', user.id)
     .single();
 
@@ -23,5 +23,5 @@ export default async function OnboardingPage() {
     redirect('/dashboard');
   }
 
-  return <OnboardingForm />;
+  return <OnboardingForm initialName={profile.full_name ?? ''} />;
 }

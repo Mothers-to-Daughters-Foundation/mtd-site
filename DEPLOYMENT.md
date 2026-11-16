@@ -83,10 +83,16 @@ The simpler alternative is to serve the whole site from Vercel and turn off GitH
 
 ## 6. AI-assisted matching (optional)
 
-Matching works without AI: exact career-area matches are assigned automatically and
-everything else goes to **Admin → Matches → Needs review**. With an AI key, weaker matches are
-first ranked by a model. Its pick is assigned only at or above a confidence threshold; below it,
-or whenever the AI step is skipped, the match goes to review with a flag saying why.
+Matching works without AI. Mentees and mentors answer the same questions; each mentor with room
+is scored on interests (30%), career goals (25%), motivations (20%), what the mentee looks for
+next (15%) and what success means (10%), plus a small keyword bonus from free text. A strong
+(60%+), complete, clear winner is assigned automatically; everything else goes to
+**Admin → Matches → Needs review** with the reasons.
+
+With an AI key, partial fits are first ranked by a model, but only when at least
+`AI_MATCHING_MIN_MENTORS` mentors have room; with fewer, a person decides. The AI's pick is
+assigned only at or above a confidence threshold; below it, or whenever the AI step is skipped,
+the match goes to review with a flag saying why.
 
 Two providers are supported. Gemini is used when its key is set.
 
@@ -110,6 +116,7 @@ Add these on Vercel (server-only; never prefix them with `NEXT_PUBLIC_`), then r
 | `AI_MATCHING_MODEL` | `gemini-3.5-flash-lite` / `claude-opus-5-5` | e.g. `gemini-3.8-flash` for Flash |
 | `AI_MATCHING_MONTHLY_BUDGET_USD` | `5` | Stop calling AI once this month's estimated spend reaches this |
 | `AI_MATCHING_MIN_CONFIDENCE` | `0.8` | AI picks below this (0–1) go to admin review |
+| `AI_MATCHING_MIN_MENTORS` | `5` | Fewer mentors with room than this: skip AI, a person decides |
 | `AI_MATCHING_ENABLED` | `true` | Set `false` to turn AI off without deleting the key |
 
 For local testing, put the same names in `.env.local`. The AI step only sees mentee answers and
@@ -131,5 +138,9 @@ you. Then update these to the new domain: `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC
   `user_profiles`, `admin_users`, `plans`, `subscriptions`, `mentorships`, `conversations`,
   `conversation_members`, `messages`, `sessions`, `notifications`, `resources`, `audit_logs`,
   plus a storage bucket for resources. A new Supabase project needs these created first.
+- **Apply the files in `supabase/migrations/` in order** (Supabase SQL editor; each is safe to
+  re-run). `0014_match_review.sql` adds mentor capacity and the review queue;
+  `0015_matching_profile.sql` adds the onboarding answers. Without 0015, onboarding, Add mentor
+  and mentor profile saves fail.
 - The contact, newsletter, and volunteer forms need `NEXT_PUBLIC_FORMSPREE_ID`.
 - Change the seeded test and admin passwords.

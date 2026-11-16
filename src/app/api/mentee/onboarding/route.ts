@@ -3,17 +3,53 @@ import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { tierKind } from '@/lib/onboarding';
-import { BUSINESS_EXPERIENCE_OPTIONS } from '@/lib/onboarding-options';
+import {
+  BUSINESS_EXPERIENCE_OPTIONS,
+  CAREER_GOAL_OPTIONS,
+  MOTIVATION_OPTIONS,
+  OPPORTUNITY_OPTIONS,
+  SUCCESS_OPTIONS,
+  optionValues,
+} from '@/lib/onboarding-options';
 
-const schema = z.object({
-  fullName: z.string().trim().min(1, 'Enter your name.'),
-  interests: z.array(z.string().trim().min(1)).min(1, 'Pick at least one interest.'),
-  careerGoals: z.array(z.string().trim().min(1)).min(1, 'Add at least one career goal.'),
-  businessExperience: z.enum(BUSINESS_EXPERIENCE_OPTIONS, {
-    error: 'Select your years of business experience.',
-  }),
-  planId: z.string().uuid('Choose a plan.'),
-});
+const choices = (options: Parameters<typeof optionValues>[0]) =>
+  z.array(z.enum(optionValues(options))).max(options.length).default([]);
+const otherText = z.string().trim().max(500).default('');
+
+const schema = z
+  .object({
+    fullName: z.string().trim().min(1, 'Enter your name.').max(120),
+    // Option values plus any the mentee typed in themselves.
+    interests: z
+      .array(z.string().trim().min(1).max(60))
+      .min(1, 'Pick at least one interest.')
+      .max(40),
+    motivations: choices(MOTIVATION_OPTIONS).refine((v) => v.length > 0, {
+      message: 'Pick at least one reason for joining.',
+    }),
+    careerGoals: choices(CAREER_GOAL_OPTIONS),
+    careerGoalsOther: otherText,
+    successValues: choices(SUCCESS_OPTIONS),
+    successOther: otherText,
+    opportunityValues: choices(OPPORTUNITY_OPTIONS),
+    opportunityOther: otherText,
+    businessExperience: z.enum(BUSINESS_EXPERIENCE_OPTIONS, {
+      error: 'Select your years of business experience.',
+    }),
+    aboutMe: z.string().trim().max(2000).default(''),
+    planId: z.string().uuid('Choose a plan.'),
+  })
+  .refine((b) => b.careerGoals.length > 0 || b.careerGoalsOther, {
+    message: 'Pick at least one career goal or describe your own.',
+  })
+  .refine((b) => b.successValues.length > 0 || b.successOther, {
+    message: 'Pick at least one answer about success or describe your own.',
+  })
+  .refine((b) => b.opportunityValues.length > 0 || b.opportunityOther, {
+    message: 'Pick at least one thing you look for or describe your own.',
+  });
+
+const orNull = (s: string) => s || null;
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -59,8 +95,15 @@ export async function POST(request: Request) {
     .update({
       full_name: body.fullName,
       interests: body.interests,
+      motivations: body.motivations,
       career_goals: body.careerGoals,
+      career_goals_other: orNull(body.careerGoalsOther),
+      success_values: body.successValues,
+      success_other: orNull(body.successOther),
+      opportunity_values: body.opportunityValues,
+      opportunity_other: orNull(body.opportunityOther),
       business_experience: body.businessExperience,
+      about_me: orNull(body.aboutMe),
       onboarding_completed: true,
     })
     .eq('id', user.id);
