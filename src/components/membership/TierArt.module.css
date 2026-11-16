@@ -1,0 +1,23 @@
+/* Colour themes shared by every tier card (public and member pages). */
+.seed {
+  --tier-accent: #4f8a5b;
+  --tier-tint: #eef7f0;
+}
+
+.bloom {
+  --tier-accent: #c2457a;
+  --tier-tint: #fcebf2;
+}
+
+.flight {
+  --tier-accent: var(--brand-700);
+  --tier-tint: var(--accent-100);
+}
+
+.art {
+  display: block;
+  width: 120px;
+  height: 90px;
+  margin: 0 auto var(--spacing-3);
+  color: var(--tier-accent);
+}

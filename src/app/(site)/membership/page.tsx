@@ -1,6 +1,7 @@
 import { getPublicPlans, type Plan } from '@/lib/supabase/plans';
 import { zeffyPaymentUrl } from '@/lib/zeffy';
 import TierCard from '@/components/membership/TierCard';
+import { priceRank, tierTheme } from '@/components/membership/TierArt';
 import styles from './page.module.css';
 
 export const metadata = {
@@ -49,6 +50,12 @@ export default async function MembershipPage() {
               name={tier.name}
               description={tier.description ?? ''}
               pricePerMonth={tier.monthly_price}
+              theme={tierTheme(
+                priceRank(
+                  tier.monthly_price,
+                  activeTiers.map((t) => t.monthly_price),
+                ),
+              )}
               features={planFeatures(tier)}
               zeffyUrl={
                 tier.monthly_price > 0 ? zeffyPaymentUrl(tier.zeffy_url) : undefined

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getResourceById } from "@/lib/models/resources";
+import { getResourceById, getUploaders, isOpenToEveryone } from "@/lib/models/resources";
 import { isExternalResource } from "@/lib/resources/files";
 import { createAuditLog } from "@/lib/audit";
 import { getMenteeAccess } from "@/lib/access";
@@ -31,11 +31,6 @@ export async function GET(
     );
   }
 
-  const access = await getMenteeAccess(user.id);
-  if (!access.hasAccess) {
-    return NextResponse.json({ error: "Upgrade required" }, { status: 403 });
-  }
-
   const resource = await getResourceById(id);
 
   if (!resource) {
@@ -43,6 +38,15 @@ export async function GET(
       { error: "Resource not found." },
       { status: 404 }
     );
+  }
+
+  // Free and lapsed mentees can still open what an admin shared with everyone.
+  const access = await getMenteeAccess(user.id);
+  if (
+    !access.hasAccess &&
+    !isOpenToEveryone(resource, await getUploaders([resource]))
+  ) {
+    return NextResponse.json({ error: "Upgrade required" }, { status: 403 });
   }
 
   const { data: profile, error: profileError } = await supabase

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getPlanById } from "@/lib/supabase/plans";
+import { tierKind } from "@/lib/onboarding";
 
 export async function POST() {
   const supabase = await createClient();
@@ -15,7 +17,7 @@ export async function POST() {
   try {
     const { data: subscription, error } = await supabase
       .from("subscriptions")
-      .select("id")
+      .select("id, plan_id")
       .eq("user_id", user.id)
       .eq("is_current", true)
       .maybeSingle();
@@ -26,6 +28,15 @@ export async function POST() {
       return NextResponse.json(
         { error: "No active subscription found" },
         { status: 404 }
+      );
+    }
+
+    // The Free plan has no payments, so there is nothing to cancel.
+    const plan = subscription.plan_id ? await getPlanById(subscription.plan_id) : null;
+    if (!plan || tierKind(plan.monthly_price) === "free") {
+      return NextResponse.json(
+        { error: "The Free plan has nothing to cancel." },
+        { status: 400 }
       );
     }
 

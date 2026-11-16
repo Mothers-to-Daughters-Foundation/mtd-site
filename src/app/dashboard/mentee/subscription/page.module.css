@@ -146,8 +146,9 @@
 }
 
 .tierCard {
-  background: var(--surface-1);
+  background: linear-gradient(180deg, var(--tier-tint, var(--surface-1)) 0, var(--surface-1) 140px);
   border: 1px solid var(--border-color);
+  border-top: 4px solid var(--tier-accent, var(--brand-700));
   border-radius: var(--radius-lg);
   padding: var(--spacing-5);
   display: flex;
@@ -172,6 +173,12 @@
   padding: 2px 8px;
   border-radius: 999px;
   text-transform: uppercase;
+}
+
+.tierArtWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-2);
 }
 
 .tierName {

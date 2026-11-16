@@ -175,3 +175,17 @@ export async function getUploaders(
     ])
   );
 }
+
+/**
+ * True when an admin shared the resource with everyone ("public"). These are
+ * open to every mentee, Free plan included; everything else needs a paid plan.
+ */
+export function isOpenToEveryone(
+  resource: Pick<Resource, "visibility" | "uploaded_by">,
+  uploaders: Map<string, Uploader>
+): boolean {
+  return (
+    resource.visibility === "public" &&
+    uploaders.get(resource.uploaded_by)?.role === "admin"
+  );
+}

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import TierArt, { priceRank, tierTheme } from '@/components/membership/TierArt';
+import themes from '@/components/membership/TierArt.module.css';
 import styles from './page.module.css';
 
 interface Tier {
@@ -117,9 +119,16 @@ export default function MenteeSubscriptionPage() {
               Renews {new Date(sub.expires_at).toLocaleDateString()}
             </div>
           )}
-          <button onClick={handleCancel} className={styles.cancelBtn}>
-            Cancel Subscription
-          </button>
+          {currentTier.pricePerMonth > 0 ? (
+            <button onClick={handleCancel} className={styles.cancelBtn}>
+              Cancel Subscription
+            </button>
+          ) : (
+            <div className={styles.renewDate}>
+              The Free plan has no payments, so there&apos;s nothing to cancel. Upgrade below any
+              time.
+            </div>
+          )}
         </div>
       )}
 
@@ -127,9 +136,16 @@ export default function MenteeSubscriptionPage() {
       <div className={styles.tiersGrid}>
         {tiers.map((tier) => {
           const isCurrent = sub?.plan_id === tier._id && sub.status !== 'cancelled';
+          const theme = tierTheme(priceRank(tier.pricePerMonth, tiers.map((t) => t.pricePerMonth)));
           return (
-            <div key={tier._id} className={`${styles.tierCard} ${isCurrent ? styles.tierCardActive : ''}`}>
+            <div
+              key={tier._id}
+              className={`${styles.tierCard} ${themes[theme]} ${isCurrent ? styles.tierCardActive : ''}`}
+            >
               {isCurrent && <div className={styles.currentBadge}>Current</div>}
+              <div className={styles.tierArtWrap}>
+                <TierArt theme={theme} className={themes.art} />
+              </div>
               <div className={styles.tierName}>{tier.name}</div>
               <div className={styles.tierPrice}>${(tier.pricePerMonth / 100).toFixed(2)}<span>/mo</span></div>
               {tier.description && (

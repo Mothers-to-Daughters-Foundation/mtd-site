@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import styles from './TierCard.module.css';
 import { appHref } from '@/lib/appUrl';
+import TierArt, { type TierTheme } from './TierArt';
+import themes from './TierArt.module.css';
 
 interface TierCardProps {
   id: string;
@@ -10,6 +12,7 @@ interface TierCardProps {
   features: string[];
   zeffyUrl?: string;
   isDefault?: boolean;
+  theme?: TierTheme;
 }
 
 export default function TierCard({
@@ -20,10 +23,12 @@ export default function TierCard({
   features,
   zeffyUrl,
   isDefault,
+  theme = 'flight',
 }: TierCardProps) {
   return (
-    <div className={`${styles.card} ${isDefault ? styles.cardFeatured : ''}`}>
+    <div className={`${styles.card} ${themes[theme]} ${isDefault ? styles.cardFeatured : ''}`}>
       {isDefault && <div className={styles.featuredBadge}>Most Popular</div>}
+      <TierArt theme={theme} className={themes.art} />
       <div className={styles.name}>{name}</div>
       <div className={styles.price}>
         ${(pricePerMonth / 100).toFixed(2)}
