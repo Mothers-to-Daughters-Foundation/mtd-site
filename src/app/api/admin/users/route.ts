@@ -5,6 +5,7 @@ import {
 } from "@/lib/supabase/users";
 import { requireAdmin } from "@/lib/auth-guards";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { rollbackNewUser, saveNewUserProfile } from "@/lib/supabase/new-user";
 import { INTEREST_CATEGORIES } from "@/lib/onboarding-options";
 import { z } from "zod";
 
@@ -72,7 +73,8 @@ export async function POST(req: NextRequest) {
     });
 
     if (authError || !authData.user) {
-      const exists = authError?.message.toLowerCase().includes("already");
+      const exists =
+        authError?.code === "email_exists" || /already/i.test(authError?.message ?? "");
       return NextResponse.json(
         {
           error: exists
@@ -83,7 +85,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { error: profileError } = await admin.from("user_profiles").insert({
+    const { error: profileError } = await saveNewUserProfile(admin, {
       id: authData.user.id,
       full_name: name,
       role: "mentor",
@@ -93,8 +95,8 @@ export async function POST(req: NextRequest) {
     });
 
     if (profileError) {
-      await admin.auth.admin.deleteUser(authData.user.id);
       console.error("[admin/users POST] profile", profileError);
+      await rollbackNewUser(admin, authData.user.id);
       return NextResponse.json(
         { error: "Failed to create the mentor profile" },
         { status: 500 }
