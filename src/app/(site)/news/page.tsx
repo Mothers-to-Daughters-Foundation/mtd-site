@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
-import Card from '@/components/ui/Card';
+import Link from 'next/link';
 import { getAllNews } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
 import styles from '@/components/ui/ContentList.module.css';
@@ -56,46 +56,46 @@ export default function NewsPage() {
         {news.length === 0 ? (
           <p className={styles.empty}>No news items yet. Check back soon!</p>
         ) : (
-          <div className={styles.grid}>
+          <ol className={newsStyles.list}>
             {news.map((item) => (
-              <Card
-                key={item.slug}
-                href={`/news/${item.slug}`}
-                className={styles.card}
-              >
-                <div className={styles.cardImage}>
-                  {item.frontmatter.image ? (
-                    <Image
-                      src={getImagePath(item.frontmatter.image)}
-                      alt={item.frontmatter.title}
-                      width={400}
-                      height={225}
-                      className={styles.cardImageContent}
-                    />
-                  ) : (
-                    <div className={styles.cardImagePlaceholder}>
-                      <span>Mothers to Daughters</span>
-                    </div>
-                  )}
-                </div>
-                <div className={styles.cardBody}>
-                  <h2 className={styles.cardTitle}>{item.frontmatter.title}</h2>
-                  {item.frontmatter.excerpt && (
-                    <p className={styles.cardExcerpt}>
-                      {item.frontmatter.excerpt}
-                    </p>
-                  )}
-                  <time dateTime={item.frontmatter.date} className={styles.cardDate}>
+              <li key={item.slug} className={newsStyles.row}>
+                <div className={newsStyles.rowText}>
+                  <time dateTime={item.frontmatter.date} className={newsStyles.rowDate}>
                     {new Date(item.frontmatter.date).toLocaleDateString('en-US', {
                       year: 'numeric',
-                      month: 'long',
+                      month: 'short',
                       day: 'numeric',
+                      timeZone: 'UTC',
                     })}
                   </time>
+                  <h2 className={newsStyles.rowTitle}>
+                    <Link href={`/news/${item.slug}`}>{item.frontmatter.title}</Link>
+                  </h2>
+                  {item.frontmatter.excerpt && (
+                    <p className={newsStyles.rowExcerpt}>{item.frontmatter.excerpt}</p>
+                  )}
+                  <Link
+                    href={`/news/${item.slug}`}
+                    className={newsStyles.readMore}
+                    aria-label={`Read more: ${item.frontmatter.title}`}
+                  >
+                    Read More
+                  </Link>
                 </div>
-              </Card>
+                {item.frontmatter.image && (
+                  <Link href={`/news/${item.slug}`} className={newsStyles.rowImage} tabIndex={-1} aria-hidden="true">
+                    <Image
+                      src={getImagePath(item.frontmatter.image)}
+                      alt=""
+                      width={480}
+                      height={320}
+                      className={newsStyles.rowImageContent}
+                    />
+                  </Link>
+                )}
+              </li>
             ))}
-          </div>
+          </ol>
         )}
       </Container>
     </Section>

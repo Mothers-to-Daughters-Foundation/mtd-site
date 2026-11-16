@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Container from '@/components/layout/Container';
@@ -45,10 +46,19 @@ export default function NewsItemPage({ params }: NewsPageProps) {
     notFound();
   }
 
+  // Newest first, as on the News page: "previous" is newer, "next" is older.
+  const all = getAllNews();
+  const index = all.findIndex((n) => n.slug === item.slug);
+  const newer = index > 0 ? all[index - 1] : null;
+  const older = index >= 0 && index < all.length - 1 ? all[index + 1] : null;
+
   return (
     <Section spacing="lg">
       <Container>
         <article className={styles.article}>
+          <Link href="/news" className={styles.back}>
+            ← Back to News
+          </Link>
           <header className={styles.header}>
             <h1 className={styles.title}>{item.frontmatter.title}</h1>
             <div className={styles.meta}>
@@ -57,6 +67,7 @@ export default function NewsItemPage({ params }: NewsPageProps) {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
+                  timeZone: 'UTC',
                 })}
               </time>
             </div>
@@ -74,6 +85,22 @@ export default function NewsItemPage({ params }: NewsPageProps) {
             </div>
           )}
           <Markdown content={item.content} />
+          <nav className={styles.pager} aria-label="More news">
+            {newer ? (
+              <Link href={`/news/${newer.slug}`} className={styles.pagerLink}>
+                <span>← Previous</span>
+                {newer.frontmatter.title}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {older && (
+              <Link href={`/news/${older.slug}`} className={`${styles.pagerLink} ${styles.pagerNext}`}>
+                <span>Next →</span>
+                {older.frontmatter.title}
+              </Link>
+            )}
+          </nav>
         </article>
       </Container>
     </Section>
