@@ -30,6 +30,19 @@ export default function DashboardLayout({
         return;
       }
 
+      // A deactivated account can't sign in again; this ends a session that
+      // was already open when an admin deactivated it.
+      const { data: profile } = await supabase
+        .from("user_profiles")
+        .select("deactivated_at")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (profile?.deactivated_at) {
+        await supabase.auth.signOut();
+        router.replace("/login?deactivated=1");
+        return;
+      }
+
       setLoading(false);
     }
 
