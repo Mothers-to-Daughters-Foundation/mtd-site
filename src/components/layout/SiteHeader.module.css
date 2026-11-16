@@ -269,7 +269,9 @@
   padding-right: var(--spacing-4) !important;
 }
 
-@media (min-width: 768px) {
+/* Full menu only once it fits on one line at full size; below this the
+   hamburger menu is used (tablets wrapped the labels and clipped Sign In). */
+@media (min-width: 1100px) {
   .menuToggle {
     display: none;
   }
@@ -352,5 +354,48 @@
     border-radius: var(--radius-lg) !important;
     padding-left: var(--spacing-4) !important;
     padding-right: var(--spacing-4) !important;
+  }
+}
+
+/* Desktop sizing: a taller bar, larger logo and menu text, more room between items. */
+@media (min-width: 1100px) {
+  .content {
+    padding-top: var(--spacing-5);
+    padding-bottom: var(--spacing-5);
+  }
+
+  .logoImage {
+    height: 72px;
+  }
+
+  .nav {
+    gap: var(--spacing-4);
+    margin-left: var(--spacing-8);
+  }
+
+  .navLink,
+  .dropdownTrigger {
+    font-size: 1.1875rem;
+    white-space: nowrap;
+  }
+
+  .caret {
+    margin-left: 2px;
+  }
+
+  .dropdown a {
+    font-size: var(--text-base);
+  }
+
+  .donateButton {
+    margin-left: var(--spacing-6);
+    font-size: 1.1875rem !important;
+    padding: var(--spacing-4) var(--spacing-6) !important;
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .signInLink {
+    font-size: var(--text-base);
+    white-space: nowrap;
   }
 }
