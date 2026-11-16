@@ -17,7 +17,7 @@ const adminNav = [
   { href: "/dashboard/admin", label: "Overview", exact: true },
   { href: "/dashboard/admin/users", label: "Users" },
   { href: "/dashboard/admin/tiers", label: "Subscription Tiers" },
-  { href: "/dashboard/admin/matches", label: "Matches" },
+  { href: "/dashboard/admin/matches", label: "Matchmaking Panel" },
   { href: "/dashboard/admin/resources", label: "Resources" },
   { href: "/dashboard/admin/bug-reports", label: "Bug Reports" },
   { href: "/dashboard/notifications", label: "Notifications" },
