@@ -81,6 +81,33 @@ at Vercel.
 
 The simpler alternative is to serve the whole site from Vercel and turn off GitHub Pages.
 
+## 6. AI-assisted matching (optional)
+
+Matching works without AI: exact career-area matches are assigned automatically and
+everything else goes to **Admin → Matches → Needs review**. With an Anthropic API key, weaker
+matches are first ranked by Claude. Its pick is assigned only at or above a confidence threshold;
+below it, or whenever the AI step is skipped, the match goes to review with a flag saying why.
+
+1. Create a key at https://console.anthropic.com → **API keys**. Use a dedicated workspace for
+   this site if you can.
+2. In the Console, under **Limits**, set a monthly spend limit. This is the hard cap; the app's
+   own budget below is a second, softer guard.
+3. Add these on Vercel (server-only; never prefix them with `NEXT_PUBLIC_`), then redeploy:
+
+| Name | Default | Meaning |
+|------|---------|---------|
+| `ANTHROPIC_API_KEY` | — | Turns the AI step on |
+| `AI_MATCHING_MONTHLY_BUDGET_USD` | `5` | Stop calling AI once this month's estimated spend reaches this |
+| `AI_MATCHING_MIN_CONFIDENCE` | `0.8` | AI picks below this (0–1) go to admin review |
+| `AI_MATCHING_MODEL` | `claude-opus-5-5` | Model used for ranking |
+| `AI_MATCHING_ENABLED` | `true` | Set `false` to turn AI off without deleting the key |
+
+For local testing, put the same names in `.env.local`. The AI step only sees mentee answers and
+mentor career areas, expertise, bio and load, under opaque labels — never names or contact details.
+
+When the AI step is skipped, the review shows why: AI off, monthly budget used up, account out of
+credit, service unavailable, or misconfigured key/model. Spend resets on the 1st of each month (UTC).
+
 ## Moving to your own domain
 
 Add the domain in Vercel (Project → Settings → Domains) and create the DNS records Vercel shows

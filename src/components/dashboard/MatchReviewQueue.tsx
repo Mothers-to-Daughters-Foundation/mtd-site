@@ -18,6 +18,10 @@ interface Review {
   confidence: 'high' | 'low' | 'none';
   suggested_mentor_id: string | null;
   created_at: string;
+  ai_status: string;
+  ai_confidence: number | null;
+  ai_reason: string | null;
+  ai_flag: string;
   mentee: {
     id: string;
     name: string;
@@ -35,8 +39,19 @@ interface MentorOption {
   maxMentees: number | null;
 }
 
+interface AiInfo {
+  enabled: boolean;
+  model: string;
+  minConfidence: number;
+  budgetUsd: number;
+  spentUsd: number | null;
+  budgetExhausted: boolean;
+}
+
 interface Metrics {
   auto_assigned: number;
+  ai_assigned: number;
+  aiEscalationRate: number | null;
   approved: number;
   overridden: number;
   dismissed: number;
@@ -67,6 +82,24 @@ function hours(n: number | null) {
   return n < 48 ? `${n.toFixed(1)} h` : `${(n / 24).toFixed(1)} days`;
 }
 
+function aiWarn(ai: AiInfo) {
+  return !ai.enabled || ai.budgetExhausted;
+}
+
+function aiSummary(ai: AiInfo) {
+  const budget = `$${ai.budgetUsd.toFixed(2)}`;
+  if (!ai.enabled) {
+    return 'AI matching is off (no API key set). Weaker matches come straight here.';
+  }
+  if (ai.budgetExhausted) {
+    return `This month's AI budget (${budget}) is used up. Weaker matches come straight here until next month.`;
+  }
+  const spent = ai.spentUsd == null ? 'unknown' : `$${ai.spentUsd.toFixed(2)}`;
+  return `AI matching is on (${ai.model}). Spent ${spent} of ${budget} this month. Auto-assigns at ${Math.round(
+    ai.minConfidence * 100
+  )}% confidence or higher.`;
+}
+
 /**
  * Low-confidence matches waiting on an admin, with the top candidates and why
  * they scored, plus the decision metrics used to judge the matcher.
@@ -75,6 +108,7 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
   const [reviews, setReviews] = useState<Review[]>([]);
   const [mentors, setMentors] = useState<MentorOption[]>([]);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [ai, setAi] = useState<AiInfo | null>(null);
   const [other, setOther] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -90,6 +124,7 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
     setReviews(data.pending ?? []);
     setMentors(data.mentors ?? []);
     setMetrics(data.metrics ?? null);
+    setAi(data.ai ?? null);
   }, []);
 
   useEffect(() => {
@@ -128,6 +163,10 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
               <dd>{pct(metrics.overrideRate)}</dd>
             </div>
             <div>
+              <dt>Sent to AI</dt>
+              <dd>{pct(metrics.aiEscalationRate)}</dd>
+            </div>
+            <div>
               <dt>Median time to pair</dt>
               <dd>{hours(metrics.medianHoursToPair)}</dd>
             </div>
@@ -136,9 +175,12 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
       </div>
 
       <p className={styles.hint}>
-        Mentees with an exact career-area match are paired automatically. These need a
-        person: the match is weaker, or no mentor with room fits.
+        Mentees with an exact career-area match are paired automatically. Weaker matches
+        go to AI when it&apos;s on, and AI picks below its confidence threshold come here,
+        as does everything when AI is off or over budget.
       </p>
+
+      {ai && <p className={`${styles.aiBanner} ${aiWarn(ai) ? styles.aiBannerWarn : ''}`}>{aiSummary(ai)}</p>}
 
       {error && <p className={styles.error}>{error}</p>}
 
@@ -159,6 +201,12 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
                 <p className={styles.answers}>
                   <span>Goals:</span> {r.mentee.careerGoals.join(', ') || '—'}
                 </p>
+                {r.ai_flag && <p className={styles.aiFlag}>Flag: {r.ai_flag}</p>}
+                {r.ai_status === 'used' && r.ai_reason && (
+                  <p className={styles.aiNote}>
+                    AI ({pct(r.ai_confidence)} confident): {r.ai_reason}
+                  </p>
+                )}
                 {r.mentee.businessExperience && (
                   <p className={styles.answers}>
                     <span>Experience:</span> {r.mentee.businessExperience}
@@ -173,7 +221,9 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
                       <div>
                         <strong>{c.name}</strong>
                         {c.mentorId === r.suggested_mentor_id && (
-                          <span className={styles.top}>Suggested</span>
+                          <span className={styles.top}>
+                            {r.ai_status === 'used' ? 'AI pick' : 'Suggested'}
+                          </span>
                         )}
                         <p className={styles.why}>
                           {KIND_LABEL[c.kind]}
