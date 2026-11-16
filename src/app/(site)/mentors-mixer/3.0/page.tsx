@@ -6,9 +6,9 @@ import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Mentors Mixer 3.0 — Women As a Powerful Force',
+  title: 'Mentors Mixer 3.0: Women As a Powerful Force',
   description:
-    'A look back at Mentors Mixer 3.0: "Women As a Powerful Force" — March 29th, 2023.',
+    'A look back at Mentors Mixer 3.0: "Women As a Powerful Force", March 29th, 2023.',
 };
 
 const speakers = [
@@ -51,7 +51,7 @@ export default function MentorsMixer30Page() {
           <div className={styles.heroImage}>
             <Image
               src={getImagePath('/images/mixers/mixer-3-0-hero.png')}
-              alt="Mentors Mixer 3.0 — Women As a Powerful Force"
+              alt="Mentors Mixer 3.0: Women As a Powerful Force"
               width={1234}
               height={556}
               className={styles.heroImageContent}

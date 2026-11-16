@@ -16,7 +16,7 @@ interface ProgramDetailPageProps {
 const programs: Record<string, any> = {
   'intergenerational-mentoring': {
     title: 'M2D Intergenerational Mentoring Program',
-    subtitle: 'A Transformational Six-Month Journey—At No Cost',
+    subtitle: 'A Transformational Six-Month Journey at No Cost',
     description:
       'Mothers to Daughters (M2D) offers a high-impact mentorship program designed to equip young women with the entrepreneurial mindset, strategies, and leadership skills needed to excel. Through immersive mentorship and hands-on workshops.',
     tagline: 'Invest in yourself. Build your legacy. Enroll today.',

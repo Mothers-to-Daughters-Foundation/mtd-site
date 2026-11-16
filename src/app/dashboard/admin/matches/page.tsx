@@ -374,7 +374,7 @@ export default function AdminMatchesPage() {
                   <td>
                     {match.start_date
                       ? new Date(match.start_date).toLocaleDateString()
-                      : "—"}
+                      : "-"}
                   </td>
 
                   <td>

@@ -10,7 +10,7 @@ import styles from './page.module.css';
 export const metadata: Metadata = {
   title: 'Programs',
   description:
-    'Explore the M2D Intergenerational Mentoring Program—a six-month, no-cost journey equipping young women to lead.',
+    'Explore the M2D Intergenerational Mentoring Program, a six-month, no-cost journey equipping young women to lead.',
 };
 
 const INTEREST_FORM_URL =
@@ -35,7 +35,7 @@ export default function ProgramsPage() {
         <Container>
           <h1 className={styles.heroTitle}>M2D Intergenerational Mentoring Program</h1>
           <p className={styles.heroDescription}>
-            A Transformational Six-Month Journey—At No Cost
+            A Transformational Six-Month Journey at No Cost
           </p>
         </Container>
       </Section>

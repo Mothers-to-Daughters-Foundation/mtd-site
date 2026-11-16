@@ -23,7 +23,7 @@ export default function DonatePage() {
           <p>
             She could be your daughter. Your sister. Your future leader. Your
             gift fuels free, high-impact mentorship that equips young women with
-            the confidence, skills, and community they need to thrive—and to lift
+            the confidence, skills, and community they need to thrive, and to lift
             up the next generation after them.
           </p>
           <p className={styles.taxNote}>

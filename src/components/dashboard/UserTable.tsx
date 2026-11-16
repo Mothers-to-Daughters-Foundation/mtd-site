@@ -144,7 +144,7 @@ export default function UserTable({ users: initialUsers, tiers, currentUserId }:
   };
 
   const tierName = (tierId?: string) =>
-    tierId ? (tiers.find((t) => t._id === tierId)?.name ?? tierId) : '—';
+    tierId ? (tiers.find((t) => t._id === tierId)?.name ?? tierId) : '-';
 
   return (
     <div>
@@ -238,7 +238,7 @@ export default function UserTable({ users: initialUsers, tiers, currentUserId }:
                   <td className={styles.dateCell}>
                     {u.createdAt
                       ? new Date(u.createdAt).toLocaleDateString()
-                      : '—'}
+                      : '-'}
                   </td>
                   <td>
                     <span className={`${styles.badge} ${u.deactivated ? styles['badge-cancelled'] : styles['badge-active']}`}>

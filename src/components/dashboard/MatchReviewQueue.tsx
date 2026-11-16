@@ -80,11 +80,11 @@ function load(m: { activeMenteeCount: number; maxMentees: number | null }) {
 }
 
 function pct(n: number | null) {
-  return n == null ? '—' : `${Math.round(n * 100)}%`;
+  return n == null ? '-' : `${Math.round(n * 100)}%`;
 }
 
 function hours(n: number | null) {
-  if (n == null) return '—';
+  if (n == null) return '-';
   return n < 48 ? `${n.toFixed(1)} h` : `${(n / 24).toFixed(1)} days`;
 }
 

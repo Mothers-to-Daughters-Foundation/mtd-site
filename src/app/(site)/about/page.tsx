@@ -35,14 +35,14 @@ const values = [
     number: '04',
     title: 'Fearless Innovation',
     description:
-      "We challenge the status quo with bold ideas and creative solutions. Progress happens where courage meets action—breaking barriers and redefining what's possible for women everywhere.",
+      "We challenge the status quo with bold ideas and creative solutions. Progress happens where courage meets action, breaking barriers and redefining what's possible for women everywhere.",
   },
 ];
 
 const milestones = [
   {
     date: 'March 2020',
-    text: 'Mothers to Daughters (M2D) was born—a vibrant community where women come together to uplift, mentor, and empower one another.',
+    text: 'Mothers to Daughters (M2D) was born, a vibrant community where women come together to uplift, mentor, and empower one another.',
   },
   {
     date: 'January 2021',
@@ -95,14 +95,14 @@ export default function AboutPage() {
               </p>
               <p className={styles.belief}>
                 We believe that <strong>society thrives when women are elevated</strong> to the
-                heights they&rsquo;ve always deserved—leading, innovating, and shaping the future.
+                heights they&rsquo;ve always deserved, leading, innovating, and shaping the future.
               </p>
               <p>
                 Strengthened by resilience, creativity, and collective wisdom, women are essential
                 to building a more inclusive and equitable world. Through mentorship, leadership,
                 and shared insights, we empower them to{' '}
                 <strong>break barriers, drive change, and leave a lasting impact</strong>. Yet every
-                day, the brilliance and potential of women remain overlooked—held back by{' '}
+                day, the brilliance and potential of women remain overlooked, held back by{' '}
                 <strong>systemic inequities</strong> and societal pressures. When women are excluded
                 from opportunities to lead, innovate, and create, we all miss out on the{' '}
                 <strong>sustainable solutions</strong> and transformative ideas they bring to the
