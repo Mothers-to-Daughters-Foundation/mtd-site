@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import AvatarUpload from '@/components/dashboard/AvatarUpload';
+import ChangePasswordForm from '@/components/dashboard/ChangePasswordForm';
 import styles from './page.module.css';
 
 export default function MenteeProfilePage() {
@@ -212,6 +213,8 @@ export default function MenteeProfilePage() {
             : 'Save Profile'}
         </button>
       </form>
+
+      <ChangePasswordForm styles={styles} />
     </div>
   );
 }

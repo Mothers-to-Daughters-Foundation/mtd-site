@@ -12,12 +12,11 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'mentee' as 'mentor' | 'mentee',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -45,7 +44,6 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: formData.role,
         }),
       });
 
@@ -81,7 +79,7 @@ export default function RegisterPage() {
           MTD
         </Link>
         <h1 className={styles.title}>Create your account</h1>
-        <p className={styles.subtitle}>Join the MTD community today</p>
+        <p className={styles.subtitle}>Join the MTD community as a mentee</p>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
@@ -111,20 +109,6 @@ export default function RegisterPage() {
             autoComplete="email"
             placeholder="you@example.com"
           />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="role">I am joining as a…</label>
-          <select
-            id="role"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className={styles.select}
-          >
-            <option value="mentee">Mentee — I&apos;m looking for guidance</option>
-            <option value="mentor">Mentor — I want to guide others</option>
-          </select>
         </div>
 
         <div className={styles.field}>
@@ -169,6 +153,10 @@ export default function RegisterPage() {
           {status === 'submitting' ? 'Creating account…' : 'Create Account'}
         </button>
       </form>
+
+      <p className={styles.footer}>
+        Mentoring with us? Your account is set up by the MTD team.
+      </p>
 
       <p className={styles.footer}>
         Already have an account?{' '}

@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import AvatarUpload from '@/components/dashboard/AvatarUpload';
+import ChangePasswordForm from '@/components/dashboard/ChangePasswordForm';
 import { INTEREST_CATEGORIES } from '@/lib/onboarding-options';
 import styles from './page.module.css';
 
@@ -19,6 +20,7 @@ export default function MentorProfilePage() {
     location: '',
     expertise: '',
     availability: '',
+    maxMentees: '',
   });
 
   const [careerAreas, setCareerAreas] = useState<string[]>([]);
@@ -60,6 +62,7 @@ export default function MentorProfilePage() {
           .join(', '),
         expertise: data.expertise ?? '',
         availability: data.availability ?? '',
+        maxMentees: data.max_mentees != null ? String(data.max_mentees) : '',
       });
     }
 
@@ -106,6 +109,7 @@ export default function MentorProfilePage() {
           expertise: formData.expertise,
           availability: formData.availability,
           career_areas: careerAreas,
+          max_mentees: formData.maxMentees ? Number(formData.maxMentees) : null,
         })
         .eq('id', userId);
 
@@ -248,6 +252,22 @@ export default function MentorProfilePage() {
           />
         </div>
 
+        <div className={styles.field}>
+          <label htmlFor="maxMentees">
+            Maximum mentees at a time
+          </label>
+
+          <input
+            id="maxMentees"
+            name="maxMentees"
+            type="number"
+            min={1}
+            value={formData.maxMentees}
+            onChange={handleChange}
+            placeholder="Leave blank for no limit"
+          />
+        </div>
+
         {status === 'error' && (
           <div
             className={styles.error}
@@ -276,6 +296,8 @@ export default function MentorProfilePage() {
             : 'Save Profile'}
         </button>
       </form>
+
+      <ChangePasswordForm styles={styles} />
     </div>
   );
 }

@@ -7,8 +7,11 @@ const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  role: z.enum(['mentor', 'mentee']),
 });
+
+// Public sign-up is for mentees only. Mentor accounts are created by an admin
+// (POST /api/admin/users).
+const role = 'mentee';
 
 export async function POST(req: NextRequest) {
   // Rate limit: 10 registrations per IP per hour
@@ -31,7 +34,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, password, role } = parsed.data;
+    const { name, email, password } = parsed.data;
 
     const supabase = createAdminClient();
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "@/components/dashboard/MatchManager.module.css";
 import pageStyles from "./page.module.css";
+import MatchReviewQueue from "@/components/dashboard/MatchReviewQueue";
 
 interface Match {
   id: string;
@@ -30,7 +31,7 @@ interface AutoMatchSummary {
   not_mentee: number;
   not_paid: number;
   already_matched: number;
-  no_candidate: number;
+  queued: number;
   error: number;
 }
 
@@ -51,6 +52,7 @@ export default function AdminMatchesPage() {
   // ── Auto-match state ────────────────────────────────────────────────────
   const [running, setRunning] = useState(false);
   const [autoSummary, setAutoSummary] = useState<AutoMatchSummary | null>(null);
+  const [reviewVersion, setReviewVersion] = useState(0);
 
   // ── Message state ────────────────────────────────────────────────────────
   const [message, setMessage] = useState("");
@@ -201,6 +203,7 @@ export default function AdminMatchesPage() {
 
     const s: AutoMatchSummary = data.summary;
     setAutoSummary(s);
+    setReviewVersion((v) => v + 1);
     await fetchMatches();
     showMessage("Auto-match complete.", "success");
   }
@@ -232,11 +235,13 @@ export default function AdminMatchesPage() {
         </div>
       )}
 
+      <MatchReviewQueue key={reviewVersion} onResolved={fetchMatches} />
+
       {/* ── Auto-match section ─────────────────────────────────────── */}
       <div className={`${styles.createBox} ${pageStyles.autoMatchBox}`}>
         <h2 className={styles.createTitle}>Auto-Match</h2>
         <p className={pageStyles.hint}>
-          Automatically pair all unmatched mentees with an available mentor.
+          Pair every paid, unmatched mentee. Exact career-area matches with a mentor who has room are assigned; the rest go to Needs review.
         </p>
 
         <button
@@ -252,7 +257,7 @@ export default function AdminMatchesPage() {
             {[
               autoSummary.matched > 0 && `Matched ${autoSummary.matched}`,
               autoSummary.already_matched > 0 && `${autoSummary.already_matched} already matched`,
-              autoSummary.no_candidate > 0 && `${autoSummary.no_candidate} no candidate`,
+              autoSummary.queued > 0 && `${autoSummary.queued} sent to review`,
               autoSummary.not_paid > 0 && `${autoSummary.not_paid} not paid`,
               autoSummary.not_mentee > 0 && `${autoSummary.not_mentee} not mentee`,
               autoSummary.error > 0 && `${autoSummary.error} error`,

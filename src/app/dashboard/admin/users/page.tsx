@@ -8,6 +8,7 @@ import { getAllUsers } from "@/lib/supabase/users";
 import { getAllPlans } from "@/lib/supabase/plans";
 
 import UserTable from "@/components/dashboard/UserTable";
+import CreateMentorForm from "@/components/dashboard/CreateMentorForm";
 
 import styles from "./page.module.css";
 
@@ -97,6 +98,8 @@ export default async function AdminUsersPage() {
           {users.length} registered accounts
         </p>
       </div>
+
+      <CreateMentorForm />
 
       <UserTable
         users={serializedUsers}

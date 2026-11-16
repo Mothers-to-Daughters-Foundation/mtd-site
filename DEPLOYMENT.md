@@ -81,6 +81,44 @@ at Vercel.
 
 The simpler alternative is to serve the whole site from Vercel and turn off GitHub Pages.
 
+## 6. AI-assisted matching (optional)
+
+Matching works without AI: exact career-area matches are assigned automatically and
+everything else goes to **Admin → Matches → Needs review**. With an AI key, weaker matches are
+first ranked by a model. Its pick is assigned only at or above a confidence threshold; below it,
+or whenever the AI step is skipped, the match goes to review with a flag saying why.
+
+Two providers are supported. Gemini is used when its key is set.
+
+**Google AI Studio (Gemini Flash / Flash-Lite)**
+
+1. Go to https://aistudio.google.com → **Get API key** → **Create API key**.
+2. Turn on billing for that project (AI Studio → **Billing**) before using real member data.
+   On the free tier Google may use prompts to improve its products, and free quotas are small.
+3. Optionally set a budget alert in Google Cloud Billing. The app's own budget below is a soft cap.
+
+**Anthropic (Claude)**: create a key at https://console.anthropic.com → **API keys** and set a
+monthly spend limit under **Limits** (a hard cap).
+
+Add these on Vercel (server-only; never prefix them with `NEXT_PUBLIC_`), then redeploy:
+
+| Name | Default | Meaning |
+|------|---------|---------|
+| `GEMINI_API_KEY` | — | Google AI Studio key: turns the AI step on with Gemini |
+| `ANTHROPIC_API_KEY` | — | Anthropic key: turns the AI step on with Claude |
+| `AI_MATCHING_PROVIDER` | whichever key is set (Google first) | `google` or `anthropic` |
+| `AI_MATCHING_MODEL` | `gemini-3.5-flash-lite` / `claude-opus-5-5` | e.g. `gemini-3.8-flash` for Flash |
+| `AI_MATCHING_MONTHLY_BUDGET_USD` | `5` | Stop calling AI once this month's estimated spend reaches this |
+| `AI_MATCHING_MIN_CONFIDENCE` | `0.8` | AI picks below this (0–1) go to admin review |
+| `AI_MATCHING_ENABLED` | `true` | Set `false` to turn AI off without deleting the key |
+
+For local testing, put the same names in `.env.local`. The AI step only sees mentee answers and
+mentor career areas, expertise, bio and load, under opaque labels, never names or contact details.
+
+When the AI step is skipped, the review shows why: AI off, monthly budget used up, provider quota
+or credit used up, service unavailable, or misconfigured key/model. Spend is estimated from token
+counts at paid-tier prices and resets on the 1st of each month (UTC).
+
 ## Moving to your own domain
 
 Add the domain in Vercel (Project → Settings → Domains) and create the DNS records Vercel shows
