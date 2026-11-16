@@ -213,7 +213,7 @@ export default function AdminMatchesPage() {
     return (
       <div>
         <div className={pageStyles.header}>
-          <h1 className={pageStyles.title}>Mentor — Mentee Matches</h1>
+          <h1 className={pageStyles.title}>Matchmaking Panel</h1>
           <p className={pageStyles.subtitle}>Loading…</p>
         </div>
       </div>
@@ -223,7 +223,7 @@ export default function AdminMatchesPage() {
   return (
     <div>
       <div className={pageStyles.header}>
-        <h1 className={pageStyles.title}>Mentor — Mentee Matches</h1>
+        <h1 className={pageStyles.title}>Matchmaking Panel</h1>
         <p className={pageStyles.subtitle}>
           Assign mentors to mentees and manage mentorships.
         </p>

@@ -1,16 +1,27 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { signIn } from '@/lib/supabase/auth';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
+
+const DEACTIVATED_MESSAGE =
+  'This account has been deactivated. Contact connect@motherstodaughters.org if you think this is a mistake.';
 
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Sent here after a deactivated account's session was ended.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('deactivated')) {
+      setStatus('error');
+      setErrorMessage(DEACTIVATED_MESSAGE);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,7 +40,9 @@ export default function LoginPage() {
 
   if (error) {
     setStatus("error");
-    setErrorMessage(error.message);
+    setErrorMessage(
+      /banned/i.test(error.message) ? DEACTIVATED_MESSAGE : error.message
+    );
     return;
   }
 
