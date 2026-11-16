@@ -7,8 +7,10 @@ interface Candidate {
   mentorId: string;
   name: string;
   score: number;
-  kind: 'deterministic' | 'soft' | 'none';
+  kind: string;
   matched: string[];
+  keywords?: string[];
+  breakdown: { title: string; overlap: number; matched: string[] }[];
   activeMenteeCount: number;
   maxMentees: number | null;
 }
@@ -18,6 +20,8 @@ interface Review {
   confidence: 'high' | 'low' | 'none';
   suggested_mentor_id: string | null;
   created_at: string;
+  match_score: number | null;
+  confidence_reasons: string[] | null;
   ai_status: string;
   ai_confidence: number | null;
   ai_reason: string | null;
@@ -25,8 +29,7 @@ interface Review {
   mentee: {
     id: string;
     name: string;
-    interests: string[];
-    careerGoals: string[];
+    answers: { title: string; weight: number; values: string[] }[];
     businessExperience: string | null;
   };
   candidates: Candidate[];
@@ -61,10 +64,13 @@ interface Metrics {
   medianHoursToPair: number | null;
 }
 
-const KIND_LABEL: Record<Candidate['kind'], string> = {
+const KIND_LABEL: Record<string, string> = {
+  strong: 'Strong fit',
+  partial: 'Partial fit',
+  none: 'Little overlap',
+  // Older reviews, before weighted scoring
   deterministic: 'Shared career area',
   soft: 'Similar wording',
-  none: 'No overlap',
 };
 
 function load(m: { activeMenteeCount: number; maxMentees: number | null }) {
@@ -175,9 +181,11 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
       </div>
 
       <p className={styles.hint}>
-        Mentees with an exact career-area match are paired automatically. Weaker matches
-        go to AI when it&apos;s on, and AI picks below its confidence threshold come here,
-        as does everything when AI is off or over budget.
+        Mentees are scored against every mentor with room: interests 30%, career goals 25%,
+        motivations 20%, what they&apos;re looking for 15%, what success means 10%. A strong,
+        complete, clear winner (60%+) is paired automatically. Partial fits go to AI only when
+        enough mentors have room; everything else, and any AI pick below its threshold, comes
+        here.
       </p>
 
       {ai && <p className={`${styles.aiBanner} ${aiWarn(ai) ? styles.aiBannerWarn : ''}`}>{aiSummary(ai)}</p>}
@@ -195,12 +203,27 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
                 <span className={`${styles.badge} ${styles[`badge-${r.confidence}`]}`}>
                   {r.confidence === 'low' ? 'Low confidence' : 'No match'}
                 </span>
-                <p className={styles.answers}>
-                  <span>Interests:</span> {r.mentee.interests.join(', ') || '—'}
-                </p>
-                <p className={styles.answers}>
-                  <span>Goals:</span> {r.mentee.careerGoals.join(', ') || '—'}
-                </p>
+                {r.mentee.answers
+                  .filter((a) => a.values.length > 0)
+                  .map((a) => (
+                    <p key={a.title} className={styles.answers}>
+                      <span>
+                        {a.title}
+                        {a.weight > 0 && ` (${Math.round(a.weight * 100)}%)`}:
+                      </span>{' '}
+                      {a.values.join(', ')}
+                    </p>
+                  ))}
+                {r.match_score != null && (
+                  <p className={styles.answers}>
+                    <span>Best match score:</span> {pct(r.match_score)}
+                  </p>
+                )}
+                {(r.confidence_reasons ?? []).map((reason) => (
+                  <p key={reason} className={styles.aiNote}>
+                    {reason}
+                  </p>
+                ))}
                 {r.ai_flag && <p className={styles.aiFlag}>Flag: {r.ai_flag}</p>}
                 {r.ai_status === 'used' && r.ai_reason && (
                   <p className={styles.aiNote}>
@@ -226,9 +249,24 @@ export default function MatchReviewQueue({ onResolved }: { onResolved: () => voi
                           </span>
                         )}
                         <p className={styles.why}>
-                          {KIND_LABEL[c.kind]}
-                          {c.matched.length > 0 && `: ${c.matched.join(', ')}`} · {load(c)}
+                          {c.score <= 1 && `${pct(c.score)} · `}
+                          {KIND_LABEL[c.kind] ?? c.kind} · {load(c)}
                         </p>
+                        {c.breakdown.length > 0 && (
+                          <p className={styles.why}>
+                            {c.breakdown
+                              .map(
+                                (b) =>
+                                  `${b.title} ${pct(b.overlap)}${
+                                    b.matched.length ? ` (${b.matched.join(', ')})` : ''
+                                  }`
+                              )
+                              .join(' · ')}
+                          </p>
+                        )}
+                        {c.keywords && c.keywords.length > 0 && (
+                          <p className={styles.why}>Shared words: {c.keywords.join(', ')}</p>
+                        )}
                       </div>
                       <button
                         className={styles.assign}

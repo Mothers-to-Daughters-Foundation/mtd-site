@@ -5,6 +5,7 @@ import { getUserById } from "@/lib/supabase/users";
 import { getSubscriptionByUserId } from "@/lib/supabase/subscriptions";
 import { getMentorshipByMentee } from "@/lib/supabase/mentorships";
 import { getPlanById } from "@/lib/supabase/plans";
+import { tierKind } from "@/lib/onboarding";
 
 import styles from "./page.module.css";
 
@@ -111,7 +112,13 @@ export default async function MenteeDashboard() {
           ) : (
             <>
               <div className={styles.cardValue}>
-                Not Assigned
+                Not assigned yet
+              </div>
+
+              <div className={styles.cardMeta}>
+                {plan && tierKind(plan.monthly_price) === "paid"
+                  ? "Thanks for sharing about yourself! We're reviewing your information and will pair you with a mentor as soon as possible."
+                  : "Mentor matching is included with paid plans."}
               </div>
             </>
           )}

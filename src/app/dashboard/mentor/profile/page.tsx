@@ -4,7 +4,10 @@ import { useEffect, useState, FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import AvatarUpload from '@/components/dashboard/AvatarUpload';
 import ChangePasswordForm from '@/components/dashboard/ChangePasswordForm';
-import { INTEREST_CATEGORIES } from '@/lib/onboarding-options';
+import MatchProfileFields, {
+  EMPTY_MENTOR_ANSWERS,
+  type MentorMatchAnswers,
+} from '@/components/dashboard/MatchProfileFields';
 import styles from './page.module.css';
 
 export default function MentorProfilePage() {
@@ -23,7 +26,7 @@ export default function MentorProfilePage() {
     maxMentees: '',
   });
 
-  const [careerAreas, setCareerAreas] = useState<string[]>([]);
+  const [matching, setMatching] = useState<MentorMatchAnswers>(EMPTY_MENTOR_ANSWERS);
 
   const [status, setStatus] = useState<
     'idle' | 'saving' | 'saved' | 'error'
@@ -51,7 +54,13 @@ export default function MentorProfilePage() {
 
       setAvatarUrl(data.avatar_url ?? null);
 
-      setCareerAreas(data.career_areas ?? []);
+      setMatching({
+        careerAreas: data.career_areas ?? [],
+        motivations: data.motivations ?? [],
+        careerGoals: data.career_goals ?? [],
+        successValues: data.success_values ?? [],
+        opportunityValues: data.opportunity_values ?? [],
+      });
 
       setFormData({
         name: data.full_name ?? '',
@@ -69,10 +78,6 @@ export default function MentorProfilePage() {
     loadProfile();
   }, [supabase]);
 
-  const toggleCareerArea = (value: string) =>
-    setCareerAreas((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -108,7 +113,11 @@ export default function MentorProfilePage() {
           country: country || null,
           expertise: formData.expertise,
           availability: formData.availability,
-          career_areas: careerAreas,
+          career_areas: matching.careerAreas,
+          motivations: matching.motivations,
+          career_goals: matching.careerGoals,
+          success_values: matching.successValues,
+          opportunity_values: matching.opportunityValues,
           max_mentees: formData.maxMentees ? Number(formData.maxMentees) : null,
         })
         .eq('id', userId);
@@ -221,20 +230,8 @@ export default function MentorProfilePage() {
         </div>
 
         <div className={styles.field}>
-          <label>Career areas (for matching)</label>
-          <div className={styles.chipRow}>
-            {INTEREST_CATEGORIES.map((c) => (
-              <button
-                type="button"
-                key={c}
-                onClick={() => toggleCareerArea(c)}
-                aria-pressed={careerAreas.includes(c)}
-                className={`${styles.chip} ${careerAreas.includes(c) ? styles.chipOn : ''}`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+          <label>How you&apos;re matched with mentees</label>
+          <MatchProfileFields value={matching} onChange={setMatching} voice="you" />
         </div>
 
         <div className={styles.field}>

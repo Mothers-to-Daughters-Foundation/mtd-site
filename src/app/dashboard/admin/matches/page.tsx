@@ -241,7 +241,7 @@ export default function AdminMatchesPage() {
       <div className={`${styles.createBox} ${pageStyles.autoMatchBox}`}>
         <h2 className={styles.createTitle}>Auto-Match</h2>
         <p className={pageStyles.hint}>
-          Pair every paid, unmatched mentee. Exact career-area matches with a mentor who has room are assigned; the rest go to Needs review.
+          Pair every paid, unmatched mentee. Clear, strong matches with a mentor who has room are assigned; the rest go to Needs review.
         </p>
 
         <button

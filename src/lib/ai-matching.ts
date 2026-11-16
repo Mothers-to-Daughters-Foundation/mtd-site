@@ -3,10 +3,20 @@ import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
 import { ApiError, GoogleGenAI } from '@google/genai';
 import { z } from 'zod/v4';
 import type { createAdminClient } from './supabase/admin';
+import type { MatchProfile } from './matching';
+import {
+  CAREER_GOAL_OPTIONS,
+  INTEREST_OPTIONS,
+  MOTIVATION_OPTIONS,
+  OPPORTUNITY_OPTIONS,
+  SUCCESS_OPTIONS,
+  type Option,
+} from './onboarding-options';
 
 /**
  * Optional AI step for mentor matching. It runs only when the rule-based score is
- * not confident, only ranks mentors that already passed the hard rules (capacity),
+ * not confident and enough mentors have room for a choice to be meaningful, and it
+ * only ranks mentors that already passed the hard rules (capacity),
  * and is skipped (never fatal) when there is no key, the monthly budget is used up,
  * the provider's quota is exhausted, or the API is unavailable. The caller then
  * routes the match to admin review.
@@ -19,6 +29,7 @@ import type { createAdminClient } from './supabase/admin';
  *   AI_MATCHING_ENABLED           "false" turns it off without removing the key
  *   AI_MATCHING_MONTHLY_BUDGET_USD default 5
  *   AI_MATCHING_MIN_CONFIDENCE    0–1, default 0.8; below this an admin decides
+ *   AI_MATCHING_MIN_MENTORS       default 5; with fewer mentors with room, an admin decides
  */
 
 type AdminClient = ReturnType<typeof createAdminClient>;
@@ -29,6 +40,7 @@ export type AiStatus =
   | 'not_needed' // rule-based match was confident, or nobody had capacity
   | 'disabled' // no API key, or turned off
   | 'skipped' // left out of a bulk run to stay within the server time limit
+  | 'small_pool' // too few mentors with room for AI to add anything
   | 'budget_exhausted' // this month's budget is used up
   | 'quota_exhausted' // the provider account is out of credit or quota
   | 'unavailable' // rate limited, overloaded, timed out or unreachable
@@ -41,6 +53,7 @@ export const AI_STATUS_LABEL: Record<AiStatus, string> = {
   not_needed: '',
   disabled: 'AI matching is off',
   skipped: 'AI was skipped in a long batch run; run auto-match again to retry',
+  small_pool: 'Too few mentors with room for AI to help, so this needs a person',
   budget_exhausted: "This month's AI budget is used up",
   quota_exhausted: "The AI provider's quota or credit is used up",
   unavailable: 'The AI service was unavailable',
@@ -55,6 +68,7 @@ export type AiConfig = {
   model: string;
   monthlyBudgetUsd: number;
   minConfidence: number;
+  minMentors: number;
 };
 
 const DEFAULT_MODEL: Record<AiProvider, string> = {
@@ -86,6 +100,7 @@ export function getAiConfig(): AiConfig {
     model: process.env.AI_MATCHING_MODEL || DEFAULT_MODEL[provider],
     monthlyBudgetUsd: numberEnv('AI_MATCHING_MONTHLY_BUDGET_USD', 5),
     minConfidence: Math.min(1, numberEnv('AI_MATCHING_MIN_CONFIDENCE', 0.8)),
+    minMentors: Math.max(1, Math.round(numberEnv('AI_MATCHING_MIN_MENTORS', 5))),
   };
 }
 
@@ -174,17 +189,10 @@ export function classifyGeminiError(error: unknown): AiStatus {
   return 'error';
 }
 
-export type AiMentee = {
-  interests: string[];
-  careerGoals: string[];
-  businessExperience: string | null;
-};
+export type AiMentee = MatchProfile & { businessExperience: string | null };
 
-export type AiMentor = {
+export type AiMentor = MatchProfile & {
   id: string;
-  careerAreas: string[];
-  expertise: string | null;
-  bio: string | null;
   activeMenteeCount: number;
   maxMentees: number | null;
 };
@@ -206,6 +214,7 @@ type Answer = z.infer<typeof AnswerSchema>;
 
 const SYSTEM = `You help a nonprofit mentorship program pair a mentee with a mentor.
 You get the mentee's onboarding answers and a short list of mentors who all have room for another mentee.
+Mentors answered the same questions from the mentoring side (what they can help with, why they mentor).
 Pick the mentor whose experience best serves the mentee's goals. Judge only on the professional
 information given. If no mentor is a reasonable fit, answer "none".
 Give a calibrated confidence: an administrator reviews every pick below their threshold, so a lower
@@ -213,8 +222,25 @@ honest number is better than an inflated one.`;
 
 const TIMEOUT_MS = 30_000;
 
-const truncate = (s: string | null, n: number) =>
-  s ? (s.length > n ? `${s.slice(0, n)}…` : s) : null;
+const truncate = (s: string, n: number) => (s.length > n ? `${s.slice(0, n)}…` : s);
+
+/** Stored option values as readable phrases (no emoji) for the model. */
+function describe(options: Option[], values: string[], side: 'mentee' | 'mentor') {
+  return values.map((v) => {
+    const o = options.find((x) => x.value === v);
+    return o ? (side === 'mentor' ? o.mentorLabel : o.label) : v;
+  });
+}
+
+function describeProfile(p: MatchProfile, side: 'mentee' | 'mentor') {
+  return {
+    interests: describe(INTEREST_OPTIONS, p.interests, side),
+    careerGoals: describe(CAREER_GOAL_OPTIONS, p.careerGoals, side),
+    motivations: describe(MOTIVATION_OPTIONS, p.motivations, side),
+    lookingFor: describe(OPPORTUNITY_OPTIONS, p.opportunityValues, side),
+    success: describe(SUCCESS_OPTIONS, p.successValues, side),
+  };
+}
 
 /** One provider call: the answer (null if unusable) and what it cost. */
 type ProviderResult = {
@@ -300,6 +326,7 @@ export async function aiRankMentors(
 ): Promise<AiRankResult> {
   if (!config.enabled) return { status: 'disabled' };
   if (mentors.length === 0) return { status: 'not_needed' };
+  if (mentors.length < config.minMentors) return { status: 'small_pool' };
 
   try {
     if ((await getMonthlySpendUsd(admin)) >= config.monthlyBudgetUsd) {
@@ -312,17 +339,17 @@ export async function aiRankMentors(
   }
 
   const labels = mentors.map((_, i) => `C${i + 1}`);
+  // The mentee's "anything else" note is not sent; it only feeds keyword overlap.
   const prompt = JSON.stringify({
     mentee: {
-      interests: mentee.interests,
-      careerGoals: mentee.careerGoals,
+      ...describeProfile(mentee, 'mentee'),
       businessExperience: mentee.businessExperience,
+      otherAnswers: mentee.freeText.map((t) => truncate(t, 300)),
     },
     mentors: mentors.map((m, i) => ({
       label: labels[i],
-      careerAreas: m.careerAreas,
-      expertise: truncate(m.expertise, 300),
-      bio: truncate(m.bio, 600),
+      ...describeProfile(m, 'mentor'),
+      expertiseAndBio: m.freeText.map((t) => truncate(t, 600)),
       currentMentees: m.activeMenteeCount,
       capacity: m.maxMentees,
     })),

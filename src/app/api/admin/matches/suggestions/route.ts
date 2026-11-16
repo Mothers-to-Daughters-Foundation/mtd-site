@@ -3,6 +3,9 @@ import { requireAdmin } from '@/lib/auth-guards';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getActiveMenteeCounts } from '@/lib/matching-service';
 import { AI_STATUS_LABEL, getAiConfig, getMonthlySpendUsd, type AiStatus } from '@/lib/ai-matching';
+import { MATCH_PROFILE_COLUMNS, type MatchProfileRow } from '@/lib/match-profile';
+import { describeAnswers, describeBreakdown } from '@/lib/match-display';
+import type { SuggestionCandidate } from '@/lib/matching-service';
 
 /**
  * Pending match reviews (with mentee answers and candidate names) plus the
@@ -19,12 +22,21 @@ export async function GET() {
     const [{ data: rows, error }, { data: profiles }, counts] = await Promise.all([
       admin
         .from('match_suggestions')
-        .select('id, mentee_id, candidates, confidence, suggested_mentor_id, status, created_at, decided_at, ai_status, ai_confidence, ai_reason')
+        .select('id, mentee_id, candidates, confidence, match_score, confidence_reasons, suggested_mentor_id, status, created_at, decided_at, ai_status, ai_confidence, ai_reason')
         .order('created_at', { ascending: true }),
       admin
         .from('user_profiles')
-        .select('id, full_name, role, interests, career_goals, business_experience, max_mentees')
-        .in('role', ['mentor', 'mentee']),
+        .select(`id, full_name, role, business_experience, max_mentees, about_me, ${MATCH_PROFILE_COLUMNS}`)
+        .in('role', ['mentor', 'mentee'])
+        .returns<
+          (MatchProfileRow & {
+            id: string;
+            full_name: string | null;
+            role: string;
+            business_experience: string | null;
+            max_mentees: number | null;
+          })[]
+        >(),
       getActiveMenteeCounts(admin),
     ]);
     if (error) throw error;
@@ -42,13 +54,13 @@ export async function GET() {
           mentee: {
             id: r.mentee_id,
             name: mentee?.full_name ?? 'Unknown',
-            interests: mentee?.interests ?? [],
-            careerGoals: mentee?.career_goals ?? [],
+            answers: mentee ? describeAnswers(mentee) : [],
             businessExperience: mentee?.business_experience ?? null,
           },
-          candidates: (r.candidates ?? []).map((c: { mentorId: string }) => ({
+          candidates: ((r.candidates ?? []) as SuggestionCandidate[]).map((c) => ({
             ...c,
             name: people.get(c.mentorId)?.full_name ?? 'Unknown',
+            breakdown: describeBreakdown(c.breakdown),
           })),
         };
       });
