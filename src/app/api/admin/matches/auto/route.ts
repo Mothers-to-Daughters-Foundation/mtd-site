@@ -18,7 +18,7 @@ export async function POST() {
     not_mentee: 0,
     not_paid: 0,
     already_matched: 0,
-    no_candidate: 0,
+    queued: 0,
     error: 0,
   };
   for (const m of mentees ?? []) {

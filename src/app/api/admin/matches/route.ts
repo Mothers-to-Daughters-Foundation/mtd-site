@@ -68,6 +68,32 @@ export async function POST(req: NextRequest) {
       mentee_id: parsed.data.mentee_id,
     });
 
+    // A manual pairing resolves any open match review for this mentee.
+    const now = new Date().toISOString();
+    const { data: pending } = await auth.supabase
+      .from("match_suggestions")
+      .select("id, suggested_mentor_id")
+      .eq("mentee_id", parsed.data.mentee_id)
+      .eq("status", "pending")
+      .maybeSingle();
+    if (pending) {
+      const { error: reviewError } = await auth.supabase
+        .from("match_suggestions")
+        .update({
+          status:
+            pending.suggested_mentor_id === parsed.data.mentor_id
+              ? "approved"
+              : "overridden",
+          chosen_mentor_id: parsed.data.mentor_id,
+          mentorship_id: match?.id ?? null,
+          decided_by: auth.user.id,
+          decided_at: now,
+          updated_at: now,
+        })
+        .eq("id", pending.id);
+      if (reviewError) console.error("[admin/matches POST] review", reviewError);
+    }
+
     return NextResponse.json(
       { match },
       { status: 201 }

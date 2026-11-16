@@ -4,9 +4,23 @@ export type MentorForMatch = {
   careerAreas: string[];
   expertise: string | null;
   activeMenteeCount: number;
+  /** null = no limit */
+  maxMentees: number | null;
 };
 export type MatchKind = 'deterministic' | 'soft' | 'none';
-export type MentorScore = { mentorId: string; score: number; kind: MatchKind };
+/** `matched` lists the shared career areas (deterministic) or words (soft), for display. */
+export type MentorScore = {
+  mentorId: string;
+  score: number;
+  kind: MatchKind;
+  matched: string[];
+};
+/**
+ * high: an exact career-area match exists, so the top mentor can be assigned automatically.
+ * low: only word overlap with free text, so an admin should review.
+ * none: no overlap or no mentor with capacity, so an admin must pick.
+ */
+export type MatchConfidence = 'high' | 'low' | 'none';
 
 function normSet(arr: string[]): Set<string> {
   return new Set(arr.map((s) => s.trim().toLowerCase()).filter(Boolean));
@@ -22,28 +36,42 @@ function tokenSet(values: string[]): Set<string> {
   return out;
 }
 
-function intersectionCount(a: Set<string>, b: Set<string>): number {
-  let n = 0;
-  for (const x of a) if (b.has(x)) n++;
-  return n;
+function intersection(a: Set<string>, b: Set<string>): string[] {
+  const out: string[] = [];
+  for (const x of a) if (b.has(x)) out.push(x);
+  return out;
+}
+
+export function hasCapacity(mentor: MentorForMatch): boolean {
+  return mentor.maxMentees == null || mentor.activeMenteeCount < mentor.maxMentees;
 }
 
 export function scoreMentor(
   mentee: MenteeForMatch,
   mentor: MentorForMatch
 ): MentorScore {
-  const det = intersectionCount(normSet(mentee.interests), normSet(mentor.careerAreas));
-  if (det > 0) return { mentorId: mentor.id, score: det, kind: 'deterministic' };
+  const areas = new Map(mentor.careerAreas.map((a) => [a.trim().toLowerCase(), a.trim()]));
+  const det = intersection(normSet(mentee.interests), new Set(areas.keys()));
+  if (det.length > 0) {
+    return {
+      mentorId: mentor.id,
+      score: det.length,
+      kind: 'deterministic',
+      matched: det.map((k) => areas.get(k) ?? k),
+    };
+  }
 
   const menteeTokens = tokenSet([...mentee.interests, ...mentee.careerGoals]);
   const mentorTokens = tokenSet([
     ...mentor.careerAreas,
     ...(mentor.expertise ? [mentor.expertise] : []),
   ]);
-  const soft = intersectionCount(menteeTokens, mentorTokens);
-  if (soft > 0) return { mentorId: mentor.id, score: soft, kind: 'soft' };
+  const soft = intersection(menteeTokens, mentorTokens);
+  if (soft.length > 0) {
+    return { mentorId: mentor.id, score: soft.length, kind: 'soft', matched: soft };
+  }
 
-  return { mentorId: mentor.id, score: 0, kind: 'none' };
+  return { mentorId: mentor.id, score: 0, kind: 'none', matched: [] };
 }
 
 const KIND_RANK: Record<MatchKind, number> = { deterministic: 2, soft: 1, none: 0 };
@@ -62,4 +90,10 @@ export function rankMentors(
       if (b.score !== a.score) return b.score - a.score;
       return (counts.get(a.mentorId) ?? 0) - (counts.get(b.mentorId) ?? 0);
     });
+}
+
+export function assessConfidence(ranked: MentorScore[]): MatchConfidence {
+  const top = ranked[0];
+  if (!top || top.kind === 'none') return 'none';
+  return top.kind === 'deterministic' ? 'high' : 'low';
 }
