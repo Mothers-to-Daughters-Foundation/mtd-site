@@ -176,3 +176,50 @@
     animation: none;
   }
 }
+
+/* Plum band variant */
+.brand {
+  background: linear-gradient(135deg, var(--brand-700) 0%, var(--brand-800) 100%);
+}
+
+.brand .title,
+.brand .label,
+.brand .text,
+.brand .author {
+  color: #fff;
+}
+
+.brand .story {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-align: center;
+  align-items: center;
+}
+
+.brand .quoteMark {
+  color: var(--accent-100);
+}
+
+.brand .text {
+  font-size: var(--text-lg);
+}
+
+.brand .arrow {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+  box-shadow: none;
+}
+
+.brand .arrow:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.brand .dot {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.brand .dotOn {
+  background: #fff;
+}

@@ -1,143 +1,39 @@
-.hero {
-  background: linear-gradient(135deg, var(--brand-700) 0%, var(--brand-800) 100%);
-  color: var(--surface-1);
-  text-align: center;
-}
-
-.heroTitle {
-  font-size: var(--text-5xl);
-  margin-bottom: var(--spacing-6);
-  color: var(--surface-1);
-}
-
-.heroDescription {
-  font-size: var(--text-xl);
-  color: var(--accent-100);
-  max-width: 800px;
-  margin: 0 auto;
-  line-height: var(--leading-relaxed);
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-10);
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.lead {
+/* Intro: text on the left, photo layered over a plum block on the right. */
+.introGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-10);
-  align-items: start;
+  align-items: center;
 }
 
-.leadText {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-8);
+.introTitle {
+  font-size: clamp(2.5rem, 6vw, 3.75rem);
+  line-height: 1.05;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-6);
 }
 
-.leadImage {
-  width: 100%;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-}
-
-.leadImageContent {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.timelineSection {
-  background-color: var(--surface-0);
-}
-
-.timeline {
-  list-style: none;
-  padding: 0;
-  margin: 0 auto;
-  max-width: 760px;
-  position: relative;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 7px;
-  top: 8px;
-  bottom: 8px;
-  width: 2px;
-  background-color: var(--accent-100);
-}
-
-.milestone {
-  position: relative;
-  padding-left: var(--spacing-10);
-  padding-bottom: var(--spacing-8);
-}
-
-.milestone:last-child {
-  padding-bottom: 0;
-}
-
-.milestoneMarker {
-  position: absolute;
-  left: 0;
-  top: 6px;
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-full, 9999px);
-  background-color: var(--brand-700);
-  border: 3px solid var(--surface-1);
-  box-shadow: 0 0 0 2px var(--brand-700);
-}
-
-.milestoneBody {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-}
-
-.milestoneDate {
-  font-size: var(--text-lg);
-  font-weight: var(--font-bold);
-  color: var(--brand-700);
-}
-
-.milestoneText {
-  font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.textBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
-}
-
-.textBlock p {
+.introText p {
   font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
   color: var(--text-secondary);
-  margin: 0;
+  margin: 0 0 var(--spacing-5);
 }
 
-.textBlock .belief {
-  font-size: var(--text-2xl);
+.introText strong {
+  color: var(--text-primary);
   font-weight: var(--font-semibold);
-  color: var(--brand-700);
-  line-height: var(--leading-snug);
+}
+
+.introText .belief {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
 }
 
 .note {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-5);
   border-top: 1px solid var(--border-color);
-  padding-top: var(--spacing-6);
 }
 
 .note h2 {
@@ -147,88 +43,211 @@
   margin: 0 0 var(--spacing-2);
 }
 
-.note p {
-  font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
-  color: var(--text-secondary);
+.introText .note p {
+  font-size: var(--text-sm);
   margin: 0;
 }
 
+.introImage {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 380px);
+  padding: 0 var(--spacing-6) var(--spacing-6) 0;
+}
+
+.introBlock {
+  position: absolute;
+  inset: var(--spacing-8) 0 0 var(--spacing-8);
+  border-radius: var(--radius-lg);
+  background: var(--brand-700);
+}
+
+.introImageContent {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* Values: a 2x2 grid that alternates white and plum cards on a soft band. */
 .valuesSection {
-  background-color: var(--surface-0);
+  background-color: var(--surface-2, #e9e6e4);
 }
 
 .sectionTitle {
   font-size: var(--text-4xl);
-  text-align: center;
   color: var(--text-primary);
-  margin-bottom: var(--spacing-10);
+  text-align: center;
+  margin: 0 0 var(--spacing-8);
 }
 
 .valuesGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-6);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .valueCard {
-  background-color: var(--surface-1);
-  padding: var(--spacing-6);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  transition: box-shadow var(--transition-base);
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: var(--spacing-8);
+  box-shadow: 0 6px 18px rgba(75, 22, 76, 0.08);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .valueCard:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-.valueNumber {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 9999px;
-  background-color: var(--brand-700);
-  color: var(--surface-1);
-  font-weight: var(--font-bold);
-  margin-bottom: var(--spacing-3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(75, 22, 76, 0.14);
 }
 
 .valueCard h3 {
-  font-size: var(--text-2xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  font-size: var(--text-xl);
   color: var(--brand-700);
-  margin-bottom: var(--spacing-3);
+  margin: 0 0 var(--spacing-3);
+}
+
+.valueNumber {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--brand-700);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
 }
 
 .valueCard p {
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.valueCardFilled {
+  background: var(--brand-700);
+  border-color: var(--brand-700);
+}
+
+.valueCardFilled h3,
+.valueCardFilled p {
+  color: #fff;
+}
+
+.valueCardFilled .valueNumber {
+  background: #fff;
+  color: var(--brand-700);
+}
+
+/* Journey: a grid of milestone cards, the latest framed in plum. */
+.journeyGrid {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-5);
+}
+
+.milestone {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6) var(--spacing-6) var(--spacing-12);
+  text-align: center;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.milestone:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.milestoneDate {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: var(--text-2xl);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-3);
+}
+
+.milestone p {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.butterfly,
+.butterflyLatest {
+  position: absolute;
+  width: 44px;
+  height: 33px;
+}
+
+.butterfly {
+  left: var(--spacing-5);
+  bottom: var(--spacing-4);
+  color: color-mix(in srgb, var(--brand-700) 22%, transparent);
+  transform: rotate(-14deg);
+}
+
+.milestoneLatest {
+  border: 10px solid var(--brand-700);
+  padding-top: var(--spacing-8);
+}
+
+.butterflyLatest {
+  right: var(--spacing-4);
+  top: var(--spacing-3);
+  color: var(--brand-700);
+  transform: rotate(12deg);
 }
 
 @media (min-width: 768px) {
-  .heroTitle {
-    font-size: var(--text-6xl);
+  .introGrid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--spacing-12);
   }
 
   .valuesGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .lead {
-    grid-template-columns: 1.4fr 1fr;
-  }
-
-  .leadImage {
-    position: sticky;
-    top: var(--spacing-8);
-    max-width: 420px;
+  .journeyGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
-  .valuesGrid {
-    grid-template-columns: repeat(4, 1fr);
+  .journeyGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .valueCard,
+  .milestone {
+    transition: none;
+  }
+
+  .valueCard:hover,
+  .milestone:hover {
+    transform: none;
   }
 }

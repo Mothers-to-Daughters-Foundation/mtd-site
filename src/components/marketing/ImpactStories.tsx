@@ -44,6 +44,8 @@ interface ImpactStoriesProps {
   /** Show only the first n stories (the live programs page shows one). */
   limit?: number;
   className?: string;
+  /** "brand": white text on a plum band, as on the live About page. */
+  tone?: 'light' | 'brand';
 }
 
 function renderStory(story: Story) {
@@ -63,11 +65,14 @@ function renderStory(story: Story) {
   );
 }
 
-export default function ImpactStories({ limit, className }: ImpactStoriesProps) {
+export default function ImpactStories({ limit, className, tone = 'light' }: ImpactStoriesProps) {
   const stories = limit ? impactStories.slice(0, limit) : impactStories;
 
   return (
-    <Section spacing="lg" className={`${styles.section} ${className || ''}`}>
+    <Section
+      spacing="lg"
+      className={`${styles.section} ${tone === 'brand' ? styles.brand : ''} ${className || ''}`}
+    >
       <Container>
         <h2 className={styles.title}>Impact Stories</h2>
         {stories.length === 1 ? (
