@@ -40,6 +40,7 @@ const menteeNav = [
   { href: '/dashboard/mentee/sessions', label: 'Sessions' },
   { href: '/dashboard/mentee/availability', label: 'Availability' },
   { href: '/dashboard/mentee/resources', label: 'Resources' },
+  { href: '/dashboard/mentee/courses', label: 'Courses' },
   { href: '/dashboard/mentee/profile', label: 'Profile' },
   { href: "/dashboard/messages", label: "Messages" },
   { href: '/dashboard/notifications', label: 'Notifications' },

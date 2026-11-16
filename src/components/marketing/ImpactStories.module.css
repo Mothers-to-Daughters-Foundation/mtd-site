@@ -68,3 +68,158 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Carousel (more than one story) */
+.carousel {
+  position: relative;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-10);
+}
+
+.viewport {
+  display: grid;
+}
+
+.slide {
+  grid-area: 1 / 1;
+}
+
+.slideOn {
+  animation: storyIn 500ms ease both;
+}
+
+@keyframes storyIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
+  color: var(--brand-700);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: background-color var(--transition-fast);
+}
+
+.arrow:hover {
+  background: var(--accent-100);
+}
+
+.arrow:focus-visible,
+.dot:focus-visible {
+  outline: 2px solid var(--brand-700);
+  outline-offset: 2px;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-5);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--brand-700) 30%, transparent);
+  cursor: pointer;
+  transition:
+    width 300ms ease,
+    background-color 300ms ease;
+}
+
+.dotOn {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--brand-700);
+}
+
+@media (max-width: 600px) {
+  .carousel {
+    padding: 0;
+  }
+
+  .arrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideOn {
+    animation: none;
+  }
+}
+
+/* Plum band variant */
+.brand {
+  background: linear-gradient(135deg, var(--brand-700) 0%, var(--brand-800) 100%);
+}
+
+.brand .title,
+.brand .label,
+.brand .text,
+.brand .author {
+  color: #fff;
+}
+
+.brand .story {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-align: center;
+  align-items: center;
+}
+
+.brand .quoteMark {
+  color: var(--accent-100);
+}
+
+.brand .text {
+  font-size: var(--text-lg);
+}
+
+.brand .arrow {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+  box-shadow: none;
+}
+
+.brand .arrow:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.brand .dot {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.brand .dotOn {
+  background: #fff;
+}

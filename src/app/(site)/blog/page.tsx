@@ -70,6 +70,7 @@ export default function BlogPage() {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
+                      timeZone: 'UTC',
                     })}
                     {` · ${readingTime(post.content)} min read`}
                   </div>

@@ -55,16 +55,16 @@
 
 /* Sizes */
 .size-sm {
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: 6px var(--spacing-3);
   font-size: var(--text-sm);
 }
 
 .size-md {
-  padding: var(--spacing-3) var(--spacing-5);
-  font-size: var(--text-base);
+  padding: 10px var(--spacing-4);
+  font-size: 0.9375rem;
 }
 
 .size-lg {
-  padding: var(--spacing-4) var(--spacing-6);
-  font-size: var(--text-lg);
+  padding: var(--spacing-3) var(--spacing-5);
+  font-size: var(--text-base);
 }

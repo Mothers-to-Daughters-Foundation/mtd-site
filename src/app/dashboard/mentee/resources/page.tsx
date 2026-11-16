@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getMenteeAccess } from "@/lib/access";
-import { getResourcesForUser, getUploaders } from "@/lib/models/resources";
+import Link from "next/link";
+import { getResourcesForUser, getUploaders, isOpenToEveryone } from "@/lib/models/resources";
 import LockedFeature from "@/components/dashboard/LockedFeature";
 import ResourceGrid, { ResourceSection } from "@/components/dashboard/ResourceGrid";
 import styles from "./page.module.css";
@@ -24,12 +25,17 @@ export default async function MenteeResourcesPage() {
   }
 
   const access = await getMenteeAccess(user.id);
-  if (!access.hasAccess) {
+  const all = await getResourcesForUser(user.id);
+  const uploaders = await getUploaders(all);
+
+  // Without a paid plan, only what an admin shared with everyone is shown.
+  const resources = access.hasAccess
+    ? all
+    : all.filter((r) => isOpenToEveryone(r, uploaders));
+
+  if (!access.hasAccess && resources.length === 0) {
     return <LockedFeature feature="Resources" reason={access.reason} />;
   }
-
-  const resources = await getResourcesForUser(user.id);
-  const uploaders = await getUploaders(resources);
   const fromM2D = resources.filter(
     (r) => uploaders.get(r.uploaded_by)?.role === "admin"
   );
@@ -45,6 +51,14 @@ export default async function MenteeResourcesPage() {
           journey.
         </p>
       </div>
+
+      {!access.hasAccess && (
+        <p className={styles.upgradeNote}>
+          You&apos;re seeing the resources open to every member. Mentor-shared
+          materials come with the Growth and Premium plans.{" "}
+          <Link href="/dashboard/mentee/subscription">See plans</Link>
+        </p>
+      )}
 
       {resources.length === 0 ? (
         <ResourceGrid resources={[]} emptyText="No resources are available yet." />

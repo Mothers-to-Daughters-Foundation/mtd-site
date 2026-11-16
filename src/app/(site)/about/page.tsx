@@ -66,65 +66,73 @@ const milestones = [
   },
 ];
 
+/** Small decorative butterfly, echoing the logo (the live page uses butterfly accents). */
+function Butterfly({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 48" className={className} aria-hidden="true" focusable="false">
+      <path
+        d="M32 24c-4-10-14-20-24-18C1 8 2 18 10 22c-8 4-7 14 2 16 8 2 16-6 20-14zm0 0c4-10 14-20 24-18 7 2 6 12-2 16 8 4 7 14-2 16-8 2-16-6-20-14z"
+        fill="currentColor"
+      />
+      <path d="M32 14v22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function AboutPage() {
   return (
     <>
-      <Section spacing="xl" className={styles.hero}>
+      <Section spacing="lg" className={styles.intro}>
         <Container>
-          <h1 className={styles.heroTitle}>About Us.</h1>
-          <p className={styles.heroDescription}>
-            Mothers to Daughters is a global movement dedicated to forging deep
-            connections, amplifying voices, and driving meaningful action. By
-            cultivating relationships that transcend generations, cultures, and
-            communities, we create a powerful network of women uplifting one
-            another.
-          </p>
-        </Container>
-      </Section>
-
-      <Section spacing="lg">
-        <Container>
-          <div className={styles.lead}>
-            <div className={styles.leadText}>
-              <div className={styles.textBlock}>
-                <p className={styles.belief}>
-                  We believe that society thrives when women are elevated to the
-                  heights they&rsquo;ve always deserved—leading, innovating, and
-                  shaping the future.
-                </p>
-                <p>
-                  Strengthened by resilience, creativity, and collective wisdom,
-                  women are essential to building a more inclusive and equitable
-                  world. Through mentorship, leadership, and shared insights, we
-                  empower them to break barriers, drive change, and leave a
-                  lasting impact. Yet every day, the brilliance and potential of
-                  women remain overlooked—held back by systemic inequities and
-                  societal pressures. When women are excluded from opportunities
-                  to lead, innovate, and create, we all miss out on the
-                  sustainable solutions and transformative ideas they bring to the
-                  table. It&rsquo;s time to unlock their power, honor their
-                  contributions, and ensure their voices shape the future.
-                </p>
-              </div>
+          <div className={styles.introGrid}>
+            <div className={styles.introText}>
+              <h1 className={styles.introTitle}>About Us.</h1>
+              <p>
+                Mothers to Daughters is a <strong>global movement</strong> dedicated to forging deep
+                connections, amplifying voices, and driving meaningful action. By cultivating
+                relationships that transcend generations, cultures, and communities, we create a
+                powerful network of women uplifting one another.
+              </p>
+              <p className={styles.belief}>
+                We believe that <strong>society thrives when women are elevated</strong> to the
+                heights they&rsquo;ve always deserved—leading, innovating, and shaping the future.
+              </p>
+              <p>
+                Strengthened by resilience, creativity, and collective wisdom, women are essential
+                to building a more inclusive and equitable world. Through mentorship, leadership,
+                and shared insights, we empower them to{' '}
+                <strong>break barriers, drive change, and leave a lasting impact</strong>. Yet every
+                day, the brilliance and potential of women remain overlooked—held back by{' '}
+                <strong>systemic inequities</strong> and societal pressures. When women are excluded
+                from opportunities to lead, innovate, and create, we all miss out on the{' '}
+                <strong>sustainable solutions</strong> and transformative ideas they bring to the
+                table. It&rsquo;s time to{' '}
+                <strong>
+                  unlock their power, honor their contributions, and ensure their voices shape the
+                  future
+                </strong>
+                .
+              </p>
 
               <aside className={styles.note}>
                 <h2>Please Note:</h2>
                 <p>
-                  Mothers to Daughters is a non-profit organization recognized as
-                  tax-exempt under Section 501(c)(3) of the Internal Revenue Code.
-                  Contributions to Mothers to Daughters are tax-deductible to the
-                  fullest extent allowed by law.
+                  Mothers to Daughters is a non-profit organization recognized as tax-exempt under
+                  Section 501(c)(3) of the Internal Revenue Code. Contributions to Mothers to
+                  Daughters are tax-deductible to the fullest extent allowed by law.
                 </p>
               </aside>
             </div>
 
-            <div className={styles.leadImage}>
+            <div className={styles.introImage}>
+              <span className={styles.introBlock} aria-hidden="true" />
               <Image
                 src={getImagePath('/images/about/about-hero.png')}
                 alt="Generational mentorship and connection"
                 width={600}
                 height={1067}
-                className={styles.leadImageContent}
+                className={styles.introImageContent}
+                priority
               />
             </div>
           </div>
@@ -135,10 +143,15 @@ export default function AboutPage() {
         <Container>
           <h2 className={styles.sectionTitle}>Our Values</h2>
           <div className={styles.valuesGrid}>
-            {values.map((value) => (
-              <div key={value.title} className={styles.valueCard}>
-                <span className={styles.valueNumber}>{value.number}</span>
-                <h3>{value.title}</h3>
+            {values.map((value, i) => (
+              <div
+                key={value.title}
+                className={`${styles.valueCard} ${i === 1 || i === 2 ? styles.valueCardFilled : ''}`}
+              >
+                <h3>
+                  <span className={styles.valueNumber}>{value.number}</span>
+                  {value.title}
+                </h3>
                 <p>{value.description}</p>
               </div>
             ))}
@@ -146,26 +159,30 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      <Section spacing="lg" className={styles.timelineSection}>
+      <Section spacing="lg">
         <Container>
           <h2 className={styles.sectionTitle}>
             Our Journey: Empowering Women, One Milestone at a Time
           </h2>
-          <ol className={styles.timeline}>
-            {milestones.map((milestone) => (
-              <li key={milestone.date} className={styles.milestone}>
-                <div className={styles.milestoneMarker} aria-hidden="true" />
-                <div className={styles.milestoneBody}>
-                  <div className={styles.milestoneDate}>{milestone.date}</div>
-                  <p className={styles.milestoneText}>{milestone.text}</p>
-                </div>
-              </li>
-            ))}
+          <ol className={styles.journeyGrid}>
+            {milestones.map((milestone, i) => {
+              const latest = i === milestones.length - 1;
+              return (
+                <li
+                  key={milestone.date}
+                  className={`${styles.milestone} ${latest ? styles.milestoneLatest : ''}`}
+                >
+                  <h3 className={styles.milestoneDate}>{milestone.date}</h3>
+                  <p>{milestone.text}</p>
+                  <Butterfly className={latest ? styles.butterflyLatest : styles.butterfly} />
+                </li>
+              );
+            })}
           </ol>
         </Container>
       </Section>
 
-      <ImpactStories />
+      <ImpactStories tone="brand" />
     </>
   );
 }

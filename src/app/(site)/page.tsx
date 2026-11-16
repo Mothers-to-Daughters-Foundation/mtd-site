@@ -2,12 +2,15 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import Container from '@/components/layout/Container';
+import LogoMarquee from '@/components/partners/LogoMarquee';
 import Section from '@/components/layout/Section';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import NewsletterFormInline from '@/components/forms/NewsletterFormInline';
 import ImpactStories from '@/components/marketing/ImpactStories';
-import { getAllPosts } from '@/lib/mdx';
+import { getAllPosts, getPostBySlug } from '@/lib/mdx';
+import HeroSlideshow from '@/components/marketing/HeroSlideshow';
+import { SOCIAL_LINKS } from '@/components/SocialLinks';
 import { getAllEvents } from '@/lib/mdx';
 import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
@@ -48,8 +51,15 @@ const areasOfFocus = [
   },
 ];
 
+const FEATURED_STORY_SLUGS = ['iwd-2025-policy-gender-equality', 'interview-with-my-mom-emily'];
+
 export default function HomePage() {
-  const recentPosts = getAllPosts().slice(0, 2);
+  // The two stories the live home page features under "Watch Us Go"; falls back
+  // to the latest posts if either is missing.
+  const featured = FEATURED_STORY_SLUGS.map(getPostBySlug).filter(
+    (post): post is NonNullable<typeof post> => post !== null
+  );
+  const recentPosts = featured.length === FEATURED_STORY_SLUGS.length ? featured : getAllPosts().slice(0, 2);
   const recentEvents = getAllEvents()
     .filter((event) => new Date(event.frontmatter.date) >= new Date())
     .slice(0, 1);
@@ -73,6 +83,8 @@ export default function HomePage() {
       image: event.frontmatter.image,
     })),
   ]
+    // With the featured stories found, show just those two, as the live page does.
+    .filter((item) => featured.length !== FEATURED_STORY_SLUGS.length || item.type === 'blog')
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
 
@@ -98,14 +110,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className={styles.heroImage}>
-              <Image
-                src={getImagePath("/images/Heroimage.jpg")}
-                alt="Diverse group of women representing intergenerational mentorship and empowerment"
-                width={800}
-                height={600}
-                className={styles.heroImageContent}
-                priority
-              />
+              <HeroSlideshow alt="Women of different generations at Mothers to Daughters events" />
             </div>
           </div>
         </Container>
@@ -245,188 +250,7 @@ export default function HomePage() {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Brands that have partnered with us</h2>
           </div>
-          <div className={styles.partnersGrid}>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_6ix.avif")}
-                alt="6ix"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_arianamarquis.avif")}
-                alt="Ariana Marquis"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_brandedcities.avif")}
-                alt="Branded Cities"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_elevateher.avif")}
-                alt="Elevate Her"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_flounleashed.avif")}
-                alt="FLO Unleashed"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_fredas.avif")}
-                alt="Freda's"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_immigrantwomen.avif")}
-                alt="Immigrant Women"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_indeed.avif")}
-                alt="Indeed"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_jute.avif")}
-                alt="Jute"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_lux.avif")}
-                alt="Lux"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_mave.avif")}
-                alt="Mave"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_microsoft.avif")}
-                alt="Microsoft"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_mintroom.avif")}
-                alt="Mint Room"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_pressthebest.avif")}
-                alt="Press The Best"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_rondyce.avif")}
-                alt="Rondyce"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_spartancafe.avif")}
-                alt="Spartan Cafe"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_timeschange.avif")}
-                alt="Times Change"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_uef.avif")}
-                alt="UEF"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_vision2reality.avif")}
-                alt="Vision 2 Reality"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-            <div className={styles.partnerLogo}>
-              <Image
-                src={getImagePath("/images/partner_zestylifestyle.avif")}
-                alt="Zesty Lifestyle"
-                width={200}
-                height={100}
-                className={styles.partnerImage}
-              />
-            </div>
-          </div>
+          <LogoMarquee />
         </Container>
       </Section>
 
@@ -519,11 +343,13 @@ export default function HomePage() {
                   </div>
                   <div className={styles.contentCardBody}>
                     <h3>{item.title}</h3>
+                    {item.excerpt && <p className={styles.contentExcerpt}>{item.excerpt}</p>}
                     <time dateTime={item.date} className={styles.contentDate}>
                       {new Date(item.date).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric',
+                        timeZone: 'UTC',
                       })}
                     </time>
                   </div>
@@ -538,6 +364,23 @@ export default function HomePage() {
               View all stories
             </Button>
           </div>
+        </Container>
+      </Section>
+
+      {/* Stay Connected */}
+      <Section spacing="md" className={styles.connectSection}>
+        <Container>
+          <h2 className={styles.connectTitle}>Stay Connected</h2>
+          <ul className={styles.connectLinks}>
+            {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+              <li key={label}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className={styles.connectLink}>
+                  <Icon className={styles.connectIcon} aria-hidden />
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </Container>
       </Section>
 

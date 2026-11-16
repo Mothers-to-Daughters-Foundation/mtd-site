@@ -3,6 +3,10 @@ import Image from 'next/image';
 import Container from '@/components/layout/Container';
 import Section from '@/components/layout/Section';
 import ContactForm from '@/components/forms/ContactForm';
+import LogoMarquee from '@/components/partners/LogoMarquee';
+import Explorer from '@/components/partners/Explorer';
+import PartnerTiers, { type Tier } from '@/components/partners/PartnerTiers';
+import InterestButton, { PARTNER_FORM_ID, TIER_SELECT_EVENT } from '@/components/partners/InterestButton';
 import { getImagePath } from '@/lib/utils';
 import styles from './page.module.css';
 
@@ -50,13 +54,6 @@ const engagementAreas = [
       'Mothers to Daughters creates intergenerational programs that equip women with the knowledge, skills, and opportunities they need to thrive. In an era of uncertainty, women deserve unwavering support to build economic stability and resilience. Through employment pathways for underrepresented women, skills transfer, and access to essential social services, we create lasting impact in high-risk communities.',
   },
 ];
-
-interface Tier {
-  name: string;
-  amount?: string;
-  audience?: string;
-  benefits: string[];
-}
 
 const monetaryTiers: Tier[] = [
   {
@@ -153,44 +150,6 @@ const inKindTiers: Tier[] = [
   },
 ];
 
-const partnerLogos = [
-  { src: '/images/partner_6ix.avif', alt: '6ix' },
-  { src: '/images/partner_arianamarquis.avif', alt: 'Ariana Marquis' },
-  { src: '/images/partner_brandedcities.avif', alt: 'Branded Cities' },
-  { src: '/images/partner_elevateher.avif', alt: 'Elevate Her' },
-  { src: '/images/partner_flounleashed.avif', alt: 'FLO Unleashed' },
-  { src: '/images/partner_fredas.avif', alt: "Freda's" },
-  { src: '/images/partner_immigrantwomen.avif', alt: 'Immigrant Women' },
-  { src: '/images/partner_indeed.avif', alt: 'Indeed' },
-  { src: '/images/partner_jute.avif', alt: 'Jute' },
-  { src: '/images/partner_lux.avif', alt: 'Lux' },
-  { src: '/images/partner_mave.avif', alt: 'Mave' },
-  { src: '/images/partner_microsoft.avif', alt: 'Microsoft' },
-  { src: '/images/partner_mintroom.avif', alt: 'Mint Room' },
-  { src: '/images/partner_pressthebest.avif', alt: 'Press The Best' },
-  { src: '/images/partner_rondyce.avif', alt: 'Rondyce' },
-  { src: '/images/partner_spartancafe.avif', alt: 'Spartan Cafe' },
-  { src: '/images/partner_timeschange.avif', alt: 'Times Change' },
-  { src: '/images/partner_uef.avif', alt: 'UEF' },
-  { src: '/images/partner_vision2reality.avif', alt: 'Vision 2 Reality' },
-  { src: '/images/partner_zestylifestyle.avif', alt: 'Zesty Lifestyle' },
-];
-
-function TierCard({ tier }: { tier: Tier }) {
-  return (
-    <div className={styles.tierCard}>
-      <h3>{tier.name}</h3>
-      {tier.amount && <div className={styles.tierAmount}>({tier.amount})</div>}
-      {tier.audience && <p className={styles.tierAudience}>{tier.audience}</p>}
-      <ul className={styles.tierBenefits}>
-        {tier.benefits.map((benefit) => (
-          <li key={benefit}>{benefit}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 export default function PartnerPage() {
   return (
     <>
@@ -230,19 +189,7 @@ export default function PartnerPage() {
 
           <div className={styles.partners}>
             <h2>Brands that have partnered with us</h2>
-            <div className={styles.partnerLogos}>
-              {partnerLogos.map((logo) => (
-                <div key={logo.alt} className={styles.partnerLogo}>
-                  <Image
-                    src={getImagePath(logo.src)}
-                    alt={logo.alt}
-                    width={200}
-                    height={100}
-                    className={styles.partnerImage}
-                  />
-                </div>
-              ))}
-            </div>
+            <LogoMarquee />
           </div>
         </Container>
       </Section>
@@ -250,15 +197,20 @@ export default function PartnerPage() {
       <Section spacing="lg" className={styles.engagementSection}>
         <Container>
           <h2 className={styles.sectionTitle}>Visual Engagement</h2>
-          <div className={styles.typesGrid}>
-            {engagementAreas.map((area) => (
-              <div key={area.label} className={styles.typeCard}>
-                <span className={styles.typeLabel}>{area.label}</span>
-                <h3>{area.title}</h3>
-                <p>{area.description}</p>
-              </div>
-            ))}
-          </div>
+          <Explorer
+            label="Ways to engage with Mothers to Daughters"
+            items={engagementAreas.map((area) => ({
+              id: area.label,
+              label: area.label,
+              content: (
+                <div className={styles.engagementDetail}>
+                  <h3>{area.title}</h3>
+                  <p>{area.description}</p>
+                  <InterestButton label="Partner with us on this" />
+                </div>
+              ),
+            }))}
+          />
         </Container>
       </Section>
 
@@ -269,27 +221,14 @@ export default function PartnerPage() {
               Financial contributions and in-kind support (services, expertise,
               resources)
             </h2>
-            <div className={styles.tierGrid}>
-              {monetaryTiers.map((tier) => (
-                <TierCard key={tier.name} tier={tier} />
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.partnershipTypes}>
-            <h2>In-Kind Support &amp; Customized Partnerships</h2>
-            <div className={styles.inKindGrid}>
-              {inKindTiers.map((tier) => (
-                <TierCard key={tier.name} tier={tier} />
-              ))}
-            </div>
+            <PartnerTiers financial={monetaryTiers} inKind={inKindTiers} />
           </div>
         </Container>
       </Section>
 
       <Section spacing="lg" className={styles.formSection}>
         <Container>
-          <div className={styles.ctaSection}>
+          <div className={styles.ctaSection} id={PARTNER_FORM_ID}>
             <h2>Partnership/Sponsorship Tiers</h2>
             <div className={styles.formContainer}>
               <ContactForm
@@ -298,6 +237,7 @@ export default function PartnerPage() {
                 includeSubject={false}
                 includeMessage={false}
                 formSubject="Partnership interest"
+                selectEvent={TIER_SELECT_EVENT}
                 checkboxGroup={{
                   name: 'tiers',
                   legend: 'Select Your Preferred Partnership Tier (check all that apply):',

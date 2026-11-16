@@ -1,6 +1,7 @@
 .card {
-  background: var(--surface-1);
+  background: linear-gradient(180deg, var(--tier-tint, var(--surface-1)) 0, var(--surface-1) 170px);
   border: 1px solid var(--border-color);
+  border-top: 5px solid var(--tier-accent, var(--brand-700));
   border-radius: var(--radius-xl);
   padding: var(--spacing-8) var(--spacing-6);
   display: flex;

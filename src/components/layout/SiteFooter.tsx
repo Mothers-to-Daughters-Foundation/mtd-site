@@ -1,27 +1,9 @@
 import Link from 'next/link';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import YouTubeIcon from '@mui/icons-material/YouTube';
 import BugReportButton from '../BugReportButton';
+import { SOCIAL_LINKS } from '../SocialLinks';
 import styles from './SiteFooter.module.css';
 import Container from './Container';
 import NewsletterFormInline from '../forms/NewsletterFormInline';
-
-// @mui/icons-material has no TikTok brand icon, so inline it.
-function TikTokIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="currentColor"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.77a5.7 5.7 0 0 0-.78-.06 5.69 5.69 0 1 0 5.69 5.69V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.25-1.48z" />
-    </svg>
-  );
-}
 
 export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
@@ -89,51 +71,18 @@ export default function SiteFooter() {
               </a>
             </div>
             <div className={styles.social}>
-              <a
-                href="https://www.instagram.com/mothers_to_daughters/"
-                className={styles.socialLink}
-                aria-label="Instagram"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <InstagramIcon className={styles.socialIcon} aria-hidden />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/mothers2daughters/"
-                className={styles.socialLink}
-                aria-label="LinkedIn"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <LinkedInIcon className={styles.socialIcon} aria-hidden />
-              </a>
-              <a
-                href="https://www.facebook.com/103109278024073"
-                className={styles.socialLink}
-                aria-label="Facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FacebookIcon className={styles.socialIcon} aria-hidden />
-              </a>
-              <a
-                href="https://www.tiktok.com/@mothers2daughters_"
-                className={styles.socialLink}
-                aria-label="TikTok"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <TikTokIcon className={styles.socialIcon} />
-              </a>
-              <a
-                href="https://www.youtube.com/channel/UCG7gLfQjkEDGuE7SSwiLU6A"
-                className={styles.socialLink}
-                aria-label="YouTube"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <YouTubeIcon className={styles.socialIcon} aria-hidden />
-              </a>
+              {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  className={styles.socialLink}
+                  aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon className={styles.socialIcon} aria-hidden />
+                </a>
+              ))}
             </div>
           </div>
 

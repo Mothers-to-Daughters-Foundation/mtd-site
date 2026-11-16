@@ -1,0 +1,102 @@
+.marquee {
+  --gap: var(--spacing-12);
+  --duration: 60s;
+  overflow: hidden;
+  padding: var(--spacing-4) 0;
+  /* Fade the logos in and out at the edges. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee:focus-visible {
+  outline: 2px solid var(--brand-700);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  gap: var(--gap);
+  animation: scroll var(--duration) linear infinite;
+}
+
+.marquee:hover .track,
+.marquee:focus-within .track {
+  animation-play-state: paused;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 80px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition:
+    filter var(--transition-base),
+    opacity var(--transition-base);
+}
+
+.logo:hover .image {
+  filter: none;
+  opacity: 1;
+}
+
+/* Moves by exactly one copy of the list (plus the gap between copies). */
+@keyframes scroll {
+  to {
+    transform: translateX(calc(-50% - var(--gap) / 2));
+  }
+}
+
+@media (max-width: 767px) {
+  .marquee {
+    --gap: var(--spacing-8);
+    --duration: 45s;
+  }
+
+  .logo {
+    width: 110px;
+    height: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .track {
+    animation: none;
+    width: auto;
+  }
+
+  .row {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: var(--spacing-6);
+  }
+
+  .row[aria-hidden] {
+    display: none;
+  }
+}

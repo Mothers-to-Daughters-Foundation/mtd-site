@@ -69,6 +69,12 @@ function getFileContent<T>(
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
+    // YAML turns `date: 2025-06-04` into a Date at UTC midnight; keep it as the
+    // plain calendar date so it prints and sorts the same in every time zone.
+    for (const [key, value] of Object.entries(data)) {
+      if (value instanceof Date) data[key] = value.toISOString().slice(0, 10);
+    }
+
     return {
       frontmatter: data as T,
       content,

@@ -4,6 +4,7 @@ import Section from '@/components/layout/Section';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
+import { getCourseCatalog } from '@/lib/courses';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -11,19 +12,9 @@ export const metadata: Metadata = {
   description: 'Explore educational courses we recommend to help you grow with confidence.',
 };
 
-const externalCourses = [
-  {
-    id: 'doltam-personal-brand',
-    title: 'Create Your Personal Brand: 5 Steps to Building Authenticity',
-    provider: 'Doltam Creative Solutions',
-    description:
-      'A self-paced course to help you own your story, release perfection, and build a personal brand rooted in authenticity. Through 5 powerful lessons, you\'ll learn to recognize every experience as a steppingstone, trust that you are enough, and show up confidently as exactly who you are.',
-    url: 'https://doltam.podia.com/creating-your-personal-brand-5-steps-to-building-authenticity',
-    featured: true,
-  },
-];
+export default async function CoursesPage() {
+  const courses = (await getCourseCatalog()).flatMap((p) => p.courses);
 
-export default function CoursesPage() {
   return (
     <>
       <Section spacing="xl" className={styles.hero}>
@@ -39,7 +30,7 @@ export default function CoursesPage() {
       <Section spacing="lg">
         <Container>
           <div className={styles.coursesGrid}>
-            {externalCourses.map((course) => (
+            {courses.map((course) => (
               <Card
                 key={course.id}
                 variant="static"
@@ -51,7 +42,7 @@ export default function CoursesPage() {
                   </Tag>
                 )}
                 <div className={styles.cardContent}>
-                  <Tag variant="default">{course.provider}</Tag>
+                  <Tag variant="default">{course.providerName}</Tag>
                   <h2>{course.title}</h2>
                   <p>{course.description}</p>
                   <Button
@@ -60,7 +51,7 @@ export default function CoursesPage() {
                     rel="noopener noreferrer"
                     variant="primary"
                     size="md"
-                    aria-label={`Enroll in ${course.title} on ${course.provider} (opens in new tab)`}
+                    aria-label={`Enroll in ${course.title} on ${course.providerName} (opens in new tab)`}
                   >
                     Enroll Now ↗
                   </Button>
