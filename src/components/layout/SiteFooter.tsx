@@ -3,6 +3,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import BugReportButton from '../BugReportButton';
 import styles from './SiteFooter.module.css';
 import Container from './Container';
 import NewsletterFormInline from '../forms/NewsletterFormInline';
@@ -170,6 +171,7 @@ export default function SiteFooter() {
             &copy; {currentYear} Mothers to Daughters. A registered 501(c)(3)
             nonprofit. All rights reserved.
           </p>
+          <BugReportButton tone="light" />
         </div>
       </Container>
     </footer>

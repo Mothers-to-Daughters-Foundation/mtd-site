@@ -3,12 +3,12 @@
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { signIn } from '@/lib/supabase/auth';
 import styles from './page.module.css';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -41,7 +41,6 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
           email: formData.email,
           password: formData.password,
         }),
@@ -56,7 +55,9 @@ export default function RegisterPage() {
       }
 
       setStatus('success');
-      setTimeout(() => router.push('/login'), 1500);
+      // Sign straight in and continue to onboarding (name, age, and profile).
+      const { error: signInError } = await signIn(formData.email, formData.password);
+      router.push(signInError ? '/login' : '/dashboard/onboarding');
     } catch {
       setStatus('error');
       setErrorMessage('An unexpected error occurred. Please try again.');
@@ -67,7 +68,7 @@ export default function RegisterPage() {
     return (
       <div className={styles.successMessage}>
         <h2>Account created!</h2>
-        <p>Redirecting you to sign in…</p>
+        <p>Let&apos;s set up your profile…</p>
       </div>
     );
   }
@@ -83,20 +84,6 @@ export default function RegisterPage() {
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
-        <div className={styles.field}>
-          <label htmlFor="name">Full name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            autoComplete="name"
-            placeholder="Jane Smith"
-          />
-        </div>
-
         <div className={styles.field}>
           <label htmlFor="email">Email address</label>
           <input

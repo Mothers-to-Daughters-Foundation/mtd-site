@@ -10,6 +10,7 @@ import {
   SUCCESS_OPTIONS,
   type Option,
 } from '@/lib/onboarding-options';
+import { MIN_MEMBER_AGE, checkAge } from '@/lib/age';
 import styles from './onboarding.module.css';
 
 type Plan = {
@@ -21,6 +22,7 @@ type Plan = {
 
 type Answers = {
   fullName: string;
+  dateOfBirth: string;
   interests: string[];
   motivations: string[];
   careerGoals: string[];
@@ -40,6 +42,7 @@ type TextKey = 'careerGoalsOther' | 'successOther' | 'opportunityOther' | 'about
 type Step =
   | { id: 'intro' }
   | { id: 'name' }
+  | { id: 'birthdate' }
   | {
       id: ListKey;
       title: (first: string) => string;
@@ -57,6 +60,7 @@ type Step =
 const STEPS: Step[] = [
   { id: 'intro' },
   { id: 'name' },
+  { id: 'birthdate' },
   {
     id: 'interests',
     title: (first) => `Nice to meet you${first ? `, ${first}` : ''}! What are your interests?`,
@@ -112,6 +116,7 @@ export default function OnboardingForm({ initialName = '' }: { initialName?: str
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({
     fullName: initialName,
+    dateOfBirth: '',
     interests: [],
     motivations: [],
     careerGoals: [],
@@ -167,6 +172,10 @@ export default function OnboardingForm({ initialName = '' }: { initialName?: str
     switch (step.id) {
       case 'name':
         return answers.fullName.trim() ? '' : 'Please tell us your name.';
+      case 'birthdate': {
+        const age = checkAge(answers.dateOfBirth);
+        return age.ok ? '' : age.message;
+      }
       case 'interests':
         return answers.interests.length ? '' : 'Pick at least one interest.';
       case 'motivations':
@@ -321,6 +330,28 @@ export default function OnboardingForm({ initialName = '' }: { initialName?: str
                 placeholder="Type your answer here…"
                 autoComplete="name"
                 maxLength={120}
+              />
+            </>
+          )}
+
+          {step.id === 'birthdate' && (
+            <>
+              <label htmlFor="ob-dob" className={styles.question}>
+                Thanks{first ? `, ${first}` : ''}! What is your date of birth?
+              </label>
+              <p className={styles.help}>
+                Our program is for members {MIN_MEMBER_AGE} and older. We only keep your birth
+                year.
+              </p>
+              <input
+                id="ob-dob"
+                ref={focusRef}
+                type="date"
+                className={styles.lineInput}
+                value={answers.dateOfBirth}
+                onChange={(e) => set('dateOfBirth', e.target.value)}
+                max={new Date().toISOString().slice(0, 10)}
+                autoComplete="bday"
               />
             </>
           )}
