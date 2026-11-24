@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { isZeffyEmbed } from '@/lib/zeffy';
 import TierArt, { priceRank, tierTheme } from '@/components/membership/TierArt';
 import themes from '@/components/membership/TierArt.module.css';
 import styles from './page.module.css';
@@ -29,6 +31,10 @@ export default function MenteeSubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [actionMsg, setActionMsg] = useState('');
   const [actionType, setActionType] = useState<'success' | 'error' | ''>('');
+  // Paying inside the page with Zeffy's embedded form.
+  const [payment, setPayment] = useState<{ tier: Tier; url: string } | null>(null);
+  const [email, setEmail] = useState('');
+  const paymentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -47,9 +53,23 @@ export default function MenteeSubscriptionPage() {
         );
       }
       setLoading(false);
+
+      const { data } = await createClient().auth.getUser();
+      setEmail(data.user?.email ?? '');
+
+      // Sent here from onboarding to pay for the plan they picked.
+      const payFor = new URLSearchParams(window.location.search).get('pay');
+      const tier = payFor ? tiersData.find((t) => t._id === payFor) : undefined;
+      if (tier && isZeffyEmbed(tier.zeffyUrl)) {
+        setPayment({ tier, url: tier.zeffyUrl as string });
+      }
     };
     load();
   }, []);
+
+  useEffect(() => {
+    if (payment) paymentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [payment]);
 
   const handleSubscribe = async (tierId: string) => {
     setActionMsg('');
@@ -64,7 +84,10 @@ export default function MenteeSubscriptionPage() {
       setActionMsg(data.error ?? 'Failed to start checkout');
       return;
     }
-    if (data.zeffyUrl) {
+    const tier = tiers.find((t) => t._id === tierId);
+    if (data.zeffyUrl && tier && isZeffyEmbed(data.zeffyUrl)) {
+      setPayment({ tier, url: data.zeffyUrl });
+    } else if (data.zeffyUrl) {
       window.open(data.zeffyUrl, '_blank');
     } else if (data.url) {
       window.location.href = data.url;
@@ -132,6 +155,36 @@ export default function MenteeSubscriptionPage() {
         </div>
       )}
 
+      {payment && (
+        <div ref={paymentRef} className={styles.paymentPanel}>
+          <div className={styles.paymentHeader}>
+            <div>
+              <h2 className={styles.paymentTitle}>Join {payment.tier.name}</h2>
+              <p className={styles.paymentNote}>
+                {email ? (
+                  <>
+                    Use <strong>{email}</strong> as your email in the form below, so we can match
+                    your payment to your account.
+                  </>
+                ) : (
+                  <>Use the email you signed in with, so we can match your payment to your account.</>
+                )}{' '}
+                Your plan unlocks once we confirm the payment.
+              </p>
+            </div>
+            <button type="button" className={styles.paymentClose} onClick={() => setPayment(null)}>
+              Close
+            </button>
+          </div>
+          <iframe
+            title={`Pay for the ${payment.tier.name} plan with Zeffy`}
+            src={payment.url}
+            className={styles.paymentFrame}
+            allow="payment"
+          />
+        </div>
+      )}
+
       <div className={styles.sectionTitle}>Available Plans</div>
       <div className={styles.tiersGrid}>
         {tiers.map((tier) => {
@@ -163,7 +216,7 @@ export default function MenteeSubscriptionPage() {
                   onClick={() => handleSubscribe(tier._id)}
                   className={styles.subscribeBtn}
                 >
-                  {tier.zeffyUrl ? 'Donate via Zeffy' : 'Subscribe'}
+                  {tier.pricePerMonth > 0 ? `Join ${tier.name}` : 'Subscribe'}
                 </button>
               )}
             </div>

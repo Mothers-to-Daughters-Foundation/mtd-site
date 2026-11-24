@@ -6,6 +6,7 @@ import {
 } from "@/lib/supabase/plans";
 import { requireAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
+import { normalizeZeffyInput } from "@/lib/zeffy";
 
 const updatePlanSchema = z.object({
   name: z.string().min(1).optional(),
@@ -43,10 +44,16 @@ export async function PATCH(
       );
     }
 
-    const plan = await updatePlan(
-      params.id,
-      parsed.data
-    );
+    const updates = { ...parsed.data };
+    if (updates.zeffyUrl !== undefined) {
+      const zeffyUrl = normalizeZeffyInput(updates.zeffyUrl);
+      if (zeffyUrl === null) {
+        return NextResponse.json({ error: "Zeffy link must be a zeffy.com address, or paste the embed code Zeffy gives you." }, { status: 400 });
+      }
+      updates.zeffyUrl = zeffyUrl;
+    }
+
+    const plan = await updatePlan(params.id, updates);
 
     if (!plan) {
       return NextResponse.json(

@@ -44,7 +44,7 @@ export default async function AdminTiersPage() {
     features: [],
     isActive: plan.is_active,
     isDefault: false,
-    zeffyUrl: "",
+    zeffyUrl: plan.zeffy_url ?? "",
     maxMentees: plan.mentor_limit,
     createdAt: plan.created_at,
     updatedAt: plan.updated_at,

@@ -7,11 +7,13 @@ import {
   setUserActive,
 } from "@/lib/supabase/user-admin";
 import { createAuditLog } from "@/lib/audit";
+import { activateSubscription } from "@/lib/supabase/subscriptions";
 import { z } from "zod";
 
 const schema = z.union([
   z.object({ role: z.enum(["admin", "mentor", "mentee"]) }),
   z.object({ active: z.boolean() }),
+  z.object({ planId: z.string().uuid() }),
 ]);
 
 const deleteSchema = z.object({ confirmEmail: z.string().trim().min(1) });
@@ -30,6 +32,22 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
   const admin = createAdminClient();
   const body = parsed.data;
+
+  // Put a member on a plan by hand, e.g. after a Zeffy payment the site
+  // couldn't match. Takes effect on their next page load.
+  if ("planId" in body) {
+    const result = await activateSubscription({ userId: params.id, planId: body.planId });
+    if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
+    await createAuditLog({
+      userId: auth.user.id,
+      action: "set_user_plan",
+      tableName: "subscriptions",
+      recordId: params.id,
+      description: "Set a member's plan",
+      newValues: { planId: body.planId },
+    });
+    return NextResponse.json({ planId: body.planId, status: "active" });
+  }
 
   // Deactivating, or taking away admin, must not lock the panel out.
   const removing = "active" in body ? !body.active : body.role !== "admin";

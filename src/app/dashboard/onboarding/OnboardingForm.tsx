@@ -11,6 +11,7 @@ import {
   type Option,
 } from '@/lib/onboarding-options';
 import { MIN_MEMBER_AGE, checkAge } from '@/lib/age';
+import { isZeffyEmbed } from '@/lib/zeffy';
 import styles from './onboarding.module.css';
 
 type Plan = {
@@ -224,6 +225,11 @@ export default function OnboardingForm({ initialName = '' }: { initialName?: str
         // Checkout returns a Zeffy link ({ zeffyUrl }); fall back to the legacy
         // `url` field just in case, then to the pending page.
         const checkoutUrl = c.ok ? (cd.zeffyUrl ?? cd.url) : null;
+        // An embedded Zeffy form opens inside our Subscription page.
+        if (checkoutUrl && isZeffyEmbed(checkoutUrl)) {
+          window.location.href = `/dashboard/mentee/subscription?pay=${encodeURIComponent(data.planId)}`;
+          return;
+        }
         window.location.href = checkoutUrl ?? '/dashboard/mentee/subscription?pending=1';
         return;
       }
