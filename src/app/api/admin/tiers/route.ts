@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
+import { normalizeZeffyInput } from "@/lib/zeffy";
 
+// Matches what the admin Tiers editor sends (price in cents).
 const createPlanSchema = z.object({
   name: z.string().min(1),
   slug: z
@@ -9,10 +11,10 @@ const createPlanSchema = z.object({
     .min(1)
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens"),
   description: z.string().optional(),
-  monthly_price: z.number().min(0),
-  mentor_limit: z.number().int().min(1),
-  is_active: z.boolean().default(true),
-  zeffy_url: z.string().optional(),
+  pricePerMonth: z.number().min(0),
+  maxMentees: z.number().int().min(1).default(1),
+  isActive: z.boolean().default(true),
+  zeffyUrl: z.string().optional(),
 });
 
 export async function GET() {
@@ -59,9 +61,26 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const input = parsed.data;
+  const row: Record<string, unknown> = {
+    name: input.name,
+    slug: input.slug,
+    description: input.description ?? null,
+    monthly_price: input.pricePerMonth,
+    mentor_limit: input.maxMentees,
+    is_active: input.isActive,
+  };
+  if (input.zeffyUrl !== undefined) {
+    const zeffyUrl = normalizeZeffyInput(input.zeffyUrl);
+    if (zeffyUrl === null) {
+      return NextResponse.json({ error: "Zeffy link must be a zeffy.com address, or paste the embed code Zeffy gives you." }, { status: 400 });
+    }
+    row.zeffy_url = zeffyUrl;
+  }
+
   const { data, error } = await supabase
     .from("plans")
-    .insert(parsed.data)
+    .insert(row)
     .select()
     .single();
 

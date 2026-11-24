@@ -40,15 +40,29 @@ export default async function AdminUsersPage() {
     redirect("/dashboard");
   }
 
-  const [users, plans, deactivated] = await Promise.all([
+  const admin = createAdminClient();
+  const [users, plans, deactivated, currentSubs] = await Promise.all([
     getAllUsers(),
     getAllPlans(),
     // Empty until migration 0017 adds the column; the query just errors.
-    createAdminClient()
+    admin
       .from("user_profiles")
       .select("id")
       .not("deactivated_at", "is", null)
       .then(({ data }) => new Set((data ?? []).map((r) => r.id as string))),
+    admin
+      .from("subscriptions")
+      .select("user_id, plan_id, status")
+      .eq("is_current", true)
+      .then(
+        ({ data }) =>
+          new Map(
+            (data ?? []).map((s) => [
+              s.user_id as string,
+              { planId: s.plan_id as string, status: s.status as string },
+            ])
+          )
+      ),
   ]);
 
   const serializedUsers = users.map((u) => ({
@@ -73,9 +87,9 @@ export default async function AdminUsersPage() {
       expertise: u.expertise,
     },
 
-    subscriptionTierId: "",
+    subscriptionTierId: currentSubs.get(u.id)?.planId ?? "",
 
-    subscriptionStatus: "",
+    subscriptionStatus: currentSubs.get(u.id)?.status ?? "",
   }));
 
   const serializedPlans = plans.map((plan) => ({

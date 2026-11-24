@@ -6,6 +6,8 @@ import styles from './UserTable.module.css';
 interface Tier {
   _id: string;
   name: string;
+  pricePerMonth?: number;
+  isActive?: boolean;
 }
 
 interface User {
@@ -58,6 +60,36 @@ export default function UserTable({ users: initialUsers, tiers, currentUserId }:
     setActionType(type);
     setActionMsg(msg);
     setTimeout(() => setActionMsg(''), 4000);
+  };
+
+  const handlePlan = async (u: User, planId: string) => {
+    const tier = tiers.find((t) => t._id === planId);
+    if (
+      !tier ||
+      !window.confirm(
+        `Put ${u.name || u.email} on the ${tier.name} plan? It starts now, runs for a month, and unlocks that plan's features on their next page load.`
+      )
+    ) {
+      return;
+    }
+    setBusyId(u._id);
+    const res = await fetch(`/api/admin/users/${u._id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ planId }),
+    });
+    setBusyId(null);
+    if (res.ok) {
+      setUsers((prev) =>
+        prev.map((x) =>
+          x._id === u._id ? { ...x, subscriptionTierId: planId, subscriptionStatus: 'active' } : x
+        )
+      );
+      flash('success', `${tier.name} plan set.`);
+    } else {
+      const data = await res.json().catch(() => ({}));
+      flash('error', data.error ?? 'Could not set the plan.');
+    }
   };
 
   const handleActive = async (u: User, active: boolean) => {
@@ -118,7 +150,7 @@ export default function UserTable({ users: initialUsers, tiers, currentUserId }:
       u.email.toLowerCase().includes(search.toLowerCase());
     const matchesRole = !roleFilter || u.role === roleFilter;
     const matchesStatus =
-      !statusFilter || (u.subscriptionStatus ?? 'none') === statusFilter;
+      !statusFilter || (u.subscriptionStatus || 'none') === statusFilter;
     return matchesSearch && matchesRole && matchesStatus;
   });
 
@@ -229,12 +261,36 @@ export default function UserTable({ users: initialUsers, tiers, currentUserId }:
                   </td>
                   <td>
                     <span
-                      className={`${styles.badge} ${styles[`badge-${u.subscriptionStatus ?? 'none'}`]}`}
+                      className={`${styles.badge} ${styles[`badge-${u.subscriptionStatus || 'none'}`] ?? ''}`}
                     >
-                      {u.subscriptionStatus ?? 'none'}
+                      {u.subscriptionStatus || 'none'}
                     </span>
                   </td>
-                  <td>{tierName(u.subscriptionTierId)}</td>
+                  <td>
+                    {u.role === 'mentee' ? (
+                      <select
+                        aria-label={`Plan for ${u.name || u.email}`}
+                        value={u.subscriptionTierId || ''}
+                        disabled={busyId === u._id}
+                        onChange={(e) => handlePlan(u, e.target.value)}
+                        className={styles.roleSelect}
+                      >
+                        {!u.subscriptionTierId && <option value="">No plan</option>}
+                        {u.subscriptionTierId && !tiers.some((t) => t._id === u.subscriptionTierId) && (
+                          <option value={u.subscriptionTierId}>{tierName(u.subscriptionTierId)}</option>
+                        )}
+                        {tiers
+                          .filter((t) => t.isActive !== false || t._id === u.subscriptionTierId)
+                          .map((t) => (
+                            <option key={t._id} value={t._id}>
+                              {t.name}
+                            </option>
+                          ))}
+                      </select>
+                    ) : (
+                      '-'
+                    )}
+                  </td>
                   <td className={styles.dateCell}>
                     {u.createdAt
                       ? new Date(u.createdAt).toLocaleDateString()

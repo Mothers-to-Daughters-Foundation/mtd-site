@@ -265,13 +265,18 @@ export default function TierEditor({ tiers: initialTiers }: TierEditorProps) {
                 />
               </div>
               <div className={styles.field}>
-                <label>Zeffy payment link</label>
-                <input
+                <label htmlFor="tier-zeffy">Zeffy link or embed code</label>
+                <textarea
+                  id="tier-zeffy"
                   name="zeffyUrl"
                   value={form.zeffyUrl}
                   onChange={handleChange}
-                  placeholder="https://www.zeffy.com/…"
+                  rows={3}
+                  placeholder="Paste the embed code (Zeffy: Campaign → ⋯ → Share → More ways to share → Embed), or a https://www.zeffy.com/… link"
                 />
+                <small>
+                  With the embed code, members pay without leaving the site. A plain link opens Zeffy in a new tab.
+                </small>
               </div>
               <div className={styles.checkboxRow}>
                 <label className={styles.checkboxLabel}>
